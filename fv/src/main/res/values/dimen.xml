@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gui_graph_add_icon_size">50dp</dimen>
+    <dimen name="gui_misc_button_size">50dp</dimen>
+    <dimen name="gui_paint_button_size">40dp</dimen>
+    <dimen name="gui_shape_button_size">50dp</dimen>
+    <dimen name="main_button_size">60dp</dimen>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+<!--  状態込みの画像ボタン。記述順に注意  -->
+<item android:state_focused="true"
+      android:drawable="@drawable/graph_load_focus" />  <!-- focused -->
+<item android:drawable="@drawable/graph_load" /> 		<!-- default -->
+</selector>

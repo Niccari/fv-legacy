@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout_settings"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp" >
+
+        <TextView
+            android:id="@+id/TextView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:text="@string/graph_setting_framerate"
+            android:textColor="#FFFFFFFF" />
+
+        <SeekBar
+            android:id="@+id/seekBar_fps"
+            android:layout_width="0dip"
+            android:layout_height="30dp"
+            android:layout_weight="0.60"
+            android:max="59"
+            android:progress="32" />
+
+        <TextView
+            android:id="@+id/textView_fps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/dummy"
+            android:textColor="#FFFFFFFF" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="@string/fps"
+            android:textColor="#FFFFFFFF" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:paddingTop="20dp" >
+
+        <ImageButton
+            android:id="@+id/imageButton_graphLoad"
+            android:layout_width="@dimen/gui_misc_button_size"
+            android:layout_height="@dimen/gui_misc_button_size"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/dummy"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_load_focus_item" />
+
+        <ImageButton
+            android:id="@+id/imageButton_graphSave"
+            android:layout_width="@dimen/gui_misc_button_size"
+            android:layout_height="@dimen/gui_misc_button_size"
+            android:layout_marginLeft="3dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/dummy"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_save_focus_item" />
+
+        <ImageButton
+            android:id="@+id/imageButton_camera"
+            android:layout_width="@dimen/gui_misc_button_size"
+            android:layout_height="@dimen/gui_misc_button_size"
+            android:layout_marginLeft="3dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/dummy"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/camera_focus_item" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp" >
+
+
+        <TextView
+            android:id="@+id/textView_bgcolor_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:text="@string/graph_setting_bgcolor"
+            android:textColor="#FFFFFFFF" />
+
+        <SeekBar
+            android:id="@+id/seekBar_bgcolor"
+            android:layout_width="0dip"
+            android:layout_height="30dp"
+            android:layout_weight="0.60"
+            android:max="255"
+            android:progress="255" />
+
+        <TextView
+            android:id="@+id/textView_bgcolor_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/dummy"
+            android:textColor="#FFFFFFFF" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp" >
+
+
+        <TextView
+            android:id="@+id/textView_povframe_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:text="@string/graph_setting_povframe"
+            android:textColor="#FFFFFFFF" />
+
+        <SeekBar
+            android:id="@+id/seekBar_povframe"
+            android:layout_width="0dip"
+            android:layout_height="30dp"
+            android:layout_weight="0.60"
+            android:max="254"
+            android:progress="0" />
+
+        <TextView
+            android:id="@+id/textView_povframe_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/dummy"
+            android:textColor="#FFFFFFFF" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,15 @@
+<?xml version='1.0' standalone='yes' ?>
+<system framerate="35" memrate="70" loadrate="70" indicator="false" dismiss="30">
+  <graphlist version="1.0.0">
+    <graph kind="KOCHOUTER" complexity="4">
+      <position x="-0.01111114" y="0.057432413" />
+      <size width="0.26330212" height="0.20904653" />
+      <rotate value="0.0" />
+      <angle value="3644.104" />
+      <randomize size="0.0" angle="0.0" />
+      <mutation size="-1.1" angle="-2.0" />
+      <draw kind="all" thickness="12.0" antialias="true" colorEach="true" history="10" currentOrder="0" brush="1" />
+      <color mode="BW" color="b6e1e1e1" shift="30" trans="7" />
+    </graph>
+  </graphlist>
+</system>

@@ -1,0 +1,15 @@
+<?xml version='1.0' standalone='yes' ?>
+<system framerate="60" memrate="70" loadrate="70" indicator="false" dismiss="30">
+  <graphlist version="1.0.0">
+    <graph kind="KOCHINNER" complexity="5">
+      <position x="0.058333278" y="0.0712719" />
+      <size width="0.21000193" height="0.19201739" />
+      <rotate value="0.0" />
+      <angle value="735.3344" />
+      <randomize size="0.0" angle="0.0" />
+      <mutation size="-1.0" angle="-2.0" />
+      <draw kind="all" thickness="16.0" antialias="true" colorEach="true" history="10" currentOrder="0" brush="2" />
+      <color mode="COOL" color="d4001eff" shift="30" trans="0" />
+    </graph>
+  </graphlist>
+</system>
