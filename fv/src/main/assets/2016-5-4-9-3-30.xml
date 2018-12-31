@@ -1,0 +1,15 @@
+<?xml version='1.0' standalone='yes' ?>
+<system framerate="60" memrate="50" loadrate="50" indicator="false" dismiss="30" view_alpha="255" pov_frame="119">
+  <graphlist version="1.1.0">
+    <graph kind="RANDOMSHAPE2" complexity="2">
+      <position x="0.29814816" y="-0.16554052" />
+      <size width="2.6833317" height="2.3761265" />
+      <rotate value="8.4" />
+      <angle value="32669.67" />
+      <randomize size="0.0" angle="0.0" />
+      <mutation size="1.0" angle="1.0" />
+      <draw kind="each" thickness="1.0" antialias="true" colorEach="false" history="10" currentOrder="1" brush="3" />
+      <color mode="FIRE" color="51ffc600" shift="19" trans="3" />
+    </graph>
+  </graphlist>
+</system>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FractalVisualizer</string>
+    <string name="fps">fps</string>
+
+    <string name="graph_setting_framerate">Spd.</string>
+    <string name="graph_setting_bgcolor">BGColor.</string>
+    <string name="graph_setting_povframe">POV Frames.</string>
+
+    <string name="gss_graph">Graph</string>
+    <string name="gss_complexity">Complexity:</string>
+    <string name="gss_rotate">Rotate:</string>
+    <string name="gss_mutation">Mutation:</string>
+    <string name="gss_randomizer">Randomizer:</string>
+    <string name="gss_size">Size:</string>
+    <string name="gss_angle">Angle:</string>
+
+    <string name="gss_leaf_branch">Branch:</string>
+    <string name="gss_sgasket_skew">Skew angle:</string>
+
+    <string name="gsp_line">Brush</string>
+    <string name="gsp_thickness">Thickness</string>
+    <string name="gsp_each">Parted</string>
+    <string name="gsp_shift">Shift spd.</string>
+    <string name="gsp_color_each">Parted</string>
+    <string name="gsp_smooth">Smooth</string>
+    <string name="gsp_color">Color</string>
+
+    <string name="dummy" />
+
+    <string name="select_graph_title">Select graph</string>
+    <string name="action_select">Select</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+</resources>

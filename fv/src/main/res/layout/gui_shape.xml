@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gui_shape_ll_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="vertical"
+    android:paddingBottom="3dp"
+    android:paddingLeft="3dp"
+    android:paddingRight="2dp"
+    android:paddingTop="3dp" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/gss_graph"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFFFF" />
+
+        <ImageView
+            android:id="@+id/imageView_gss_now_graph_icon"
+            android:layout_width="@dimen/gui_shape_button_size"
+            android:layout_height="@dimen/gui_shape_button_size"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:contentDescription="@string/dummy"
+            android:scaleType="fitXY"
+            android:src="@drawable/fv_icon" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView_gss_complexity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gss_complexity"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFFFF" />
+
+        <SeekBar
+            android:id="@+id/seekBar_gss_complexity_setting"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.27"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView_gss_rotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gss_rotate"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFFFF" />
+
+        <SeekBar
+            android:id="@+id/seekBar_gss_rotate_setting"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.27"
+            android:progress="50"
+            android:max="100"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gui_shape_recursive_ll_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="1dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="2dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textView_gss_mutation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gss_mutation"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout_gss_mutation_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView_gss_mutation_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gss_size"
+
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/white" />
+
+            <SeekBar
+                android:id="@+id/seekBar_gss_mutation_size"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="150"
+                android:progress="125" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_gss_mutation_angle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView_gss_mutation_angle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gss_angle"
+
+                android:textColor="@android:color/white" />
+
+            <SeekBar
+                android:id="@+id/seekBar_gss_mutation_angle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="80"
+                android:progress="60" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView_gss_randomizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gss_randomizer"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout_gss_randomizer_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView_gss_randomizer_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gss_size"
+
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/white" />
+
+            <SeekBar
+                android:id="@+id/seekBar_gss_randomizer_size"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="150"
+                android:progress="75" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_gss_randomizer_angle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView_gss_randomizer_angle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gss_angle"
+
+                android:textColor="@android:color/white" />
+
+            <SeekBar
+                android:id="@+id/seekBar_gss_randomizer_angle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="80"
+                android:progress="40" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gui_shape_leaf_ll_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="0dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/TextView_gss_leaf_branch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="18dp"
+            android:text="@string/gss_leaf_branch"
+            android:textColor="@android:color/white" />
+
+        <SeekBar
+            android:id="@+id/seekBar_gss_leaf_branch"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:max="5"
+            android:progress="0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gui_shape_sgasket_ll_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="0dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="0dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/TextView_gss_sgasket_skew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="18dp"
+            android:text="@string/gss_sgasket_skew"
+            android:textColor="@android:color/white" />
+
+        <SeekBar
+            android:id="@+id/seekBar_gss_sgasket_skew"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="34"
+            android:progress="0" />
+    </LinearLayout>
+
+</LinearLayout>

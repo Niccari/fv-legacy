@@ -1,0 +1,77 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    tools:context=".activity.MainActivity" >
+
+    <unicot.app.fractalvisualizer.view.DrawView
+        android:id="@+id/main_dv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent" />
+
+    <ImageButton
+        android:id="@+id/main_ib_misc"
+        android:layout_width="@dimen/main_button_size"
+        android:layout_height="@dimen/main_button_size"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/gui_misc"
+        android:contentDescription="@string/dummy"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:tag="misc"
+        app:layout_constraintBottom_toBottomOf="@+id/main_dv"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/main_ib_add_graph"
+        android:layout_width="@dimen/main_button_size"
+        android:layout_height="@dimen/main_button_size"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/gui_addgraph"
+        android:contentDescription="@string/dummy"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:tag="add_graph"
+        app:layout_constraintBottom_toBottomOf="@+id/main_dv"
+        app:layout_constraintStart_toEndOf="@+id/main_ib_misc" />
+
+    <ImageButton
+        android:id="@+id/main_ib_paint"
+        android:layout_width="@dimen/main_button_size"
+        android:layout_height="@dimen/main_button_size"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/gui_paint"
+        android:contentDescription="@string/dummy"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:tag="paint"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/main_dv"
+        app:layout_constraintStart_toEndOf="@+id/main_ib_add_graph" />
+
+    <ImageButton
+        android:id="@+id/main_ib_graph"
+        android:layout_width="@dimen/main_button_size"
+        android:layout_height="@dimen/main_button_size"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/gui_graph"
+        android:contentDescription="@string/dummy"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:tag="graph"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/main_dv"
+        app:layout_constraintStart_toEndOf="@+id/main_ib_paint" />
+
+</android.support.constraint.ConstraintLayout>

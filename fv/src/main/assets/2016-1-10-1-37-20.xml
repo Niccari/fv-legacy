@@ -1,0 +1,55 @@
+<?xml version='1.0' standalone='yes' ?>
+<system framerate="60" memrate="70" loadrate="70" indicator="false" dismiss="30" view_alpha="255" pov_frame="35">
+  <graphlist version="1.1.0">
+    <graph kind="BINARYTREE" complexity="7">
+      <position x="-0.56666666" y="0.4425676" />
+      <size width="0.06925923" height="0.053918935" />
+      <rotate value="3.8000002" />
+      <angle value="27411.637" />
+      <randomize size="0.0" angle="0.0" />
+      <mutation size="1.1" angle="1.75" />
+      <draw kind="all" thickness="1.0" antialias="false" colorEach="true" history="30" currentOrder="459" brush="3" />
+      <color mode="RAINBOW" color="c900ff78" shift="30" trans="2" />
+    </graph>
+    <graph kind="BINARYTREE" complexity="7">
+      <position x="0.01666665" y="-0.0731982" />
+      <size width="0.06925923" height="0.053918935" />
+      <rotate value="3.8000002" />
+      <angle value="3955.8352" />
+      <randomize size="0.0" angle="0.0" />
+      <mutation size="1.1" angle="1.75" />
+      <draw kind="all" thickness="1.0" antialias="false" colorEach="true" history="30" currentOrder="0" brush="3" />
+      <color mode="FIRE" color="c9ff0000" shift="30" trans="0" />
+    </graph>
+    <graph kind="BINARYTREE" complexity="7">
+      <position x="-0.5425926" y="-0.5405406" />
+      <size width="0.06925923" height="0.053918935" />
+      <rotate value="3.8000002" />
+      <angle value="2800.6204" />
+      <randomize size="0.0" angle="0.0" />
+      <mutation size="1.1" angle="1.75" />
+      <draw kind="all" thickness="1.0" antialias="false" colorEach="true" history="30" currentOrder="0" brush="3" />
+      <color mode="COOL" color="c90078ff" shift="30" trans="0" />
+    </graph>
+    <graph kind="BINARYTREE" complexity="7">
+      <position x="0.5018518" y="0.50450456" />
+      <size width="0.06925923" height="0.053918935" />
+      <rotate value="3.8000002" />
+      <angle value="2344.6145" />
+      <randomize size="0.0" angle="0.0" />
+      <mutation size="1.1" angle="1.75" />
+      <draw kind="all" thickness="1.0" antialias="false" colorEach="true" history="30" currentOrder="0" brush="3" />
+      <color mode="BW" color="c9f0f0f0" shift="30" trans="6" />
+    </graph>
+    <graph kind="BINARYTREE" complexity="7">
+      <position x="0.5351852" y="-0.5765766" />
+      <size width="0.06925923" height="0.053918935" />
+      <rotate value="3.8000002" />
+      <angle value="1854.4083" />
+      <randomize size="0.0" angle="0.0" />
+      <mutation size="1.1" angle="1.75" />
+      <draw kind="all" thickness="1.0" antialias="false" colorEach="true" history="30" currentOrder="0" brush="3" />
+      <color mode="FOREST" color="c9a5ff00" shift="30" trans="1" />
+    </graph>
+  </graphlist>
+</system>

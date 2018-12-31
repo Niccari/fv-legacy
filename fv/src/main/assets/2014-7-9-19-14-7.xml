@@ -1,0 +1,25 @@
+<?xml version='1.0' standalone='yes' ?>
+<system framerate="34" memrate="70" loadrate="70" indicator="false" dismiss="30">
+  <graphlist version="1.0.0">
+    <graph kind="LEAF" complexity="3" branch="4">
+      <position x="0.54074067" y="-0.7967342" />
+      <size width="0.68623424" height="0.4844405" />
+      <rotate value="0.0" />
+      <angle value="407.3946" />
+      <randomize size="1.1" angle="0.3499999" />
+      <mutation size="1.1" angle="0.45000005" />
+      <draw kind="each" thickness="7.0" antialias="true" colorEach="true" history="17" currentOrder="62" brush="2" />
+      <color mode="RAINBOW" color="c7ff9600" shift="30" trans="0" />
+    </graph>
+    <graph kind="LEAF" complexity="3" branch="4">
+      <position x="0.93703705" y="-0.68749994" />
+      <size width="0.68623424" height="0.4844405" />
+      <rotate value="0.0" />
+      <angle value="17.215467" />
+      <randomize size="1.1" angle="0.3499999" />
+      <mutation size="1.1" angle="0.45000005" />
+      <draw kind="each" thickness="7.0" antialias="true" colorEach="true" history="17" currentOrder="5" brush="2" />
+      <color mode="RAINBOW" color="ff00fff0" shift="30" trans="2" />
+    </graph>
+  </graphlist>
+</system>
