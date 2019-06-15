@@ -26,22 +26,22 @@ class KochTri(private val shape_kind: Int) : KochCurve() {
     override val pointMax: Int
         get() {
             val pointMax = 3 * (Math.pow(2.0, (2 * (info.complexity - 1)).toDouble()).toInt() + 1)
-            n_orders = pointMax - nsub
+            nOrders = pointMax - nsub
             return pointMax
         }
 
     override fun calculateOrder() {
         for (i in 1 until pointMax / 3) {
             val src = i - 1
-            order_points[i - 1] = Point(src, i)
+            orderPoints[i - 1] = Point(src, i)
         }
         for (i in pointMax / 3 + 1 until 2 * pointMax / 3) {
             val src = i - 1
-            order_points[i - 2] = Point(src, i)
+            orderPoints[i - 2] = Point(src, i)
         }
         for (i in 2 * pointMax / 3 + 1 until pointMax) {
             val src = i - 1
-            order_points[i - 3] = Point(src, i)
+            orderPoints[i - 3] = Point(src, i)
         }
     }
 
@@ -59,22 +59,22 @@ class KochTri(private val shape_kind: Int) : KochCurve() {
         for (i in 0 until pointMax / 3) {
             if (shape_kind == INNER)
             // 三菱型なら、上下すればよい。
-                point_base[i].y = -point_base[i].y
-            point_base[i].y += 1.0f / Math.sqrt(3.0).toFloat()
+                pointBase[i].y = -pointBase[i].y
+            pointBase[i].y += 1.0f / Math.sqrt(3.0).toFloat()
         }
         for (i in 0 until pointMax / 3) {
-            bx = point_base[i].x
-            by = point_base[i].y
-            point_base.add(PointF(bx * cos120 - by * sin120,
+            bx = pointBase[i].x
+            by = pointBase[i].y
+            pointBase.add(PointF(bx * cos120 - by * sin120,
                     bx * sin120 + by * cos120))
         }
         for (i in 0 until pointMax / 3) {
-            bx = point_base[i + pointMax / 3].x
-            by = point_base[i + pointMax / 3].y
-            point_base.add(PointF(bx * cos120 - by * sin120,
+            bx = pointBase[i + pointMax / 3].x
+            by = pointBase[i + pointMax / 3].y
+            pointBase.add(PointF(bx * cos120 - by * sin120,
                     bx * sin120 + by * cos120))
         }
-        is_allocated = true
+        isAllocated = true
     }
 
     companion object {

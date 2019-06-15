@@ -1,4 +1,4 @@
-package unicot.app.fractalvisualizer.struct
+package unicot.app.fractalvisualizer.model
 
 /**
  * 少数対応のサイズ

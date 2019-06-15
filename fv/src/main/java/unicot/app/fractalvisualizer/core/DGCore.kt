@@ -84,7 +84,7 @@ class DGCore {
      * @param pt_new 最後にタップした座標(絶対座標)
      * @return Selected_graph_indices
      */
-    fun select(pt_old: Point, pt_new: Point): ArrayList<Int> {
+    fun select(pt_old: Point = dummyPoint, pt_new: Point = dummyPoint): ArrayList<Int> {
         val min_x: Float
         val min_y: Float
         val max_x: Float
@@ -402,6 +402,7 @@ class DGCore {
         private val GRAPH_COG_X_DEFAULT = 0.0f
         private val GRAPH_COG_Y_DEFAULT = 0.0f
 
+        private val dummyPoint = Point(-1, -1)
         /**
          * グラフ変形内容判定部 しきい値：平行移動
          */

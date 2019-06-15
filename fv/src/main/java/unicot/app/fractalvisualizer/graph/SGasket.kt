@@ -30,8 +30,8 @@ class SGasket : Graph() {
 
     override val pointMax: Int
         get() {
-            n_orders = (Math.pow(3.0, info.complexity.toDouble()) + 0.5).toInt()    // intでの四捨五入に注意
-            return n_orders
+            nOrders = (Math.pow(3.0, info.complexity.toDouble()) + 0.5).toInt()    // intでの四捨五入に注意
+            return nOrders
         }
 
     override fun allocatePoints() {
@@ -42,9 +42,9 @@ class SGasket : Graph() {
         while (point.size < pointMax) {
             point.add(PointF())
         }
-        point_base.clear()
+        pointBase.clear()
 
-        order_points = Array(n_orders){ Point() }
+        orderPoints = Array(nOrders){ Point() }
         calculateOrder()
     }
 
@@ -56,7 +56,7 @@ class SGasket : Graph() {
 
         dividePoints(1, x, y) // 三角形描画の呼び出し
 
-        is_allocated = true
+        isAllocated = true
     }
 
     private fun dividePoints(base: Int, x: FloatArray, y: FloatArray) {
@@ -72,9 +72,9 @@ class SGasket : Graph() {
 
         // 一番下の階層にて、全ての点を登録する
         if (base == info.complexity) {
-            point_base.add(PointF(x[0], y[0]))
-            point_base.add(PointF(x[1], y[1]))
-            point_base.add(PointF(x[2], y[2]))
+            pointBase.add(PointF(x[0], y[0]))
+            pointBase.add(PointF(x[1], y[1]))
+            pointBase.add(PointF(x[2], y[2]))
             return
         }
 
@@ -95,12 +95,12 @@ class SGasket : Graph() {
     override fun calculateOrder() {
         for (i in 0 until pointMax) {
             val dst = if (i % 3 == 2) i - 2 else i + 1
-            order_points[i] = Point(i, dst)
+            orderPoints[i] = Point(i, dst)
         }
     }
 
     override fun runningGraph() {
-        if (!is_allocated) setRelativePoint()
+        if (!isAllocated) setRelativePoint()
 
         copyBasePoint()
 

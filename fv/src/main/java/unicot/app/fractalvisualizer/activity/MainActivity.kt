@@ -31,18 +31,16 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
-/**
- * メイン画面(グラフ描画)
- */
+/** メイン画面(グラフ描画)*/
 class MainActivity : Activity() {
-    private var is_GUIactivated = false
+    private var isGuiActivated = false
     private var mXMLWriter: DGDataWrite? = null
 
     // GUI関連
     private lateinit var mPopupWindow: PopupWindow
     private lateinit var mIconWindow: PopupWindow
     private lateinit var mDeleteWindow: PopupWindow
-    
+
     private var mGui: View? = null
     private lateinit var mMisc: MiscView
     private lateinit var mSettingGraph: GraphSettingView
@@ -120,8 +118,7 @@ class MainActivity : Activity() {
 
         // 画面サイズの取得
         val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val disp = wm.defaultDisplay
-        disp.getSize(window_size)
+        wm.defaultDisplay.getSize(window_size)
 
         // スクリーンキャプチャ関連
         bmp = Bitmap.createBitmap(window_size.x, window_size.y, Bitmap.Config.ARGB_8888)
@@ -134,9 +131,9 @@ class MainActivity : Activity() {
         dgc.init(window_size)
 
         is_touching = false
-        val ib_listener = View.OnClickListener { v ->
-            if (!is_GUIactivated) {
-                var width_param = ViewGroup.LayoutParams.WRAP_CONTENT
+        val ibListener = View.OnClickListener { v ->
+            if (!isGuiActivated) {
+                var widthParam = LayoutParams.WRAP_CONTENT
                 if (mGui == null) setEvents()
 
                 if (mVCurrentGUI != null)
@@ -146,24 +143,24 @@ class MainActivity : Activity() {
                     R.id.main_ib_graph -> mVCurrentGUI = mSettingGraph
                     R.id.main_ib_paint -> {
                         mVCurrentGUI = mSettingPaint
-                        width_param = ViewGroup.LayoutParams.MATCH_PARENT
+                        widthParam = LayoutParams.MATCH_PARENT
                     }
                     R.id.main_ib_add_graph -> mVCurrentGUI = mAddGraph
                     R.id.main_ib_misc -> {
                         mVCurrentGUI = mMisc
-                        width_param = ViewGroup.LayoutParams.MATCH_PARENT
+                        widthParam = LayoutParams.MATCH_PARENT
                     }
                 }
-                (mGui as ViewGroup).addView(mVCurrentGUI, ViewGroup.LayoutParams(width_param, ViewGroup.LayoutParams.WRAP_CONTENT))
+                (mGui as ViewGroup).addView(mVCurrentGUI, LayoutParams(widthParam, LayoutParams.WRAP_CONTENT))
 
                 adjustGui()
                 showGUI(v.id)
             }
         }
-        main_ib_graph.setOnClickListener(ib_listener)
-        main_ib_paint.setOnClickListener(ib_listener)
-        main_ib_add_graph.setOnClickListener(ib_listener)
-        main_ib_misc.setOnClickListener(ib_listener)
+        main_ib_graph.setOnClickListener(ibListener)
+        main_ib_paint.setOnClickListener(ibListener)
+        main_ib_add_graph.setOnClickListener(ibListener)
+        main_ib_misc.setOnClickListener(ibListener)
 
         // オーバレイ関連
         mIVGraphOverrayIcon = ImageView(this)
@@ -236,9 +233,10 @@ class MainActivity : Activity() {
     }
 
     private fun adjustGui() {
-        val _mGui = mGui ?: return
-        _mGui.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
-        mPopupWindow.height = _mGui.measuredHeight
+        mGui?.let{
+            it.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
+            mPopupWindow.height = it.measuredHeight
+        }
     }
 
     private fun changeGuiButtonStatus() {
@@ -246,14 +244,11 @@ class MainActivity : Activity() {
         main_ib_graph?.visibility = if (dgc.selectedGraphNum == 1) View.VISIBLE else View.INVISIBLE
     }
 
-    /**
-     * 画面タップ時の処理。
-     */
     override fun onTouchEvent(event: MotionEvent): Boolean {
         touch_pt.x = event.x.toInt()
         touch_pt.y = event.y.toInt()
 
-        if (!is_GUIactivated) { // GUIは表示されていないか？
+        if (!isGuiActivated) { // GUIは表示されていないか？
             if (event.action == MotionEvent.ACTION_DOWN) {
 
                 // タッチ開始、グラフの移動・拡大縮小・回転を始める
@@ -268,7 +263,6 @@ class MainActivity : Activity() {
                 dgc.operate(Point(-1, -1), touch_pt) // 移動値をリセット
 
                 if (!dgc.isGraphSelected)
-                // 四角領域内のグラフをすべて選択
                     dgc.select(touched_pt, touch_pt)
 
             } else if (event.action == MotionEvent.ACTION_MOVE) {
@@ -283,7 +277,7 @@ class MainActivity : Activity() {
         val y = event.y.toInt()
 
         // mIconWindowがアクティブ(=GUIが稼働)か？
-        if (is_GUIactivated && mIconWindow.isShowing) {
+        if (isGuiActivated && mIconWindow.isShowing) {
             val w = mIconWindow.width
             val h = mIconWindow.height
             mIconWindow.update(x + w, y + h, -1, -1) // カーソルの位置にアイコンがくるよう調整
@@ -308,7 +302,7 @@ class MainActivity : Activity() {
         }
 
         // グラフ消去ボタンの表示切り替え
-        if (!is_GUIactivated) {
+        if (!isGuiActivated) {
             when (event.action) {
                 MotionEvent.ACTION_UP -> {
                     if (!dgc.isGraphSelected) {
@@ -327,14 +321,14 @@ class MainActivity : Activity() {
         // グラフ消去ボタンの位置設定
         if (dgc.isGraphSelected) {
             val offset = DGCommon.getAbsCntPoint(PointF(-0.8f, -0.8f))
-            val cog_abs = DGCommon.getAbsCntPoint(dgc.selectedCOG)
-            mDeleteWindow.update(cog_abs.x + offset.x, cog_abs.y + offset.y, -1, -1) // カーソルの位置にアイコンがくるよう調整
+            val cogAbs = DGCommon.getAbsCntPoint(dgc.selectedCOG)
+            mDeleteWindow.update(cogAbs.x + offset.x, cogAbs.y + offset.y, -1, -1) // カーソルの位置にアイコンがくるよう調整
         }
         return super.onTouchEvent(event)
     }
 
     private fun dispose() {
-        is_GUIactivated = false
+        isGuiActivated = false
 
         mPopupWindow.dismiss()
         mIconWindow.dismiss()
@@ -344,27 +338,25 @@ class MainActivity : Activity() {
         mGui = View.inflate(this, R.layout.gui, null)
 
         mAddGraph = GraphAddView(this, null)
-        mAddGraph.setEvent(object: View.OnTouchListener {
-            override fun onTouch(v: View?, e: MotionEvent?): Boolean {
-                mIVGraphOverrayIcon.setImageResource(DGCommon.getGraphIcon(DGCommon.getKind(v?.tag.toString())))
-                mIVGraphOverrayIcon.invalidate()
+        mAddGraph.setEvent(View.OnTouchListener { v, e ->
+            mIVGraphOverrayIcon.setImageResource(DGCommon.getGraphIcon(DGCommon.getKind(v?.tag.toString())))
+            mIVGraphOverrayIcon.invalidate()
 
-                when (e?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        mCurrentSelectedGraphIcon = v?.tag.toString()
-                        v?.performClick()
-                    }
-                    MotionEvent.ACTION_UP -> v?.performClick()
+            when (e?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    mCurrentSelectedGraphIcon = v?.tag.toString()
+                    v?.performClick()
                 }
+                MotionEvent.ACTION_UP -> v?.performClick()
+            }
 
-                if(e != null){
-                    val ev = MotionEvent.obtain(0, 0, e.action, e.rawX, e.rawY, 1.0f, 1.0f, 0, 1.0f, 1.0f, -1, 0)
-                    val ret = onTouchEvent(ev)
-                    ev.recycle()
-                    return ret
-                }else{
-                    return false
-                }
+            if (e != null) {
+                val ev = MotionEvent.obtain(0, 0, e.action, e.rawX, e.rawY, 1.0f, 1.0f, 0, 1.0f, 1.0f, -1, 0)
+                val ret = onTouchEvent(ev)
+                ev.recycle()
+                ret
+            } else {
+                false
             }
         })
 
@@ -391,10 +383,10 @@ class MainActivity : Activity() {
                         captureView(date, false)
                 }
                 if (key.matches("capture".toRegex())) {
-                    if(ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED){
-                        ActivityCompat.requestPermissions(activity, Array(1){Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1)
-                    }else{
+                    if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(activity, Array(1) { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1)
+                    } else {
                         captureView("", true)
                     }
                 }
@@ -406,7 +398,7 @@ class MainActivity : Activity() {
         mSettingPaint = PaintView(this, null)
         mSettingPaint.setDGCore(dgc)
 
-        mGui?.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mGui?.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
 
         mPopupWindow = PopupWindow(mGui, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
@@ -430,15 +422,14 @@ class MainActivity : Activity() {
         mPopupWindow.update()
         mPopupWindow.setOnDismissListener { dispose() }
 
-        is_GUIactivated = true
+        isGuiActivated = true
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            // Externalな領域への書き込み権限入手
             1 -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     captureView("", true)
                 }
             }
@@ -462,33 +453,26 @@ class MainActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when (requestCode) {
-            INTENT_OPEN_GRAPH // ファイル読み出し(orキャンセル)
-            -> when (resultCode) {
-                Activity.RESULT_OK -> {
-                    val parser = Xml.newPullParser()
+        // データロード
+        if(requestCode == INTENT_OPEN_GRAPH && resultCode == RESULT_OK){
+            val parser = Xml.newPullParser()
 
-                    try { // 指定したファイル(filePath)を読む処理
+            try {
+                val inputStream = FileInputStream(data?.getStringExtra("xml"))
+                parser.setInput(inputStream, null)
 
-                        val inputStream = FileInputStream(data?.getStringExtra("xml"))
-                        parser.setInput(inputStream, null)
+                // 一旦画面更新止めてから、データ読み込み
+                DGDataLoad.load(parser)
+                dgc.select()
 
-                        // 一旦画面更新止めてから、データ読み込み
-                        DGDataLoad.load(parser) // 失敗時の処理は？
-                        dgc.select(dummy_pt, dummy_pt) // 選択解除
-
-                        // GUI絡みのものはUI Threadにて
-                        runOnUiThread {
-                            dispose() // GUIをリセット
-                            mMisc.sync()
-                        }
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    } catch (e: XmlPullParserException) {
-                        e.printStackTrace()
-                    }
-
+                runOnUiThread {
+                    dispose()
+                    mMisc.sync()
                 }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: XmlPullParserException) {
+                e.printStackTrace()
             }
         }
     }
@@ -499,17 +483,15 @@ class MainActivity : Activity() {
     public override fun onResume() {
         super.onResume()
 
-        if (main_ib_graph != null) {
-            main_ib_graph.postDelayed({
-                stop()
-                resume()
-            }, 100)
-        }
+        main_ib_graph?.postDelayed({
+            stop()
+            resume()
+        }, 100)
     }
 
     // 現画面のスクリーンキャプチャをとる。
     // ファイル名は現時刻を基に決定する。
-    private fun captureView(fname: String, isPng: Boolean): Int {
+    private fun captureView(filename: String, isGraphThumbnail: Boolean): Int {
         stop()
 
         // 再描画
@@ -526,31 +508,31 @@ class MainActivity : Activity() {
         val mPath: String?
         val mFile: String // 保存ファイルのディレクトリおよびファイル名
 
-        if (isPng) {
-            mPath = Environment.getExternalStorageDirectory().path + "/FV/"
-            mFile = DGCommon.currentDateString + ".png"
+        if (isGraphThumbnail) {
+            mPath = "${Environment.getExternalStorageDirectory().path}/FV/"
+            mFile = "${DGCommon.currentDateString}.png"
         } else {
             mPath = filesDir.path
-            mFile = "$fname.jpg"
+            mFile = "$filename.jpg"
         }
 
-        val fout: OutputStream
+        val outputStream: OutputStream
         val dirFile = File(mPath)
         val imageFile = File("$mPath/$mFile")
 
         try {
             dirFile.mkdir()
 
-            fout = FileOutputStream(imageFile)
+            outputStream = FileOutputStream(imageFile)
 
-            if (isPng) { // スクリーンキャプチャ
-                bmp.compress(CompressFormat.PNG, 100, fout)
-            } else { // グラフ保存時のサムネイル
+            if (isGraphThumbnail) {
+                bmp.compress(CompressFormat.PNG, 100, outputStream)
+            } else {
                 val tmp = Bitmap.createScaledBitmap(bmp, window_size.x / 4, window_size.y / 4, false)
-                tmp.compress(CompressFormat.JPEG, 75, fout)
+                tmp.compress(CompressFormat.JPEG, 75, outputStream)
             }
-            fout.flush()
-            fout.close()
+            outputStream.flush()
+            outputStream.close()
 
         } catch (e: NullPointerException) {
             e.printStackTrace()
@@ -565,11 +547,10 @@ class MainActivity : Activity() {
     }
 
     companion object {
-        private val CAPTURE_OK = 0
-        private val CAPTURE_NG = -1
-        private val INTENT_OPEN_GRAPH = 2
-        private val dummy_pt = Point(-1, -1) // 選択解除用
-        // クラス名など
+        private const val CAPTURE_OK = 0
+        private const val CAPTURE_NG = -1
+        private const val INTENT_OPEN_GRAPH = 2
+
         private lateinit var STR_APP_ROOT_DIR: String
         private val dgc: DGCore = DGCore()
         private val window_size: Point = Point()

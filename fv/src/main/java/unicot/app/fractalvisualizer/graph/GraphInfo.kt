@@ -1,12 +1,11 @@
 package unicot.app.fractalvisualizer.graph
 
 import android.graphics.PointF
-import unicot.app.fractalvisualizer.graph.Graph.*
 import unicot.app.fractalvisualizer.graph.Graph.Companion.BRUSHTYPE_LINE
 import unicot.app.fractalvisualizer.graph.Graph.Companion.DRAW_ALL
 import unicot.app.fractalvisualizer.graph.Graph.Companion.DRAW_IN_ORDER
-import unicot.app.fractalvisualizer.struct.DimensionF
-import unicot.app.fractalvisualizer.struct.GraphDisplacement
+import unicot.app.fractalvisualizer.model.DimensionF
+import unicot.app.fractalvisualizer.model.GraphDisplacement
 
 /**
  * データクラス

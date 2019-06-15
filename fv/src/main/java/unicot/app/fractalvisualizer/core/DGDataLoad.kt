@@ -7,8 +7,8 @@ import unicot.app.fractalvisualizer.graph.ColorPattern
 import unicot.app.fractalvisualizer.graph.Graph
 import unicot.app.fractalvisualizer.graph.GraphInfo
 import unicot.app.fractalvisualizer.graph.SGasket
-import unicot.app.fractalvisualizer.struct.DimensionF
-import unicot.app.fractalvisualizer.struct.GraphDisplacement
+import unicot.app.fractalvisualizer.model.DimensionF
+import unicot.app.fractalvisualizer.model.GraphDisplacement
 import java.io.IOException
 
 /**

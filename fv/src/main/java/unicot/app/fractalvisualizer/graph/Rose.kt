@@ -15,8 +15,8 @@ class Rose : Graph() {
 
     override val pointMax: Int
         get() {
-            n_orders = GRAPH_ROSE_DENSITY * info.complexity
-            return n_orders
+            nOrders = GRAPH_ROSE_DENSITY * info.complexity
+            return nOrders
         }
 
     public override fun setRelativePoint() {
@@ -24,9 +24,9 @@ class Rose : Graph() {
         allocatePoints()
         for (i in 0 until pointMax) {
             nsin = SinInt.SI().sin(360 * info.complexity * i / pointMax)
-            point_base[i].set(nsin * SinInt.SI().cos(360 * i / pointMax - 180), nsin * SinInt.SI().sin(360 * i / pointMax - 180))
+            pointBase[i].set(nsin * SinInt.SI().cos(360 * i / pointMax - 180), nsin * SinInt.SI().sin(360 * i / pointMax - 180))
         }
-        is_allocated = true
+        isAllocated = true
     }
 
     companion object {

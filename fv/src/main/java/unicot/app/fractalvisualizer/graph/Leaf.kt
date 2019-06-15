@@ -20,7 +20,7 @@ class Leaf : Graph() {
         branch = GRAPH_LEAF_INIT_BRANCH
         info.graph_kind = DGCommon.LEAF
 
-        is_allocated = false
+        isAllocated = false
         info.is_recursive = true
     }
 
@@ -33,8 +33,8 @@ class Leaf : Graph() {
             } else {
                 nm = 1 + info.complexity
             }
-            n_orders = nm
-            return 2 * n_orders
+            nOrders = nm
+            return 2 * nOrders
         }
 
     fun getBranch(): Int {
@@ -43,7 +43,7 @@ class Leaf : Graph() {
 
     fun setBranch(b: Int) {
         branch = b
-        is_allocated = false
+        isAllocated = false
     }
 
     override fun allocatePoints() {
@@ -51,20 +51,20 @@ class Leaf : Graph() {
             point.removeAt(0)
         while (point.size < pointMax)
             point.add(PointF())
-        point_base.clear()
+        pointBase.clear()
 
-        order_points = Array(n_orders){ Point() }
+        orderPoints = Array(nOrders){ Point() }
         calculateOrder()
     }
 
     public override fun setRelativePoint() {
         allocatePoints()
 
-        point_base.add(0, PointF(GraphInfo.GRAPH_POS_MID, GraphInfo.GRAPH_POS_MIN))
-        point_base.add(1, PointF(GraphInfo.GRAPH_POS_MID, GraphInfo.GRAPH_POS_MID))
+        pointBase.add(0, PointF(GraphInfo.GRAPH_POS_MID, GraphInfo.GRAPH_POS_MIN))
+        pointBase.add(1, PointF(GraphInfo.GRAPH_POS_MID, GraphInfo.GRAPH_POS_MID))
 
         setRelRecursivePoint(1, 0, GRAPH_LEAF_INIT_ARM_RATE, GRAPH_LEAF_INIT_THETA_RATE)
-        is_allocated = true
+        isAllocated = true
     }
 
     private fun setRelRecursivePoint(base: Int, parent_index: Int, arm: Float, theta: Float) {
@@ -81,8 +81,8 @@ class Leaf : Graph() {
         for (i in 0 until branch) {
             val diff = 1.0f * i.toFloat() / branch + 1.0f / (2.0f * branch)
 
-            val parent_src = point_base[parent_index]
-            val parent_dst = point_base[parent_index + 1]
+            val parent_src = pointBase[parent_index]
+            val parent_dst = pointBase[parent_index + 1]
             val vct = PointF(parent_dst.x - parent_src.x, parent_dst.y - parent_src.y) // 親枝
             val child_src = PointF(parent_src.x + vct.x * diff, parent_src.y + vct.y * diff)
 
@@ -94,9 +94,9 @@ class Leaf : Graph() {
             if (i % 2 == 1)
                 sin = -sin
 
-            point_base.add(child_src)
-            next_parent[i] = point_base.size - 1
-            point_base.add(PointF(child_src.x + child_arm * (cos * vct.x - sin * vct.y), child_src.y + child_arm * (sin * vct.x + cos * vct.y)))
+            pointBase.add(child_src)
+            next_parent[i] = pointBase.size - 1
+            pointBase.add(PointF(child_src.x + child_arm * (cos * vct.x - sin * vct.y), child_src.y + child_arm * (sin * vct.x + cos * vct.y)))
         }
 
         for (i in 0 until branch) { // 各枝について、更に小枝を計算
@@ -111,7 +111,7 @@ class Leaf : Graph() {
         for (i in 0 until pointMax / 2) {
             val src = 2 * i
             val dst = 2 * i + 1
-            order_points[i] = Point(src, dst)
+            orderPoints[i] = Point(src, dst)
         }
     }
 

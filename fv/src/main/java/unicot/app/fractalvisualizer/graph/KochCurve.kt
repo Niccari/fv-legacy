@@ -26,19 +26,19 @@ open class KochCurve : Graph() {
 
     override val pointMax: Int
         get() {
-            n_orders = Math.pow(2.0, (2 * (info.complexity - 1)).toDouble()).toInt() + 1 - nsub
-            return n_orders + nsub
+            nOrders = Math.pow(2.0, (2 * (info.complexity - 1)).toDouble()).toInt() + 1 - nsub
+            return nOrders + nsub
         }
 
     override fun allocatePoints() {
         while (point.size > pointMax) point.removeAt(0)
         while (point.size < pointMax) point.add(PointF())
-        point_base.clear()
+        pointBase.clear()
 
-        point_base.add(0, PointF(GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MID))
-        point_base.add(1, PointF(GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MID))
+        pointBase.add(0, PointF(GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MID))
+        pointBase.add(1, PointF(GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MID))
 
-        order_points = Array(n_orders){ Point() }
+        orderPoints = Array(nOrders){ Point() }
         calculateOrder()
     }
 
@@ -46,7 +46,7 @@ open class KochCurve : Graph() {
         allocatePoints()
 
         setRelRecursivePoint(1, GRAPH_KOCH_INIT_ARM_RATE, GRAPH_KOCH_INIT_THETA_RATE)    //Generator Line
-        is_allocated = true
+        isAllocated = true
     }
 
     protected fun setRelRecursivePoint(depth: Int, arm: Float, theta: Float) {
@@ -65,28 +65,28 @@ open class KochCurve : Graph() {
 
         for (i in 0 until Math.pow(2.0, (2 * depth).toDouble()).toInt()) {
             if (i % 4 <= 1) {    // 分割線("_/\_"のうち、"_"の部分)
-                src.set(point_base[i])
-                dst.set(point_base[i + 1])
+                src.set(pointBase[i])
+                dst.set(pointBase[i + 1])
                 vct = PointF(dst.x - src.x, dst.y - src.y)
                 add_point = PointF(src.x + arm / (3 - i % 4).toFloat() * vct.x,
                         src.y + arm / (3 - i % 4).toFloat() * vct.y)
-                point_base.add(i + 1, add_point)
+                pointBase.add(i + 1, add_point)
             } else if (i % 4 == 2) {    // 三角部の点("_/\_"のうち、"/\"の部分)
-                src.set(point_base[i - 1])
-                dst.set(point_base[i])
+                src.set(pointBase[i - 1])
+                dst.set(pointBase[i])
                 vct = PointF(dst.x - src.x, dst.y - src.y)
                 add_point = PointF(src.x + arm * (cos * vct.x - sin * vct.y),
                         src.y + arm * (sin * vct.x + cos * vct.y))
-                point_base.add(i, add_point)
+                pointBase.add(i, add_point)
             }
         }
         setRelRecursivePoint(depth + 1, arm, theta)
     }
 
     override fun calculateOrder() {
-        for (i in n_orders downTo 1) {
+        for (i in nOrders downTo 1) {
             val src = i - 1
-            order_points[n_orders - i] = Point(src, i)
+            orderPoints[nOrders - i] = Point(src, i)
         }
     }
 }

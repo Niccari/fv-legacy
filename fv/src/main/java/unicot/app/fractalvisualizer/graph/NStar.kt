@@ -17,7 +17,7 @@ class NStar : Graph() {
     override fun calculateOrder() {
         for (i in 0 until pointMax) {
             val dst = if (i + 2 >= pointMax) i + 2 - pointMax else i + 2
-            order_points[i] = Point(i, dst)
+            orderPoints[i] = Point(i, dst)
         }
     }
 }
