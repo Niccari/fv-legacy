@@ -117,7 +117,7 @@ class ColorPattern {
     }
 
     fun setColMode(str_cmode: String) {
-        if (str_cmode.matches(STR_NULL.toRegex()))
+        if (str_cmode.matches("".toRegex()))
             return
         val c_str = str_cmode.toUpperCase(Locale.ENGLISH)
 
@@ -519,8 +519,6 @@ class ColorPattern {
         private val STR_DEEPSEA = "DEEPSEA"
         private val STR_HEAT = "HEAT"
         private val STR_BW = "BW"
-
-        private val STR_NULL = ""
 
         val COLOR_MIN = 0
         val COLOR_MAX = 255

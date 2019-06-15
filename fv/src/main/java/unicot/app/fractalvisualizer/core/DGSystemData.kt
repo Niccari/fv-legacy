@@ -89,7 +89,7 @@ class DGSystemData internal constructor() {
         view_alpha = VIEW_ALPHA_INIT
         pov_frame = POV_FRAME_INIT
 
-        graphVersion = DGCommon.STR_NULL
+        graphVersion = ""
     }
 
     /**
