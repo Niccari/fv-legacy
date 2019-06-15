@@ -15,53 +15,46 @@ import java.util.*
  * - グラフの番号・識別文字列変換<br></br>
  */
 object DGCommon {
-    val NPOINT = 0
-    val STARMINE = 1
-    val NSTAR = 2
-    val RANDOMSHAPE = 3
-    val RANDOMSHAPE2 = 4
-    val BINARYTREE = 5
-    val DRAGONCURVE = 6
-    val FOLDTRIANGLE = 7
-    val CCURVE = 8
-    val KOCHCURVE = 9
-    val KOCHTRIANGLE_INNER = 10
-    val KOCHTRIANGLE_OUTER = 11
-    val ROSECURVE = 12
-    val HILBERT = 13
-    val LEAF = 14
-    val SIERPINSKI_GASKET = 15
-    val SIERPINSKI_CARPET = 16
-    val TRIFOLD_CIS = 17
-    val TRIFOLD_TRANS = 18
+    const val NPOINT = 0
+    const val STARMINE = 1
+    const val NSTAR = 2
+    const val RANDOMSHAPE = 3
+    const val RANDOMSHAPE2 = 4
+    const val BINARYTREE = 5
+    const val DRAGONCURVE = 6
+    const val FOLDTRIANGLE = 7
+    const val CCURVE = 8
+    const val KOCHCURVE = 9
+    const val KOCHTRIANGLE_INNER = 10
+    const val KOCHTRIANGLE_OUTER = 11
+    const val ROSECURVE = 12
+    const val HILBERT = 13
+    const val LEAF = 14
+    const val SIERPINSKI_GASKET = 15
+    const val SIERPINSKI_CARPET = 16
+    const val TRIFOLD_CIS = 17
+    const val TRIFOLD_TRANS = 18
 
     // 各グラフの識別文字列
-    private val STR_NPOINT = "NPOINT"
-    private val STR_STARMINE = "STARMINE"
-    private val STR_NSTAR = "NSTAR"
-    private val STR_RANDOMSHAPE = "RANDOMSHAPE"
-    private val STR_RANDOMSHAPE2 = "RANDOMSHAPE2"
-    private val STR_BINARYTREE = "BINARYTREE"
-    private val STR_DRAGONCURVE = "DRAGONCURVE"
-    private val STR_FOLDTRIANGLE = "FOLDTRIANGLE"
-    private val STR_CCURVE = "CCURVE"
-    private val STR_KOCHCURVE = "KOCHCURVE"
-    private val STR_KOCHTRIANGLE_INNER = "KOCHINNER"
-    private val STR_KOCHTRIANGLE_OUTER = "KOCHOUTER"
-    private val STR_ROSECURVE = "ROSECURVE"
-    private val STR_HILBERT = "HILBERT"
-    private val STR_LEAF = "LEAF"
-    private val STR_SIERPINSKI_GASKET = "SIERPINSKI_GASKET"
-    private val STR_SIERPINSKI_CARPET = "SIERPINSKI_CARPET"
-    private val STR_TRIFOLD_CIS = "TRIFOLD_CIS"
-    private val STR_TRIFOLD_TRANS = "TRIFOLD_TRANS"
-
-    val STR_NULL = ""
-
-    /**
-     * 環境設定ファイルのデフォルト名
-     */
-    val ENV_FILE = "env.txt"
+    private const val STR_NPOINT = "NPOINT"
+    private const val STR_STARMINE = "STARMINE"
+    private const val STR_NSTAR = "NSTAR"
+    private const val STR_RANDOMSHAPE = "RANDOMSHAPE"
+    private const val STR_RANDOMSHAPE2 = "RANDOMSHAPE2"
+    private const val STR_BINARYTREE = "BINARYTREE"
+    private const val STR_DRAGONCURVE = "DRAGONCURVE"
+    private const val STR_FOLDTRIANGLE = "FOLDTRIANGLE"
+    private const val STR_CCURVE = "CCURVE"
+    private const val STR_KOCHCURVE = "KOCHCURVE"
+    private const val STR_KOCHTRIANGLE_INNER = "KOCHINNER"
+    private const val STR_KOCHTRIANGLE_OUTER = "KOCHOUTER"
+    private const val STR_ROSECURVE = "ROSECURVE"
+    private const val STR_HILBERT = "HILBERT"
+    private const val STR_LEAF = "LEAF"
+    private const val STR_SIERPINSKI_GASKET = "SIERPINSKI_GASKET"
+    private const val STR_SIERPINSKI_CARPET = "SIERPINSKI_CARPET"
+    private const val STR_TRIFOLD_CIS = "TRIFOLD_CIS"
+    private const val STR_TRIFOLD_TRANS = "TRIFOLD_TRANS"
 
     /**
      * 現時刻を返す
@@ -95,7 +88,7 @@ object DGCommon {
     fun copyGraph(kind: Int, is_old_copy: Boolean): Boolean {
         val dgraph = DGCore.graph
         /* コピー実施時、最新のグラフを使う */
-        val gd_old = if (is_old_copy) DGCore.selectedGraph?.last() else null
+        val gd_old = if (is_old_copy) DGCore.selectedGraph.last() else null
         val gi_old = if (is_old_copy) gd_old!!.info else null
         when (kind) {
             NPOINT -> dgraph.add(NPoint())
@@ -260,28 +253,28 @@ object DGCommon {
      */
     fun getGraphIcon(kind: Int): Int {
         when (kind) {
-            DGCommon.NPOINT -> return R.drawable.npoint
-            DGCommon.STARMINE -> return R.drawable.starmine
-            DGCommon.NSTAR -> return R.drawable.nstar
-            DGCommon.RANDOMSHAPE -> return R.drawable.random_stat
-            DGCommon.RANDOMSHAPE2 -> return R.drawable.random_every
+            NPOINT -> return R.drawable.npoint
+            STARMINE -> return R.drawable.starmine
+            NSTAR -> return R.drawable.nstar
+            RANDOMSHAPE -> return R.drawable.random_stat
+            RANDOMSHAPE2 -> return R.drawable.random_every
 
-            DGCommon.BINARYTREE -> return R.drawable.binarytree
-            DGCommon.DRAGONCURVE -> return R.drawable.dragoncurve
-            DGCommon.FOLDTRIANGLE -> return R.drawable.dragoncurve_backward
-            DGCommon.CCURVE -> return R.drawable.ccurve
+            BINARYTREE -> return R.drawable.binarytree
+            DRAGONCURVE -> return R.drawable.dragoncurve
+            FOLDTRIANGLE -> return R.drawable.dragoncurve_backward
+            CCURVE -> return R.drawable.ccurve
 
-            DGCommon.KOCHCURVE -> return R.drawable.kochcurve
-            DGCommon.KOCHTRIANGLE_INNER -> return R.drawable.kochcurve_inner
-            DGCommon.KOCHTRIANGLE_OUTER -> return R.drawable.kochcurve_outer
+            KOCHCURVE -> return R.drawable.kochcurve
+            KOCHTRIANGLE_INNER -> return R.drawable.kochcurve_inner
+            KOCHTRIANGLE_OUTER -> return R.drawable.kochcurve_outer
 
-            DGCommon.ROSECURVE -> return R.drawable.rosecurve
-            DGCommon.HILBERT -> return R.drawable.hilbert
-            DGCommon.LEAF -> return R.drawable.leaf
-            DGCommon.SIERPINSKI_GASKET -> return R.drawable.gasket_tri
-            DGCommon.SIERPINSKI_CARPET -> return R.drawable.gasket_carpet
-            DGCommon.TRIFOLD_CIS -> return R.drawable.trifold_ll
-            DGCommon.TRIFOLD_TRANS -> return R.drawable.trifold_lr
+            ROSECURVE -> return R.drawable.rosecurve
+            HILBERT -> return R.drawable.hilbert
+            LEAF -> return R.drawable.leaf
+            SIERPINSKI_GASKET -> return R.drawable.gasket_tri
+            SIERPINSKI_CARPET -> return R.drawable.gasket_carpet
+            TRIFOLD_CIS -> return R.drawable.trifold_ll
+            TRIFOLD_TRANS -> return R.drawable.trifold_lr
             else -> return -1
         }
     }

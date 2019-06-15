@@ -50,7 +50,7 @@ class DGDataLoad : DGDataInfo() {
                         }
 
                         if (tag == TAG_GRAPHLIST) {
-                            var sx = DGCommon.STR_NULL
+                            var sx = ""
                             for (i in 0 until parser.attributeCount) {
                                 attr = parser.getAttributeName(i)
                                 if (attr == ATTR_GRAPHLIST_VERSION)
@@ -95,8 +95,8 @@ class DGDataLoad : DGDataInfo() {
                         if (isCopied) {
                             // positionタグ(位置)
                             if (tag == TAG_GRAPH_POSITION) {
-                                var sx = DGCommon.STR_NULL
-                                var sy = DGCommon.STR_NULL
+                                var sx = ""
+                                var sy = ""
                                 for (i in 0 until parser.attributeCount) {
                                     attr = parser.getAttributeName(i)
                                     if (attr == ATTR_GRAPH_POSITION_X)
@@ -109,8 +109,8 @@ class DGDataLoad : DGDataInfo() {
 
                             // sizeタグ(寸法)
                             if (tag == TAG_GRAPH_SIZE) {
-                                var sw = DGCommon.STR_NULL
-                                var sh = DGCommon.STR_NULL
+                                var sw = ""
+                                var sh = ""
                                 for (i in 0 until parser.attributeCount) {
                                     attr = parser.getAttributeName(i)
                                     if (attr == ATTR_GRAPH_SIZE_WIDTH)
@@ -123,22 +123,22 @@ class DGDataLoad : DGDataInfo() {
 
                             // angle | rot_speedタグ
                             if (tag == TAG_GRAPH_ANGLE || tag == TAG_GRAPH_ROTATE) {
-                                var sv = DGCommon.STR_NULL
+                                var sv = ""
                                 for (i in 0 until parser.attributeCount) {
                                     attr = parser.getAttributeName(i)
                                     if (attr == ATTR_GRAPH_ANGLE_VALUE)
                                         sv = parser.getAttributeValue(i)
                                 }
                                 if (tag == TAG_GRAPH_ANGLE)
-                                    gi?.angle = if (sv.matches(DGCommon.STR_NULL.toRegex())) 0.0f else java.lang.Float.parseFloat(sv)
+                                    gi?.angle = if (sv.matches("".toRegex())) 0.0f else java.lang.Float.parseFloat(sv)
                                 if (tag == TAG_GRAPH_ROTATE)
-                                    gi?.rot_speed = if (sv.matches(DGCommon.STR_NULL.toRegex())) 0.0f else java.lang.Float.parseFloat(sv)
+                                    gi?.rot_speed = if (sv.matches("".toRegex())) 0.0f else java.lang.Float.parseFloat(sv)
                             }
 
                             // mutation | randomizeタグ
                             if (tag == TAG_GRAPH_MUTATION || tag == TAG_GRAPH_RANDOMIZE) {
-                                var sw = DGCommon.STR_NULL
-                                var sh = DGCommon.STR_NULL
+                                var sw = ""
+                                var sh = ""
                                 for (i in 0 until parser.attributeCount) {
                                     attr = parser.getAttributeName(i)
                                     if (attr == ATTR_GRAPH_MUTATION_SIZE)
@@ -154,10 +154,10 @@ class DGDataLoad : DGDataInfo() {
 
                             // colorタグ(色の遷移パターン)
                             if (tag == TAG_GRAPH_COLOR) {
-                                var sx = DGCommon.STR_NULL
-                                var sy = DGCommon.STR_NULL
-                                var sz = DGCommon.STR_NULL
-                                var sw = DGCommon.STR_NULL
+                                var sx = ""
+                                var sy = ""
+                                var sz = ""
+                                var sw = ""
                                 for (i in 0 until parser.attributeCount) {
                                     attr = parser.getAttributeName(i)
                                     if (attr == ATTR_GRAPH_COLOR_MODE)
@@ -175,7 +175,7 @@ class DGDataLoad : DGDataInfo() {
 
                             // drawタグ
                             if (tag == TAG_GRAPH_DRAW) {
-                                var kind = DGCommon.STR_NULL
+                                var kind = ""
                                 var thickness = -1.0f
                                 var antialias = false
                                 var colorEach = false
@@ -229,11 +229,11 @@ class DGDataLoad : DGDataInfo() {
 
         /* Systemタグをチェック */
         private fun getSystemTag(parser: XmlPullParser): Boolean {
-            var framerate = DGCommon.STR_NULL
-            var memrate = DGCommon.STR_NULL
-            var loadrate = DGCommon.STR_NULL
-            var povFrame = DGCommon.STR_NULL
-            var viewAlpha = DGCommon.STR_NULL
+            var framerate = ""
+            var memrate = ""
+            var loadrate = ""
+            var povFrame = ""
+            var viewAlpha = ""
             var attr: String
             for (i in 0 until parser.attributeCount) {
                 attr = parser.getAttributeName(i)
@@ -250,12 +250,12 @@ class DGDataLoad : DGDataInfo() {
                     viewAlpha = parser.getAttributeValue(i)
             }
             sysData[Integer.parseInt(framerate), Integer.parseInt(memrate)] = Integer.parseInt(loadrate)
-            if (!povFrame.matches(DGCommon.STR_NULL.toRegex())) {
+            if (!povFrame.matches("".toRegex())) {
                 sysData.povFrame = Integer.parseInt(povFrame)
             } else {
                 sysData.povFrame = DGSystemData.POV_FRAME_MIN
             }
-            if (!viewAlpha.matches(DGCommon.STR_NULL.toRegex())) {
+            if (!viewAlpha.matches("".toRegex())) {
                 sysData.viewAlpha = Integer.parseInt(viewAlpha)
             } else {
                 sysData.viewAlpha = DGSystemData.VIEW_ALPHA_MAX
@@ -267,31 +267,31 @@ class DGDataLoad : DGDataInfo() {
         // 以下、Stringを各データに合わせて型変換するメソッド
         // For position
         private fun getPosition(sx: String, sy: String): PointF {
-            return if (sx.matches(DGCommon.STR_NULL.toRegex()) || sy.matches(DGCommon.STR_NULL.toRegex())) PointF() else PointF(java.lang.Float.parseFloat(sx), java.lang.Float.parseFloat(sy))
+            return if (sx.matches("".toRegex()) || sy.matches("".toRegex())) PointF() else PointF(java.lang.Float.parseFloat(sx), java.lang.Float.parseFloat(sy))
 
         }
 
         // For size
         private fun getSize(sw: String, sh: String): DimensionF {
-            return if (sw.matches(DGCommon.STR_NULL.toRegex()) || sh.matches(DGCommon.STR_NULL.toRegex())) DimensionF() else DimensionF(java.lang.Float.parseFloat(sw), java.lang.Float.parseFloat(sh))
+            return if (sw.matches("".toRegex()) || sh.matches("".toRegex())) DimensionF() else DimensionF(java.lang.Float.parseFloat(sw), java.lang.Float.parseFloat(sh))
         }
 
         // For ColorPattern(cp)
         private fun getColorPattern(sx: String, sy: String, sz: String, sw: String): ColorPattern {
             val cpNew = ColorPattern()
 
-            if (!sx.matches(DGCommon.STR_NULL.toRegex())) {
+            if (!sx.matches("".toRegex())) {
                 cpNew.setColMode(sx)
             }
-            if (!sy.matches(DGCommon.STR_NULL.toRegex())) {
+            if (!sy.matches("".toRegex())) {
                 cpNew.color = java.lang.Long.parseLong(sy, 16).toInt()
 
             }
-            if (!sz.matches(DGCommon.STR_NULL.toRegex())) {
+            if (!sz.matches("".toRegex())) {
                 cpNew.shiftSpeed = Integer.parseInt(sz)
             }
 
-            if (!sw.matches(DGCommon.STR_NULL.toRegex())) {
+            if (!sw.matches("".toRegex())) {
                 cpNew.setTrans(Integer.parseInt(sw))
             }
             return cpNew
@@ -299,12 +299,12 @@ class DGDataLoad : DGDataInfo() {
 
         // For complexity
         private fun getComplexity(e_str: String): Int {
-            return if (e_str.matches(DGCommon.STR_NULL.toRegex())) GraphInfo.COMPLEXITY_INIT else Integer.parseInt(e_str)
+            return if (e_str.matches("".toRegex())) GraphInfo.COMPLEXITY_INIT else Integer.parseInt(e_str)
         }
 
         // For mutation, randomize
         private fun getGraphDisplacement(sw: String, sh: String): GraphDisplacement {
-            return if (sw.matches(DGCommon.STR_NULL.toRegex()) || sh.matches(DGCommon.STR_NULL.toRegex())) GraphDisplacement() else GraphDisplacement(java.lang.Float.parseFloat(sw), java.lang.Float.parseFloat(sh))
+            return if (sw.matches("".toRegex()) || sh.matches("".toRegex())) GraphDisplacement() else GraphDisplacement(java.lang.Float.parseFloat(sw), java.lang.Float.parseFloat(sh))
         }
     }
 }
