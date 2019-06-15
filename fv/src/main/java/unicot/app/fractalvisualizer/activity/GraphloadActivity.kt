@@ -8,7 +8,9 @@ import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -17,7 +19,6 @@ import unicot.app.fractalvisualizer.R
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
-import android.util.Log
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -25,28 +26,22 @@ import java.io.IOException
 /**
  * グラフ読込、削除画面
  */
-class GraphloadActivity : Activity() {
-    private val file_urls: ArrayList<FileData>
-    private var window_size: Point
+open class GraphloadActivity : Activity() {
+    private val fileUrls: ArrayList<FileData> = ArrayList(0)
+    private var windowSize: Point = Point()
 
-    private lateinit var mIVAdapter: IVAdapter
+    private var adapter: IVAdapter? = null
 
     private var isSelecting = false
 
     protected class FileData constructor(var fname: String = "", var img: ImageView, var isSelected: Boolean = false)
-
-    init{
-        file_urls = ArrayList(0)
-        window_size = Point()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.graphload)
 
         val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val disp = wm.defaultDisplay
-        disp.getSize(window_size)
+        wm.defaultDisplay.getSize(windowSize)
 
         STR_APP_ROOT_DIR = filesDir.path + "/"
 
@@ -92,20 +87,26 @@ class GraphloadActivity : Activity() {
             return
         }
 
-        mIVAdapter = IVAdapter(this, -1, file_urls)
-
-        graphload_gv?.adapter = mIVAdapter
-        graphload_gv?.onItemClickListener = OnItemClickListener { parent, v, position, id ->
-
+        adapter = IVAdapter(this, -1, fileUrls)
+        graphload_gv?.adapter = adapter
+        graphload_gv?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
             if (isSelecting) {
-                file_urls[position].isSelected = !file_urls[position].isSelected
-                mIVAdapter.notifyDataSetInvalidated()
+                fileUrls[position].isSelected = !fileUrls[position].isSelected
+                adapter?.notifyDataSetInvalidated()
             } else {
                 val intent = Intent()
-                intent.putExtra("xml", file_urls[position].fname + ".xml")
+                intent.putExtra("xml", fileUrls[position].fname + ".xml")
                 setResult(RESULT_OK, intent)
                 finish()
             }
+        }
+        graphload_gv?.onItemLongClickListener = AdapterView.OnItemLongClickListener {
+            _, _, position, _ ->
+
+            if(!isSelecting) {
+                changeSelectState()
+            }
+            false
         }
     }
 
@@ -116,8 +117,8 @@ class GraphloadActivity : Activity() {
         Arrays.sort(files, Collections.reverseOrder<Any>())
 
         // xmlとjpgはペアのはず
-        val xml_files = arrayOfNulls<File>(files.size / 2)
-        val jpg_files = arrayOfNulls<File>(files.size / 2)
+        val xmlFiles = arrayOfNulls<File>(files.size / 2)
+        val jpgFiles = arrayOfNulls<File>(files.size / 2)
 
         var j = 0
         var k = 0
@@ -128,28 +129,27 @@ class GraphloadActivity : Activity() {
             if (m.matches())
                 fileEx = m.group(1)
             if (fileEx.matches(".xml".toRegex())) {
-                xml_files[j++] = file
+                xmlFiles[j++] = file
             } else if (fileEx.matches(".jpg".toRegex())) {
-                jpg_files[k++] = file
+                jpgFiles[k++] = file
 
             }
         }
 
         // 3. 各グラフのサムネイルを作成する。
         // 全グラフサムネイル数（＝保存グラフ数）
-        val IMAGE_NUM = files.size / 2
-        file_urls.clear()
+        fileUrls.clear()
         var tmp: Bitmap
-        for (i in 0 until IMAGE_NUM) {
-            val file = jpg_files[i] ?: break
-            tmp = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(STR_APP_ROOT_DIR + file.getName()),
-                    window_size.x / GRID_COL - 3 * 10 * GRID_COL,
-                    window_size.y / GRID_COL - 6 * 10 * GRID_COL, false)
+        for (i in 0 until files.size / 2) {
+            val file = jpgFiles[i] ?: break
+            tmp = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(STR_APP_ROOT_DIR + file.name),
+                    windowSize.x / GRID_COL - 3 * 10 * GRID_COL,
+                    windowSize.y / GRID_COL - 6 * 10 * GRID_COL, false)
             val iv = ImageView(this)
             iv.setImageBitmap(tmp)
-            var xml_url_str = xml_files[i].toString()
-            xml_url_str = xml_url_str.substring(0, xml_url_str.lastIndexOf('.'))
-            file_urls.add(FileData(xml_url_str, iv))
+            var xmlUrl = xmlFiles[i].toString()
+            xmlUrl = xmlUrl.substring(0, xmlUrl.lastIndexOf('.'))
+            fileUrls.add(FileData(xmlUrl, iv))
         }
 
         return true
@@ -165,58 +165,56 @@ class GraphloadActivity : Activity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
+    private fun changeSelectState(){
+        isSelecting = !isSelecting
+        fileUrls.map { it.isSelected = false }
+        title = if (isSelecting) {
+            getString(R.string.action_select)
+        }else{
+            getString(R.string.select_graph_title)
+        }
+        invalidateOptionsMenu()
+        adapter?.notifyDataSetInvalidated()
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
             R.id.action_select, R.id.action_cancel -> {
-                isSelecting = !isSelecting
-                for(file_url in file_urls){
-                    file_url.isSelected = false
-                }
-                if (isSelecting) {
-                    setTitle(getString(R.string.action_select))
-                }else{
-                    setTitle(getString(R.string.select_graph_title))
-                }
-                invalidateOptionsMenu()
-                mIVAdapter.notifyDataSetInvalidated()
+                changeSelectState()
             }
             R.id.action_delete -> {
-                val del_list: ArrayList<FileData> = ArrayList(0)
-                for(file_url in file_urls.withIndex()){
+                val delList: ArrayList<FileData> = ArrayList(0)
+                for(file_url in fileUrls.withIndex()){
                     if(file_url.value.isSelected) {
                         val fname = file_url.value.fname
                         File("$fname.jpg").delete()
                         File("$fname.xml").delete()
-                        del_list.add(file_url.value)
+                        delList.add(file_url.value)
                     }
                 }
-                for(del in del_list){
-                    file_urls.remove(del)
-                }
+                delList.map{ fileUrls.remove(it) }
 
                 isSelecting = false
                 invalidateOptionsMenu()
-                mIVAdapter.notifyDataSetInvalidated()
+                adapter?.notifyDataSetInvalidated()
             }
         }
         return true
     }
 
-    protected inner class IVAdapter constructor(context: Context, resource: Int, objects: List<FileData>) : ArrayAdapter<FileData>(context, resource, objects) {
-        private val dataList: List<FileData> = objects
+    private inner class IVAdapter constructor(context: Context, resource: Int, val dataList: List<FileData>) : ArrayAdapter<FileData>(context, resource, dataList) {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view: ImageView
-            val data = dataList[position]
-            if(convertView != null){
-                view = convertView as ImageView
+            val view: ImageView = if(convertView != null){
+                convertView as ImageView
             }else{
-                view = dataList[position].img
+                dataList[position].img
             }
+            val data = dataList[position]
             view.setImageDrawable(data.img.drawable)
 
             if (data.isSelected) {
-                view.drawable.setColorFilter( resources.getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP)
+                val color = ContextCompat.getColor(context, R.color.blue)
+                view.drawable.setColorFilter( color, PorterDuff.Mode.SRC_ATOP)
             } else {
                 view.drawable.clearColorFilter()
             }
@@ -228,6 +226,6 @@ class GraphloadActivity : Activity() {
         // TODO: アプリ内で共通化すること
         private var STR_APP_ROOT_DIR: String = ""
         // TODO: レイアウトに縛られているのはまずい
-        private val GRID_COL = 3
+        private const val GRID_COL = 3
     }
 }
