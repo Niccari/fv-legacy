@@ -11,8 +11,6 @@ import java.util.Locale
 
 import unicot.app.fractalvisualizer.core.DGCore
 import unicot.app.fractalvisualizer.core.SinInt
-import unicot.app.fractalvisualizer.struct.DimensionF
-import unicot.app.fractalvisualizer.struct.GraphDisplacement
 
 
 /**
@@ -25,42 +23,24 @@ open class Graph
  */
 // グラフの初期化
 internal constructor() {
-    /**
-     * グラフごとの複雑さの最小値を取得する
-     *
-     * @return 複雑さの最小値
-     */
     var complexityMin = 2
         protected set
-    /**
-     * グラフごとの複雑さの最大値を返す
-     *
-     * @return 複雑さの最大値
-     */
     var complexityMax = 20
         protected set
 
-    protected var is_allocated: Boolean = false
-
+    protected var isAllocated: Boolean = false
     private val mDrawPath: Path
-
-
-    private val pen: Paint // 描画設定
-    // 以下、アクセサ
-    /**
-     * グラフ情報を取得する。
-     *
-     * @return グラフ情報
-     */
-    val info: GraphInfo // グラフ情報
-    protected lateinit var order_points: Array<Point> // 描画順
+    private val pen: Paint = Paint() // 描画設定
+    protected lateinit var orderPoints: Array<Point> // 描画順
     private val mPenColors: IntArray // 描画色リスト
 
-    // point_base => point => translate, rot_speed, scaling => point'
-    protected var point_base = ArrayList<PointF>(0) // グラフの基本形状のみ
+    val info: GraphInfo = GraphInfo() // グラフ情報
+
+    // pointBase => point => translate, rot_speed, scaling => point'
+    protected var pointBase = ArrayList<PointF>(0) // グラフの基本形状のみ
     protected var point = ArrayList<PointF>(0) // 変形後のグラフ
 
-    protected var n_orders: Int = 0 // 線分の数( != pointMax)
+    protected var nOrders: Int = 0 // 線分の数( != pointMax)
 
     private var mTmpPointF: PointF? = null
     private val mPointSrc: Point
@@ -76,26 +56,23 @@ internal constructor() {
 
     /**
      * 点の数を算出して返す\n
-     * この関数にて点の描画順序数(n_orders)も確定させる
+     * この関数にて点の描画順序数(nOrders)も確定させる
      * @return 描画する点の個数(デフォルトでは正N角形の個数)
      */
     protected open val pointMax: Int
         get() {
-            n_orders = info.complexity
-            return n_orders
+            nOrders = info.complexity
+            return nOrders
         }
 
     init {
-        this.info = GraphInfo()
-
-        pen = Paint()
 
         pen.strokeWidth = info.mLineThickness
         pen.isAntiAlias = info.mIsAntiAlias
         pen.style = Paint.Style.STROKE
 
         mPenColors = IntArray(COLOR_MAX)
-        is_allocated = false
+        isAllocated = false
 
         mDrawPath = Path()
         mPointSrc = Point()
@@ -161,16 +138,12 @@ internal constructor() {
     fun setBrushType(value: String) {
         val tmp = value.toLowerCase(Locale.ENGLISH)
 
-        if (tmp.matches(STR_BRUSHTYPE_LINE.toRegex())) {
-            info.mBrushType = BRUSHTYPE_LINE
-        } else if (tmp.matches(STR_BRUSHTYPE_TRIANGLE.toRegex())) {
-            info.mBrushType = BRUSHTYPE_TRIANGLE
-        } else if (tmp.matches(STR_BRUSHTYPE_CRESCENT.toRegex())) {
-            info.mBrushType = BRUSHTYPE_CRESCENT
-        } else if (tmp.matches(STR_BRUSHTYPE_TWIN_CIRCLE.toRegex())) {
-            info.mBrushType = BRUSHTYPE_TWIN_CIRCLE
-        } else {
-            info.mBrushType = BRUSHTYPE_LINE
+        when {
+            tmp.matches(STR_BRUSHTYPE_LINE.toRegex()) -> info.mBrushType = BRUSHTYPE_LINE
+            tmp.matches(STR_BRUSHTYPE_TRIANGLE.toRegex()) -> info.mBrushType = BRUSHTYPE_TRIANGLE
+            tmp.matches(STR_BRUSHTYPE_CRESCENT.toRegex()) -> info.mBrushType = BRUSHTYPE_CRESCENT
+            tmp.matches(STR_BRUSHTYPE_TWIN_CIRCLE.toRegex()) -> info.mBrushType = BRUSHTYPE_TWIN_CIRCLE
+            else -> info.mBrushType = BRUSHTYPE_LINE
         }
     }
 
@@ -216,12 +189,12 @@ internal constructor() {
     /**
      * 位置情報(相対座標)を設定
      *
-     * @param x x-axis position(相対座標)
-     * @param y y-axis position(相対座標)
+     * @param x0 x-axis position(相対座標)
+     * @param y0 y-axis position(相対座標)
      */
-    fun setPosition(x: Float, y: Float) {
-        var x = x
-        var y = y
+    fun setPosition(x0: Float, y0: Float) {
+        var x = x0
+        var y = y0
         // 位置チェック(相対座標系 -1.0 ~ 1.0をオーバーするとダメ)
         if (x > GraphInfo.GRAPH_POS_MAX)
             x = GraphInfo.GRAPH_POS_MAX
@@ -242,13 +215,12 @@ internal constructor() {
      * 複雑さ
      */
     fun setComplexity(cmp: Int) {
-        if (cmp < complexityMin)
-            info.complexity = complexityMin
-        else if (cmp > complexityMax)
-            info.complexity = complexityMax
-        else
-            info.complexity = cmp
-        is_allocated = false
+        when {
+            cmp < complexityMin -> info.complexity = complexityMin
+            cmp > complexityMax -> info.complexity = complexityMax
+            else -> info.complexity = cmp
+        }
+        isAllocated = false
     }
 
     /**
@@ -269,7 +241,7 @@ internal constructor() {
      */
     fun setMutationSize(size: Float) {
         info.mutation.size = size
-        is_allocated = false
+        isAllocated = false
     }
 
     /**
@@ -280,7 +252,7 @@ internal constructor() {
      */
     fun setMutationAngle(angle: Float) {
         info.mutation.angle = angle
-        is_allocated = false
+        isAllocated = false
     }
 
     /**
@@ -291,7 +263,7 @@ internal constructor() {
      */
     fun setRandomizerSize(size: Float) {
         info.randomize.size = size
-        is_allocated = false
+        isAllocated = false
     }
 
     /**
@@ -302,7 +274,7 @@ internal constructor() {
      */
     fun setRandomizerAngle(angle: Float) {
         info.randomize.angle = angle
-        is_allocated = false
+        isAllocated = false
     }
 
     /**
@@ -320,11 +292,11 @@ internal constructor() {
      */
     protected open fun setRelativePoint() {
         allocatePoints()
-        val size = point_base.size
+        val size = pointBase.size
         for (i in 0 until size) {
-            point_base[i].set(SinInt.SI().cos(360 * i / size - 180), SinInt.SI().sin(360 * i / size - 180))
+            pointBase[i].set(SinInt.SI().cos(360 * i / size - 180), SinInt.SI().sin(360 * i / size - 180))
         }
-        is_allocated = true
+        isAllocated = true
     }
 
     /**
@@ -333,13 +305,13 @@ internal constructor() {
     protected open fun allocatePoints() {
         while (point.size > pointMax) {
             point.removeAt(0)
-            point_base.removeAt(0)
+            pointBase.removeAt(0)
         }
         while (point.size < pointMax) {
-            point_base.add(PointF())
+            pointBase.add(PointF())
             point.add(PointF())
         }
-        order_points = Array(n_orders){ Point() }
+        orderPoints = Array(nOrders){ Point() }
         calculateOrder()
     }
 
@@ -348,9 +320,9 @@ internal constructor() {
      * ※ 複雑さを変更後、先にgetPointMax()の実行が必要
      */
     protected open fun calculateOrder() {
-        for (i in 0 until n_orders) {
+        for (i in 0 until nOrders) {
             val dst = if (i + 1 >= pointMax) i + 1 - pointMax else i + 1
-            order_points[i] = Point(i, dst)
+            orderPoints[i] = Point(i, dst)
         }
     }
 
@@ -358,14 +330,14 @@ internal constructor() {
      * pointにpoint_baseをコピーする
      */
     protected fun copyBasePoint() {
-        var pt_tmp: PointF
+        var ptTmp: PointF
 
         for (i in 0 until pointMax) {
             mTmpPointF = this.point[i]
-            pt_tmp = this.point_base[i]
+            ptTmp = this.pointBase[i]
 
-            mTmpPointF!!.x = pt_tmp.x
-            mTmpPointF!!.y = pt_tmp.y
+            mTmpPointF!!.x = ptTmp.x
+            mTmpPointF!!.y = ptTmp.y
         }
     }
 
@@ -373,16 +345,16 @@ internal constructor() {
      * グラフの回転
      */
     protected fun rotateRelativePoint() {
-        val sin_z = SinInt.SI().sin(info.angle.toInt())
-        val cos_z = SinInt.SI().cos(info.angle.toInt())
+        val sinZ = SinInt.SI().sin(info.angle.toInt())
+        val cosZ = SinInt.SI().cos(info.angle.toInt())
 
         var tx: Float
         var ty: Float
 
         for (i in 0 until pointMax) {
             mTmpPointF = this.point[i]
-            tx = cos_z * mTmpPointF!!.x - sin_z * mTmpPointF!!.y
-            ty = sin_z * mTmpPointF!!.x + cos_z * mTmpPointF!!.y
+            tx = cosZ * mTmpPointF!!.x - sinZ * mTmpPointF!!.y
+            ty = sinZ * mTmpPointF!!.x + cosZ * mTmpPointF!!.y
 
             mTmpPointF!!.x = tx
             mTmpPointF!!.y = ty
@@ -414,10 +386,10 @@ internal constructor() {
      * 　 ベタ打ちしているが、本来関数化すべき。
      */
     open fun runningGraph() {
-        if (!is_allocated)
+        if (!isAllocated)
             setRelativePoint() // 　複雑さなどが変わったらグラフを設定し直す
 
-        copyBasePoint() // point_base => point, 以後pointを操作
+        copyBasePoint() // pointBase => point, 以後pointを操作
         rotateRelativePoint() // 回転
         translateRelativePoint() // 拡大・移動
     }
@@ -431,17 +403,17 @@ internal constructor() {
         mPenColors[0] = this.info.cp.doPattern()
         pen.color = mPenColors[0]
 
-        val len = order_points.size // 線分の数だけ描画(DRAW_ALL時)
+        val len = orderPoints.size // 線分の数だけ描画(DRAW_ALL時)
 
-        val w_area = DGCore.screenSize
+        val screenSize = DGCore.screenSize
         when (info.mBrushType) {
             BRUSHTYPE_LINE -> pen.style = Paint.Style.STROKE
             BRUSHTYPE_TRIANGLE -> pen.style = Paint.Style.FILL
             BRUSHTYPE_CRESCENT -> pen.style = Paint.Style.FILL
             BRUSHTYPE_TWIN_CIRCLE -> pen.style = Paint.Style.FILL
         }
-        var rel_src_pt_tmp: PointF
-        var rel_dst_pt_tmp: PointF
+        var relSrcPtTmp: PointF
+        var relDstPtTmp: PointF
         when (info.draw_kind) {
             DRAW_ALL // 線分を全て描画
             -> for (i in 0 until len) {
@@ -449,12 +421,12 @@ internal constructor() {
                 // 設定値に応じ、色を個別変化させる
                     pen.color = mPenColors[i % COLOR_MAX]
 
-                rel_src_pt_tmp = point[order_points[i].x]
-                rel_dst_pt_tmp = point[order_points[i].y]
-                mPointSrc.set((w_area.x / 2 * (rel_src_pt_tmp.x + 1.0f)).toInt(),
-                        (w_area.y / 2 * (rel_src_pt_tmp.y + 1.0f)).toInt())
-                mPointDst.set((w_area.x / 2 * (rel_dst_pt_tmp.x + 1.0f)).toInt(),
-                        (w_area.y / 2 * (rel_dst_pt_tmp.y + 1.0f)).toInt())
+                relSrcPtTmp = point[orderPoints[i].x]
+                relDstPtTmp = point[orderPoints[i].y]
+                mPointSrc.set((screenSize.x / 2 * (relSrcPtTmp.x + 1.0f)).toInt(),
+                        (screenSize.y / 2 * (relSrcPtTmp.y + 1.0f)).toInt())
+                mPointDst.set((screenSize.x / 2 * (relDstPtTmp.x + 1.0f)).toInt(),
+                        (screenSize.y / 2 * (relDstPtTmp.y + 1.0f)).toInt())
 
                 when (info.mBrushType) {
                     BRUSHTYPE_LINE -> canvas.drawLine(mPointSrc.x.toFloat(), mPointSrc.y.toFloat(), mPointDst.x.toFloat(), mPointDst.y.toFloat(), pen)
@@ -474,12 +446,12 @@ internal constructor() {
                         pen.color = mPenColors[i % COLOR_MAX]
                     tt = if (info.mCurrentDrawOrder - i < 0) len - (i - info.mCurrentDrawOrder) else info.mCurrentDrawOrder - i
 
-                    rel_src_pt_tmp = point[order_points[tt].x]
-                    rel_dst_pt_tmp = point[order_points[tt].y]
-                    mPointSrc.set((w_area.x / 2 * (rel_src_pt_tmp.x + 1.0f)).toInt(),
-                            (w_area.y / 2 * (rel_src_pt_tmp.y + 1.0f)).toInt())
-                    mPointDst.set((w_area.x / 2 * (rel_dst_pt_tmp.x + 1.0f)).toInt(),
-                            (w_area.y / 2 * (rel_dst_pt_tmp.y + 1.0f)).toInt())
+                    relSrcPtTmp = point[orderPoints[tt].x]
+                    relDstPtTmp = point[orderPoints[tt].y]
+                    mPointSrc.set((screenSize.x / 2 * (relSrcPtTmp.x + 1.0f)).toInt(),
+                            (screenSize.y / 2 * (relSrcPtTmp.y + 1.0f)).toInt())
+                    mPointDst.set((screenSize.x / 2 * (relDstPtTmp.x + 1.0f)).toInt(),
+                            (screenSize.y / 2 * (relDstPtTmp.y + 1.0f)).toInt())
 
                     when (info.mBrushType) {
                         BRUSHTYPE_LINE -> canvas.drawLine(mPointSrc.x.toFloat(), mPointSrc.y.toFloat(), mPointDst.x.toFloat(), mPointDst.y.toFloat(), pen)
@@ -498,10 +470,8 @@ internal constructor() {
     }
 
     private fun drawTriangle(canvas: Canvas, src: Point, dst: Point, pen: Paint) {
-        val ex: Double
-        val ey: Double
-        ex = (dst.x - src.x) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
-        ey = (dst.y - src.y) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
+        val ex: Double = (dst.x - src.x) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
+        val ey: Double = (dst.y - src.y) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
 
         // 時計順(dst, src-a, src+a)
         mDrawPath.reset()
@@ -515,14 +485,11 @@ internal constructor() {
     private fun drawCrescent(canvas: Canvas, src: Point, dst: Point, pen: Paint) {
 
         val width = DRAW_CRESCENT_WIDTH
-        val ex: Double
-        val ey: Double // 法線方向、単位ベクトル
-        ex = (dst.x - src.x) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
-        ey = (dst.y - src.y) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
+        val ex: Double = (dst.x - src.x) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
+        val ey: Double = (dst.y - src.y) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
 
         mDrawPath.reset()
 
-        // Upper
         mDrawPath.moveTo(src.x.toFloat(), src.y.toFloat())
         mDrawPath.quadTo((src.x.toDouble() + ((dst.x - src.x) / 2).toDouble() + DRAW_CRESCENT_INNER_ARC_SCALE.toDouble() * width.toDouble() * ey * info.mLineThickness.toDouble()).toFloat(),
                 (src.y + (dst.y - src.y) / 2 - DRAW_CRESCENT_INNER_ARC_SCALE.toDouble() * width.toDouble() * ex * info.mLineThickness.toDouble()).toFloat(), dst.x.toFloat(), dst.y.toFloat())
@@ -536,44 +503,44 @@ internal constructor() {
     private fun drawTwinCircles(canvas: Canvas, src: Point, dst: Point, pen: Paint) {
         val width = Math.log((info.mLineThickness + DRAW_TWIN_CIRCLE_WIDTH_OFFSET).toDouble()).toFloat()
 
-        val delta_x = (dst.x - src.x).toFloat()
-        val delta_y = (dst.y - src.y).toFloat()
+        val dx = (dst.x - src.x).toFloat()
+        val dy = (dst.y - src.y).toFloat()
 
-        val dist = Math.sqrt((delta_x * delta_x + delta_y * delta_y).toDouble()).toFloat()
+        val dist = Math.sqrt((dx * dx + dy * dy).toDouble()).toFloat()
 
-        canvas.drawCircle(src.x + delta_x * DRAW_TWIN_CIRCLE_SMALL_XY_SEC, src.y + delta_y * DRAW_TWIN_CIRCLE_SMALL_XY_SEC, width * dist * DRAW_TWIN_CIRCLE_SMALL_RADIUS, pen)
-        canvas.drawCircle(src.x + delta_x * DRAW_TWIN_CIRCLE_LARGE_XY_SEC, src.y + delta_y * DRAW_TWIN_CIRCLE_LARGE_XY_SEC, width * dist * DRAW_TWIN_CIRCLE_LARGE_RADIUS, pen)
+        canvas.drawCircle(src.x + dx * DRAW_TWIN_CIRCLE_SMALL_XY_SEC, src.y + dy * DRAW_TWIN_CIRCLE_SMALL_XY_SEC, width * dist * DRAW_TWIN_CIRCLE_SMALL_RADIUS, pen)
+        canvas.drawCircle(src.x + dx * DRAW_TWIN_CIRCLE_LARGE_XY_SEC, src.y + dy * DRAW_TWIN_CIRCLE_LARGE_XY_SEC, width * dist * DRAW_TWIN_CIRCLE_LARGE_RADIUS, pen)
     }
 
     companion object {
 
         /* 描画方法 */
-        val DRAW_ALL = 0
-        val DRAW_IN_ORDER = 1
+        const val DRAW_ALL = 0
+        const val DRAW_IN_ORDER = 1
 
         /* 筆のタイプ */
-        val BRUSHTYPE_LINE = 0
-        val BRUSHTYPE_TRIANGLE = 1
-        val BRUSHTYPE_CRESCENT = 2
-        val BRUSHTYPE_TWIN_CIRCLE = 3
+        const val BRUSHTYPE_LINE = 0
+        const val BRUSHTYPE_TRIANGLE = 1
+        const val BRUSHTYPE_CRESCENT = 2
+        const val BRUSHTYPE_TWIN_CIRCLE = 3
 
-        private val COLOR_MAX = 255
+        private const val COLOR_MAX = 255
 
         /* 筆の名前文字列 */
-        private val STR_BRUSHTYPE_LINE = "draw_line"
-        private val STR_BRUSHTYPE_TRIANGLE = "draw_triangle"
-        private val STR_BRUSHTYPE_CRESCENT = "draw_crescent"
-        private val STR_BRUSHTYPE_TWIN_CIRCLE = "draw_twin_circle"
+        private const val STR_BRUSHTYPE_LINE = "draw_line"
+        private const val STR_BRUSHTYPE_TRIANGLE = "draw_triangle"
+        private const val STR_BRUSHTYPE_CRESCENT = "draw_crescent"
+        private const val STR_BRUSHTYPE_TWIN_CIRCLE = "draw_twin_circle"
 
-        private val DRAW_CRESCENT_WIDTH = 1.5f
-        private val DRAW_CRESCENT_INNER_ARC_SCALE = 1.5f
-        private val DRAW_CRESCENT_OUTER_ARC_SCALE = 2.0f
+        private const val DRAW_CRESCENT_WIDTH = 1.5f
+        private const val DRAW_CRESCENT_INNER_ARC_SCALE = 1.5f
+        private const val DRAW_CRESCENT_OUTER_ARC_SCALE = 2.0f
 
-        private val DRAW_TWIN_CIRCLE_WIDTH_OFFSET = 0.1f
+        private const val DRAW_TWIN_CIRCLE_WIDTH_OFFSET = 0.1f
 
-        private val DRAW_TWIN_CIRCLE_SMALL_XY_SEC = 0.3333f
-        private val DRAW_TWIN_CIRCLE_SMALL_RADIUS = 0.6666f / 2
-        private val DRAW_TWIN_CIRCLE_LARGE_XY_SEC = 0.6666f
-        private val DRAW_TWIN_CIRCLE_LARGE_RADIUS = 0.3333f / 2
+        private const val DRAW_TWIN_CIRCLE_SMALL_XY_SEC = 1 / 3.0f
+        private const val DRAW_TWIN_CIRCLE_SMALL_RADIUS = 2 / 3.0f / 2
+        private const val DRAW_TWIN_CIRCLE_LARGE_XY_SEC = 2 / 3.0f
+        private const val DRAW_TWIN_CIRCLE_LARGE_RADIUS = 1 / 3.0f / 2
     }
 }

@@ -26,16 +26,16 @@ class FoldCurve(private val curve_kind: Int) : Graph() {
 
     override val pointMax: Int
         get() {
-            n_orders = Math.pow(2.0, (info.complexity - 1).toDouble()).toInt()
-            return n_orders + 1
+            nOrders = Math.pow(2.0, (info.complexity - 1).toDouble()).toInt()
+            return nOrders + 1
         }
 
     override fun allocatePoints() {
         while (point.size > pointMax) point.removeAt(0)
         while (point.size < pointMax) point.add(PointF())
-        point_base.clear()
+        pointBase.clear()
 
-        order_points = Array(n_orders){ Point() }
+        orderPoints = Array(nOrders){ Point() }
         calculateOrder()
     }
 
@@ -44,11 +44,11 @@ class FoldCurve(private val curve_kind: Int) : Graph() {
         allocatePoints()
 
         // まず、折り曲げる前の線分を作る。
-        point_base.add(0, PointF(GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MID))
-        point_base.add(1, PointF(GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MID))
+        pointBase.add(0, PointF(GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MID))
+        pointBase.add(1, PointF(GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MID))
 
         setRelRecursivePoint(1, GRAPH_FOLD_INIT_ARM_RATE, GRAPH_FOLD_INIT_THETA_RATE)
-        is_allocated = true
+        isAllocated = true
     }
 
     private fun setRelRecursivePoint(depth: Int, arm: Float, theta: Float) {
@@ -67,8 +67,8 @@ class FoldCurve(private val curve_kind: Int) : Graph() {
         var vct: PointF
 
         for (i in Math.pow(2.0, (depth - 1).toDouble()).toInt() downTo 1) {
-            src = point_base[i]
-            dst = point_base[i - 1]
+            src = pointBase[i]
+            dst = pointBase[i - 1]
             vct = PointF(dst.x - src.x, dst.y - src.y)
 
             if (isLeftFold(i, depth))
@@ -77,7 +77,7 @@ class FoldCurve(private val curve_kind: Int) : Graph() {
             else
                 add_point = PointF(src.x + arm * (cos * vct.x + sin * vct.y),
                         src.y + arm * (-sin * vct.x + cos * vct.y))
-            point_base.add(i, add_point)
+            pointBase.add(i, add_point)
         }
         setRelRecursivePoint(depth + 1, arm, theta)
     }
@@ -94,7 +94,7 @@ class FoldCurve(private val curve_kind: Int) : Graph() {
     override fun calculateOrder() {
         for (i in pointMax - 1 downTo 1) {
             val src = i - 1
-            order_points[pointMax - 1 - i] = Point(src, i)
+            orderPoints[pointMax - 1 - i] = Point(src, i)
         }
     }
 

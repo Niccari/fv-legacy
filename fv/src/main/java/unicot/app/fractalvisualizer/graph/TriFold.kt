@@ -29,8 +29,8 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
 
     override val pointMax: Int
         get() {
-            n_orders = Math.pow(4.0, info.complexity.toDouble()).toInt()
-            return n_orders + 1
+            nOrders = Math.pow(4.0, info.complexity.toDouble()).toInt()
+            return nOrders + 1
         }
 
     override fun allocatePoints() {
@@ -38,9 +38,9 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
             point.removeAt(0)
         while (point.size < pointMax)
             point.add(PointF())
-        point_base.clear()
+        pointBase.clear()
 
-        order_points = Array(n_orders){ Point() }
+        orderPoints = Array(nOrders){ Point() }
         calculateOrder()
     }
 
@@ -48,11 +48,11 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
         allocatePoints()
 
         // まず、折り曲げる前の線分を作る。
-        point_base.add(0, PointF(GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MID))
-        point_base.add(1, PointF(GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MID))
+        pointBase.add(0, PointF(GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MID))
+        pointBase.add(1, PointF(GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MID))
 
         setRelRecursivePoint(1, GRAPH_FOLD_INIT_ARM_RATE, GRAPH_FOLD_INIT_THETA_RATE)
-        is_allocated = true
+        isAllocated = true
     }
 
     private fun setRelRecursivePoint(depth: Int, arm: Float, theta: Float) {
@@ -74,8 +74,8 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
         var vct_md: PointF
 
         for (i in Math.pow(4.0, (depth - 1).toDouble()).toInt() downTo 1) {
-            src = point_base[i]
-            dst = point_base[i - 1]
+            src = pointBase[i]
+            dst = pointBase[i - 1]
 
             mid = PointF((dst.x + src.x) / 2.0f, (dst.y + src.y) / 2.0f)
 
@@ -83,24 +83,24 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
             vct_md = PointF(dst.x - mid.x, dst.y - mid.y)
             if (curve_kind == CIS) {
                 add_point = PointF(src.x - arm * (cos * vct_sm.x + sin * vct_sm.y), src.y - arm * (-sin * vct_sm.x + cos * vct_sm.y))
-                point_base.add(i, add_point)
-                point_base.add(i, mid)
+                pointBase.add(i, add_point)
+                pointBase.add(i, mid)
 
                 add_point = PointF(dst.x + arm * (cos * vct_md.x - sin * vct_md.y), dst.y + arm * (sin * vct_md.x + cos * vct_md.y))
-                point_base.add(i, add_point)
+                pointBase.add(i, add_point)
             } else {
                 if (i % 2 == 0) {
                     add_point = PointF(src.x + arm * (cos * vct_sm.x - sin * vct_sm.y), src.y + arm * (sin * vct_sm.x + cos * vct_sm.y))
-                    point_base.add(i, add_point)
-                    point_base.add(i, mid)
+                    pointBase.add(i, add_point)
+                    pointBase.add(i, mid)
                     add_point = PointF(dst.x - arm * (cos * vct_md.x - sin * vct_md.y), dst.y - arm * (sin * vct_md.x + cos * vct_md.y))
-                    point_base.add(i, add_point)
+                    pointBase.add(i, add_point)
                 } else {
                     add_point = PointF(src.x + arm * (cos * vct_sm.x + sin * vct_sm.y), src.y + arm * (-sin * vct_sm.x + cos * vct_sm.y))
-                    point_base.add(i, add_point)
-                    point_base.add(i, mid)
+                    pointBase.add(i, add_point)
+                    pointBase.add(i, mid)
                     add_point = PointF(dst.x - arm * (cos * vct_md.x + sin * vct_md.y), dst.y - arm * (-sin * vct_md.x + cos * vct_md.y))
-                    point_base.add(i, add_point)
+                    pointBase.add(i, add_point)
                 }
 
             }
@@ -111,7 +111,7 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
     override fun calculateOrder() {
         for (i in pointMax - 1 downTo 1) {
             val src = i - 1
-            order_points[pointMax - 1 - i] = Point(src, i)
+            orderPoints[pointMax - 1 - i] = Point(src, i)
         }
     }
 

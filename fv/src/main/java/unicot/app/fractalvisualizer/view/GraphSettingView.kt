@@ -12,7 +12,7 @@ import unicot.app.fractalvisualizer.core.DGCore
 import unicot.app.fractalvisualizer.graph.GraphInfo
 import unicot.app.fractalvisualizer.graph.Leaf
 import unicot.app.fractalvisualizer.graph.SGasket
-import unicot.app.fractalvisualizer.struct.GraphDisplacement
+import unicot.app.fractalvisualizer.model.GraphDisplacement
 
 /**
  * グラフ変形

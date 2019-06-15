@@ -23,8 +23,8 @@ class Hilbert : Graph() {
 
     override val pointMax: Int
         get() {
-            n_orders = Math.pow(4.0, info.complexity.toDouble()).toInt() - 1
-            return n_orders + 1
+            nOrders = Math.pow(4.0, info.complexity.toDouble()).toInt() - 1
+            return nOrders + 1
         }
 
     private fun ldr(n: Int) {  // ←  ↓ →
@@ -32,15 +32,15 @@ class Hilbert : Graph() {
 
         dlu(n - 1)
         hx -= dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         ldr(n - 1)
         hy += dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         ldr(n - 1)
         hx += dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         urd(n - 1)
     }
@@ -50,15 +50,15 @@ class Hilbert : Graph() {
 
         rul(n - 1)
         hy -= dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         urd(n - 1)
         hx += dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         urd(n - 1)
         hy += dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         ldr(n - 1)
     }
@@ -68,15 +68,15 @@ class Hilbert : Graph() {
 
         urd(n - 1)
         hx += dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         rul(n - 1)
         hy -= dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         rul(n - 1)
         hx -= dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         dlu(n - 1)
     }
@@ -86,15 +86,15 @@ class Hilbert : Graph() {
 
         ldr(n - 1)
         hy += dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         dlu(n - 1)
         hx -= dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         dlu(n - 1)
         hy -= dxy
-        point_base.add(pidx, PointF(hx, hy))
+        pointBase.add(pidx, PointF(hx, hy))
         pidx++
         rul(n - 1)
     }
@@ -109,15 +109,15 @@ class Hilbert : Graph() {
         pidx = 0
         dxy = (1.0f / (Math.pow(2.0, info.complexity.toDouble()) - 1)).toFloat()    // 移動量
 
-        point_base.add(pidx++, PointF(hx, hy))
+        pointBase.add(pidx++, PointF(hx, hy))
         ldr(info.complexity)
-        is_allocated = true
+        isAllocated = true
     }
 
     override fun calculateOrder() {
         for (i in pointMax - 1 downTo 1) {
             val src = i - 1
-            order_points[pointMax - 1 - i] = Point(src, i)
+            orderPoints[pointMax - 1 - i] = Point(src, i)
         }
     }
 }

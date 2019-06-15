@@ -26,8 +26,8 @@ class SCarpet : Graph() {
 
     override val pointMax: Int
         get() {
-            n_orders = if (info.complexity == 1) 4 else sums()
-            return n_orders
+            nOrders = if (info.complexity == 1) 4 else sums()
+            return nOrders
         }
 
     override fun allocatePoints() {
@@ -38,9 +38,9 @@ class SCarpet : Graph() {
         while (point.size < pointMax) {
             point.add(PointF())
         }
-        point_base.clear()
+        pointBase.clear()
 
-        order_points = Array(n_orders){ Point() }
+        orderPoints = Array(nOrders){ Point() }
         calculateOrder()
     }
 
@@ -50,22 +50,22 @@ class SCarpet : Graph() {
         val x = floatArrayOf(GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MIN) // 三角形のx座標(左・右・中)
         val y = floatArrayOf(GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MIN) // 三角形のy座標(下・下・上)
 
-        point_base.add(PointF(x[0], y[0]))
-        point_base.add(PointF(x[1], y[1]))
-        point_base.add(PointF(x[2], y[2]))
-        point_base.add(PointF(x[3], y[3]))
+        pointBase.add(PointF(x[0], y[0]))
+        pointBase.add(PointF(x[1], y[1]))
+        pointBase.add(PointF(x[2], y[2]))
+        pointBase.add(PointF(x[3], y[3]))
 
         dividePoints(1, x, y)
-        is_allocated = true
+        isAllocated = true
     }
 
     private fun dividePoints(base: Int, x: FloatArray, y: FloatArray) {
         if (base >= info.complexity) return
         if (base == -1) {
-            point_base.add(PointF(x[0], y[0]))
-            point_base.add(PointF(x[1], y[1]))
-            point_base.add(PointF(x[2], y[2]))
-            point_base.add(PointF(x[3], y[3]))
+            pointBase.add(PointF(x[0], y[0]))
+            pointBase.add(PointF(x[1], y[1]))
+            pointBase.add(PointF(x[2], y[2]))
+            pointBase.add(PointF(x[3], y[3]))
             return
         }
 
@@ -126,7 +126,7 @@ class SCarpet : Graph() {
     override fun calculateOrder() {
         for (i in 0 until pointMax) {
             val dst = if (i % 4 == 3) i - 3 else i + 1
-            order_points[pointMax - 1 - i] = Point(i, dst)
+            orderPoints[pointMax - 1 - i] = Point(i, dst)
         }
     }
 }
