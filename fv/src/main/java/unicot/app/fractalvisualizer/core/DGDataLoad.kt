@@ -16,10 +16,7 @@ import java.io.IOException
  */
 class DGDataLoad : DGDataInfo() {
     companion object {
-        private var sys_data: DGSystemData
-        init{
-            sys_data = DGCore.systemData
-        }
+        private var sysData: DGSystemData = DGCore.systemData
         /**
          * グラフ設定を指定されたXMLファイルを読みだす
          */
@@ -35,7 +32,7 @@ class DGDataLoad : DGDataInfo() {
                 var gd: Graph? = null
                 var gi: GraphInfo? = null
                 var n = 0
-                var is_ok = false
+                var isCopied = false
 
                 var tag: String
                 var attr: String
@@ -60,7 +57,7 @@ class DGDataLoad : DGDataInfo() {
                                     sx = parser.getAttributeValue(i)
                             }
                             version = sx
-                            sys_data.graphVersion = version
+                            sysData.graphVersion = version
                         }
 
 
@@ -73,9 +70,9 @@ class DGDataLoad : DGDataInfo() {
                                     if (DGCommon.copyGraph(DGCommon.getKind(parser.getAttributeValue(i)), false)) { // グラフ生成がうまくできたらOK
                                         gd = dgraph[n++]
                                         gi = gd.info
-                                        is_ok = true
+                                        isCopied = true
                                     } else
-                                        is_ok = false
+                                        isCopied = false
                                 }
                                 if (attr == ATTR_GRAPH_COMPLEXITY) {
                                     gi?.complexity = getComplexity(parser.getAttributeValue(i))
@@ -95,7 +92,7 @@ class DGDataLoad : DGDataInfo() {
                         }
 
                         // 不正なグラフデータがあれば(グラフを正しく生成できない場合)飛ばす
-                        if (is_ok) {
+                        if (isCopied) {
                             // positionタグ(位置)
                             if (tag == TAG_GRAPH_POSITION) {
                                 var sx = DGCommon.STR_NULL
@@ -178,7 +175,7 @@ class DGDataLoad : DGDataInfo() {
 
                             // drawタグ
                             if (tag == TAG_GRAPH_DRAW) {
-                                var s_kind = DGCommon.STR_NULL
+                                var kind = DGCommon.STR_NULL
                                 var thickness = -1.0f
                                 var antialias = false
                                 var colorEach = false
@@ -188,7 +185,7 @@ class DGDataLoad : DGDataInfo() {
                                 for (i in 0 until parser.attributeCount) {
                                     attr = parser.getAttributeName(i)
                                     if (attr == ATTR_GRAPH_DRAW_KIND)
-                                        s_kind = parser.getAttributeValue(i)
+                                        kind = parser.getAttributeValue(i)
                                     if (attr == ATTR_GRAPH_DRAW_THICKNESS)
                                         thickness = java.lang.Float.valueOf(parser.getAttributeValue(i))
                                     if (attr == ATTR_GRAPH_DRAW_ANTIALIAS)
@@ -202,7 +199,7 @@ class DGDataLoad : DGDataInfo() {
                                     if (attr == ATTR_GRAPH_DRAW_BRUSH)
                                         brush = Integer.valueOf(parser.getAttributeValue(i))
                                 }
-                                gi?.setDrawSettings(s_kind, thickness, antialias, colorEach, history, corder, brush)
+                                gi?.setDrawSettings(kind, thickness, antialias, colorEach, history, corder, brush)
                             }
                         }
                     }
@@ -235,8 +232,8 @@ class DGDataLoad : DGDataInfo() {
             var framerate = DGCommon.STR_NULL
             var memrate = DGCommon.STR_NULL
             var loadrate = DGCommon.STR_NULL
-            var pov_frame = DGCommon.STR_NULL
-            var view_alpha = DGCommon.STR_NULL
+            var povFrame = DGCommon.STR_NULL
+            var viewAlpha = DGCommon.STR_NULL
             var attr: String
             for (i in 0 until parser.attributeCount) {
                 attr = parser.getAttributeName(i)
@@ -248,20 +245,20 @@ class DGDataLoad : DGDataInfo() {
                     loadrate = parser.getAttributeValue(i)
 
                 if (attr == ATTR_SYSTEM_POV_FRAME)
-                    pov_frame = parser.getAttributeValue(i)
+                    povFrame = parser.getAttributeValue(i)
                 if (attr == ATTR_SYSTEM_VIEW_ALPHA)
-                    view_alpha = parser.getAttributeValue(i)
+                    viewAlpha = parser.getAttributeValue(i)
             }
-            sys_data.set(Integer.parseInt(framerate), Integer.parseInt(memrate), Integer.parseInt(loadrate))
-            if (!pov_frame.matches(DGCommon.STR_NULL.toRegex())) {
-                sys_data.povFrame = Integer.parseInt(pov_frame)
+            sysData[Integer.parseInt(framerate), Integer.parseInt(memrate)] = Integer.parseInt(loadrate)
+            if (!povFrame.matches(DGCommon.STR_NULL.toRegex())) {
+                sysData.povFrame = Integer.parseInt(povFrame)
             } else {
-                sys_data.povFrame = DGSystemData.POV_FRAME_MIN
+                sysData.povFrame = DGSystemData.POV_FRAME_MIN
             }
-            if (!view_alpha.matches(DGCommon.STR_NULL.toRegex())) {
-                sys_data.viewAlpha = Integer.parseInt(view_alpha)
+            if (!viewAlpha.matches(DGCommon.STR_NULL.toRegex())) {
+                sysData.viewAlpha = Integer.parseInt(viewAlpha)
             } else {
-                sys_data.viewAlpha = DGSystemData.VIEW_ALPHA_MAX
+                sysData.viewAlpha = DGSystemData.VIEW_ALPHA_MAX
             }
 
             return true
@@ -281,23 +278,23 @@ class DGDataLoad : DGDataInfo() {
 
         // For ColorPattern(cp)
         private fun getColorPattern(sx: String, sy: String, sz: String, sw: String): ColorPattern {
-            val cp_new = ColorPattern()
+            val cpNew = ColorPattern()
 
             if (!sx.matches(DGCommon.STR_NULL.toRegex())) {
-                cp_new.setColMode(sx)
+                cpNew.setColMode(sx)
             }
             if (!sy.matches(DGCommon.STR_NULL.toRegex())) {
-                cp_new.color = java.lang.Long.parseLong(sy, 16).toInt()
+                cpNew.color = java.lang.Long.parseLong(sy, 16).toInt()
 
             }
             if (!sz.matches(DGCommon.STR_NULL.toRegex())) {
-                cp_new.shiftSpeed = Integer.parseInt(sz)
+                cpNew.shiftSpeed = Integer.parseInt(sz)
             }
 
             if (!sw.matches(DGCommon.STR_NULL.toRegex())) {
-                cp_new.setTrans(Integer.parseInt(sw))
+                cpNew.setTrans(Integer.parseInt(sw))
             }
-            return cp_new
+            return cpNew
         }
 
         // For complexity
