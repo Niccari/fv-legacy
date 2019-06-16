@@ -10,6 +10,7 @@ import unicot.app.fractalvisualizer.graph.SGasket
 import unicot.app.fractalvisualizer.model.DimensionF
 import unicot.app.fractalvisualizer.model.GraphDisplacement
 import java.io.IOException
+import java.lang.NumberFormatException
 
 /**
  * xmlファイルから環境設定値およびグラフ情報を読み出す
@@ -230,37 +231,26 @@ class DGDataLoad : DGDataInfo() {
         /* Systemタグをチェック */
         private fun getSystemTag(parser: XmlPullParser): Boolean {
             var framerate = ""
-            var memrate = ""
-            var loadrate = ""
             var povFrame = ""
-            var viewAlpha = ""
             var attr: String
             for (i in 0 until parser.attributeCount) {
                 attr = parser.getAttributeName(i)
                 if (attr == ATTR_SYSTEM_FRAMERATE)
                     framerate = parser.getAttributeValue(i)
-                if (attr == ATTR_SYSTEM_MEMORY_RATE)
-                    memrate = parser.getAttributeValue(i)
-                if (attr == ATTR_SYSTEM_LOAD_RATE)
-                    loadrate = parser.getAttributeValue(i)
 
                 if (attr == ATTR_SYSTEM_POV_FRAME)
                     povFrame = parser.getAttributeValue(i)
-                if (attr == ATTR_SYSTEM_VIEW_ALPHA)
-                    viewAlpha = parser.getAttributeValue(i)
             }
-            sysData[Integer.parseInt(framerate), Integer.parseInt(memrate)] = Integer.parseInt(loadrate)
-            if (!povFrame.matches("".toRegex())) {
-                sysData.povFrame = Integer.parseInt(povFrame)
-            } else {
-                sysData.povFrame = DGSystemData.POV_FRAME_MIN
+            try{
+                sysData.povFrame = povFrame.toInt()
+            }catch(e: NumberFormatException){
+                sysData.povFrame = 0
             }
-            if (!viewAlpha.matches("".toRegex())) {
-                sysData.viewAlpha = Integer.parseInt(viewAlpha)
-            } else {
-                sysData.viewAlpha = DGSystemData.VIEW_ALPHA_MAX
+            try {
+                sysData.framerate = framerate.toInt()
+            }catch(e: NumberFormatException){
+                sysData.framerate = 60
             }
-
             return true
         }
 

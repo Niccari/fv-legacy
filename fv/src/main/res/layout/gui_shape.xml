@@ -30,7 +30,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="10dp"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitXY"
             android:src="@drawable/fv_icon" />
 

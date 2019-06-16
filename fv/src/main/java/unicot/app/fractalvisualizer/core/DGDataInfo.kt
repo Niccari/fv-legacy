@@ -22,14 +22,7 @@ open class DGDataInfo {
 
         /* 属性：systemタグ */
         @JvmStatic protected val ATTR_SYSTEM_FRAMERATE = "framerate"
-        @JvmStatic protected val ATTR_SYSTEM_MEMORY_RATE = "memrate"
-        @JvmStatic protected val ATTR_SYSTEM_LOAD_RATE = "loadrate"
-
-        @JvmStatic protected val ATTR_SYSTEM_IS_INDICATOR = "indicator"
-        @JvmStatic protected val ATTR_SYSTEM_GUI_DISMISS_TIME = "dismiss"
-
         @JvmStatic protected val ATTR_SYSTEM_POV_FRAME = "pov_frame"
-        @JvmStatic protected val ATTR_SYSTEM_VIEW_ALPHA = "view_alpha"
 
         /* 属性：graphlistタグ */
         @JvmStatic protected val ATTR_GRAPHLIST_VERSION = "version"

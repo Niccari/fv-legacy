@@ -57,7 +57,7 @@ class MainActivity : Activity() {
      * グラフおよびガイドを描画する。 この描画関数はdrawViewより定期呼び出しされる
      */
     fun draw(c: Canvas) {
-        c.drawColor(Color.argb(DGCore.systemData.viewAlpha, 0, 0, 0), PorterDuff.Mode.SRC)
+        c.drawColor(Color.BLACK, PorterDuff.Mode.SRC)
 
         if (dgc.povFrame <= 0) {
             dgc.draw(c)

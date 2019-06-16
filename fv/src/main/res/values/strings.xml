@@ -4,8 +4,7 @@
     <string name="fps">fps</string>
 
     <string name="graph_setting_framerate">Spd.</string>
-    <string name="graph_setting_bgcolor">BGColor.</string>
-    <string name="graph_setting_povframe">POV Frames.</string>
+    <string name="graph_setting_povframe">Aft.img.</string>
 
     <string name="gss_graph">Graph</string>
     <string name="gss_complexity">Complexity:</string>
@@ -25,8 +24,6 @@
     <string name="gsp_color_each">Parted</string>
     <string name="gsp_smooth">Smooth</string>
     <string name="gsp_color">Color</string>
-
-    <string name="dummy" />
 
     <string name="select_graph_title">Select graph</string>
     <string name="action_select">Select</string>

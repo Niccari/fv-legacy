@@ -4,19 +4,18 @@
     <string name="fps">fps</string>
 
     <string name="graph_setting_framerate">FPS</string>
-    <string name="graph_setting_bgcolor">背景透明度</string>
-    <string name="graph_setting_povframe">残像フレーム</string>
+    <string name="graph_setting_povframe">残像</string>
 
     <string name="gss_graph">グラフ</string>
-    <string name="gss_complexity">複雑さ:</string>
-    <string name="gss_rotate">回転速度:</string>
-    <string name="gss_mutation">変異度:</string>
-    <string name="gss_randomizer">乱雑度:</string>
-    <string name="gss_size">サイズ:</string>
-    <string name="gss_angle">角度:</string>
+    <string name="gss_complexity">複雑さ</string>
+    <string name="gss_rotate">回転速度</string>
+    <string name="gss_mutation">変異度</string>
+    <string name="gss_randomizer">乱雑度</string>
+    <string name="gss_size">サイズ</string>
+    <string name="gss_angle">角度</string>
 
-    <string name="gss_leaf_branch">枝数:</string>
-    <string name="gss_sgasket_skew">斜め角度:</string>
+    <string name="gss_leaf_branch">枝数</string>
+    <string name="gss_sgasket_skew">斜め角度</string>
 
     <string name="gsp_line">筆</string>
     <string name="gsp_thickness">太さ</string>
@@ -25,8 +24,6 @@
     <string name="gsp_color_each">個別</string>
     <string name="gsp_smooth">滑らか</string>
     <string name="gsp_color">色</string>
-
-    <string name="dummy" />
 
     <string name="select_graph_title">グラフ読込</string>
     <string name="action_select">選択</string>

@@ -39,20 +39,6 @@ class MiscView(context: Context, attrs: AttributeSet? = null) : LinearLayout(con
         })
         textView_fps.setText(framerate0.toString())
 
-        val bgcolor0 = DGCore.systemData.viewAlpha and 0xFF
-        textView_bgcolor_value.setText(bgcolor0.toString())
-        seekBar_bgcolor.setProgress(bgcolor0)
-        seekBar_bgcolor.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(mMiscFPSSeekBar: SeekBar) {}
-            override fun onProgressChanged(mMiscFPSSeekBar: SeekBar, progress: Int, fromTouch: Boolean) {
-                textView_bgcolor_value.setText((progress and 0xFF).toString())
-                DGCore.systemData.viewAlpha = (progress and 0xFF)
-                listener.invoke("bgcolor")
-            }
-
-            override fun onStopTrackingTouch(sb: SeekBar) {}
-        })
-
         val pov_frame0 = DGCore.systemData.povFrame and 0xFF
         textView_povframe_value.setText(pov_frame0.toString())
         seekBar_povframe.setProgress(pov_frame0)
@@ -84,10 +70,6 @@ class MiscView(context: Context, attrs: AttributeSet? = null) : LinearLayout(con
         val fps = DGCore.systemData.framerate
         seekBar_fps.setProgress(fps-1)
         textView_fps.setText(fps.toString())
-
-        val bgcolor = DGCore.systemData.viewAlpha
-        seekBar_bgcolor.setProgress(bgcolor)
-        textView_bgcolor_value.setText(bgcolor.toString())
 
         val pov_frame = DGCore.systemData.povFrame
         seekBar_povframe.setProgress(pov_frame)
