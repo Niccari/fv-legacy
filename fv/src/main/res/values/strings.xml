@@ -6,7 +6,6 @@
     <string name="graph_setting_framerate">Spd.</string>
     <string name="graph_setting_povframe">Aft.img.</string>
 
-    <string name="gss_graph">Graph</string>
     <string name="gss_complexity">Complexity:</string>
     <string name="gss_rotate">Rotate:</string>
     <string name="gss_mutation">Mutation:</string>

@@ -3,6 +3,7 @@
     android:id="@+id/LinearLayout_settings"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minWidth="250dp"
     android:background="@android:color/transparent"
     android:orientation="vertical" >
 

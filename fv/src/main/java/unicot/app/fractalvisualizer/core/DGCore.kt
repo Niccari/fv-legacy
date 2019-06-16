@@ -346,9 +346,6 @@ class DGCore {
             OP_COLOREACH    // 色変化[全体/個別]
             -> for (i in selectedGraph.indices)
                 selectedGraph[i].setColorRange(arg)
-            OP_ANTIALIAS    // アンチエイリアス>
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setAntiAlias(arg)
         }
     }
 
@@ -468,10 +465,6 @@ class DGCore {
          * 制御番号：色を線分ごとに変更(グラフ描画設定)
          */
         val OP_COLOREACH = 21
-        /**
-         * 制御番号：アンチエイリアスのトグル(グラフ描画設定)
-         */
-        val OP_ANTIALIAS = 22
         /**
          * 制御番号：色遷移パターンの変更(グラフ描画設定)
          */

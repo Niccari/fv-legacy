@@ -29,10 +29,6 @@ class GraphInfo {
          */
     var mLineThickness: Float = 0.toFloat()
     /*
-         * アンチエイリアスフラグ
-         */
-    var mIsAntiAlias: Boolean = false
-    /*
          * 各色描画フラグ
          */
     var mIsColorEach: Boolean = false
@@ -112,7 +108,6 @@ class GraphInfo {
 
         mLineThickness = GRAPH_DRAW_THICKNESS_INIT.toFloat()
         mEachLineHistory = GRAPH_DRAW_HISTORY_INIT
-        mIsAntiAlias = GRAPH_DRAW_IS_ANTIALIAS_INIT
         mIsColorEach = GRAPH_DRAW_IS_COLOREACH_INIT
         mBrushType = GRAPH_DRAW_BRUSHTYPE_INIT
     }
@@ -120,7 +115,7 @@ class GraphInfo {
     /**
      * 描画設定を一括設定する
      */
-    fun setDrawSettings(kind: String, thickness: Float, antialias: Boolean, colorEach: Boolean, history: Int, corder: Int, brush: Int) {
+    fun setDrawSettings(kind: String, thickness: Float, colorEach: Boolean, history: Int, corder: Int, brush: Int) {
         if (kind.matches("each".toRegex())) {
             draw_kind = DRAW_IN_ORDER
         } else {
@@ -128,7 +123,6 @@ class GraphInfo {
         }
         if (thickness > 0.0f)
             mLineThickness = thickness
-        mIsAntiAlias = antialias
         mIsColorEach = colorEach
         if (history > 0)
             mEachLineHistory = history
@@ -145,17 +139,14 @@ class GraphInfo {
      * 描画方法の値(全描画、一部描画)
      * @param thickness
      * 線の太さ
-     * @param antialias
-     * アンチエイリアスフラグ
      * @param colorEach
      * 色を線分ごとに変化させるか？
      * @param history
      * 一部描画時に何本線分を描画するか？
      */
-    internal fun setDrawSettings(kind: Int, thickness: Float, antialias: Boolean, colorEach: Boolean, history: Int) {
+    internal fun setDrawSettings(kind: Int, thickness: Float, colorEach: Boolean, history: Int) {
         draw_kind = kind
         mLineThickness = thickness
-        mIsAntiAlias = antialias
         mIsColorEach = colorEach
         mEachLineHistory = history
     }
@@ -217,7 +208,6 @@ class GraphInfo {
         private val GRAPH_DRAW_KIND_INIT = DRAW_ALL
         private val GRAPH_DRAW_THICKNESS_INIT = 3
         private val GRAPH_DRAW_HISTORY_INIT = 10
-        private val GRAPH_DRAW_IS_ANTIALIAS_INIT = true
         private val GRAPH_DRAW_IS_COLOREACH_INIT = false
         private val GRAPH_DRAW_BRUSHTYPE_INIT = BRUSHTYPE_LINE
     }

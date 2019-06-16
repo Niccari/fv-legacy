@@ -68,7 +68,7 @@ internal constructor() {
     init {
 
         pen.strokeWidth = info.mLineThickness
-        pen.isAntiAlias = info.mIsAntiAlias
+        pen.isAntiAlias = true
         pen.style = Paint.Style.STROKE
 
         mPenColors = IntArray(COLOR_MAX)
@@ -104,7 +104,7 @@ internal constructor() {
 
         // 以下、描画設定
         this.info.cp.init(src.cp, isFullCopy)
-        this.info.setDrawSettings(src.draw_kind, src.mLineThickness, src.mIsAntiAlias, src.mIsColorEach, src.mEachLineHistory)
+        this.info.setDrawSettings(src.draw_kind, src.mLineThickness, src.mIsColorEach, src.mEachLineHistory)
 
         if (isFullCopy)
             this.info.mCurrentDrawOrder = src.mCurrentDrawOrder
@@ -114,7 +114,6 @@ internal constructor() {
         }
 
         pen.strokeWidth = info.mLineThickness
-        pen.isAntiAlias = info.mIsAntiAlias
         pen.style = Paint.Style.STROKE
     }
 
@@ -148,14 +147,6 @@ internal constructor() {
     }
 
     /**
-     * アンチエイリアスを掛けるかどうか切り替えする。
-     */
-    fun toggleAntiAlias() {
-        info.mIsAntiAlias = !info.mIsAntiAlias
-        pen.isAntiAlias = info.mIsAntiAlias
-    }
-
-    /**
      * 各線分で色を変えるか設定する
      *
      * @param isEach
@@ -163,17 +154,6 @@ internal constructor() {
      */
     fun setColorRange(isEach: Boolean) {
         info.mIsColorEach = isEach
-    }
-
-    /**
-     * 描画時にアンチエイリアスを掛けるかどうか設定する
-     *
-     * @param isAA
-     * アンチエイリアスフラグ
-     */
-    fun setAntiAlias(isAA: Boolean) {
-        info.mIsAntiAlias = isAA
-        pen.isAntiAlias = info.mIsAntiAlias
     }
 
     /**
