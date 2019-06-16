@@ -81,20 +81,9 @@ class DGDataWrite constructor(private val root_dir: String, private val version:
         item = XmlItem()
         attrName[0] = ATTR_SYSTEM_FRAMERATE
         attrValue[0] = Integer.toString(sysData.framerate)
-        attrName[1] = ATTR_SYSTEM_MEMORY_RATE
-        attrValue[1] = Integer.toString(sysData.memoryUsage)
-        attrName[2] = ATTR_SYSTEM_LOAD_RATE
-        attrValue[2] = Integer.toString(sysData.loadUsage)
-        attrName[3] = ATTR_SYSTEM_IS_INDICATOR
-        attrValue[3] = java.lang.Boolean.toString(sysData.isIndicator)
-        attrName[4] = ATTR_SYSTEM_GUI_DISMISS_TIME
-        attrValue[4] = Integer.toString(sysData.dismissTime)
-        attrName[5] = ATTR_SYSTEM_VIEW_ALPHA
-        attrValue[5] = Integer.toString(sysData.viewAlpha)
-        attrName[6] = ATTR_SYSTEM_POV_FRAME
-        attrValue[6] = Integer.toString(sysData.povFrame)
-        attrNum = 7
-
+        attrName[1] = ATTR_SYSTEM_POV_FRAME
+        attrValue[1] = Integer.toString(sysData.povFrame)
+        attrNum = 2
 
         item[STAT_START, TAG_SYSTEM, attrName, attrValue] = attrNum
         mItemList.add(item)

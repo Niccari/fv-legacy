@@ -20,7 +20,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/nstar"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="NSTAR" />
@@ -31,7 +31,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/starmine"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="STARMINE" />
@@ -42,7 +42,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/npoint"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="NPOINT" />
@@ -53,7 +53,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/random_stat"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="RANDOMSHAPE" />
@@ -65,7 +65,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/random_every"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="RANDOMSHAPE2" />
@@ -83,7 +83,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/dragoncurve"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="DRAGONCURVE" />
@@ -94,7 +94,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/dragoncurve_backward"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="FOLDTRIANGLE" />
@@ -105,7 +105,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/ccurve"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="CCURVE" />
@@ -116,7 +116,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/kochcurve"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="KOCHCURVE" />
@@ -128,7 +128,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/kochcurve_outer"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="KOCHOUTER" />
@@ -146,7 +146,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/kochcurve_inner"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="KOCHINNER" />
@@ -157,7 +157,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/rosecurve"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="ROSECURVE" />
@@ -168,7 +168,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/gasket_tri"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="SIERPINSKI_GASKET" />
@@ -179,7 +179,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/leaf"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="LEAF" />
@@ -191,7 +191,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/gasket_carpet"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="SIERPINSKI_CARPET" />
@@ -209,7 +209,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/binarytree"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="BINARYTREE" />
@@ -220,7 +220,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/hilbert"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/fore_focus"
             android:tag="HILBERT" />
@@ -231,7 +231,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/hilbert"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/trifold_ll"
             android:tag="TRIFOLD_CIS" />
@@ -242,7 +242,7 @@
             android:layout_height="@dimen/gui_graph_add_icon_size"
             android:layout_marginLeft="8dp"
             android:background="@drawable/hilbert"
-            android:contentDescription="@string/dummy"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/trifold_lr"
             android:tag="TRIFOLD_TRANS" />
