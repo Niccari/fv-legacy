@@ -2,4 +2,5 @@
     <color name="black_overlay">#33000000</color>
 
     <color name="blue">#bd12ffff</color>
+    <color name="lighten">#40ffffff</color>
 </resources>
