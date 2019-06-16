@@ -25,8 +25,16 @@ class DrawView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
     }
 
     fun draw(listener: DrawListener) {
-        val c = holder.lockCanvas()
-        listener.onDraw(c)
-        holder.unlockCanvasAndPost(c)
+        var c: Canvas? = null
+        try {
+            c = holder.lockCanvas()
+            if (c != null) {
+                listener.onDraw(c)
+            }
+        }finally {
+            if(c != null){
+                holder.unlockCanvasAndPost(c)
+            }
+        }
     }
 }

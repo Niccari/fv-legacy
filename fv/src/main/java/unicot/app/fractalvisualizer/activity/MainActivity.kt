@@ -166,12 +166,14 @@ class MainActivity : Activity() {
         mIVGraphOverrayIcon = ImageView(this)
         mGraphDeleteIcon = ImageButton(this)
         mGraphDeleteIcon.setOnClickListener {
+            stop()
             dgc.operate(DGCore.OP_GRAPH_DELETE)
             changeGuiButtonStatus()
 
             if (dgc.selectedGraphNum == 0) {
                 mGraphDeleteIcon.visibility = ImageView.INVISIBLE
             }
+            resume()
         }
 
         // グラフアイコン用ポップアップ(浮動)
