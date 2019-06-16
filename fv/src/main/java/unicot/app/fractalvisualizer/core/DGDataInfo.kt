@@ -62,7 +62,6 @@ open class DGDataInfo {
         /* 属性：drawタグ(graphタグ内) */
         @JvmStatic protected val ATTR_GRAPH_DRAW_KIND = "kind"
         @JvmStatic protected val ATTR_GRAPH_DRAW_THICKNESS = "thickness"
-        @JvmStatic protected val ATTR_GRAPH_DRAW_ANTIALIAS = "antialias"
         @JvmStatic protected val ATTR_GRAPH_DRAW_COLOREACH = "colorEach"
         @JvmStatic protected val ATTR_GRAPH_DRAW_HISTORY = "history"
         @JvmStatic protected val ATTR_GRAPH_DRAW_CURORDER = "currentOrder"

@@ -45,7 +45,6 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
             seekBar_gsp_draw_each_length.setVisibility(View.INVISIBLE)
         }
         checkBox_gsp_color_each.setChecked(gi.mIsColorEach)
-        checkBox_gsp_draw_smooth.setChecked(gi.mIsAntiAlias)
 
         seekBar_gsp_thickness.setProgress((gi.mLineThickness - 1).toInt())
         gui_paint_shift_sb_value.setProgress(gi.cp.shiftSpeed + 30)
@@ -103,11 +102,6 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
                 dgc.operate(DGCore.OP_DRAW_EACH, 0)
                 seekBar_gsp_draw_each_length.setVisibility(View.INVISIBLE)
             }
-        })
-
-        checkBox_gsp_draw_smooth.setOnCheckedChangeListener({
-            box, checked ->
-            dgc.operate(DGCore.OP_ANTIALIAS, checked)
         })
 
         checkBox_gsp_color_each.setOnCheckedChangeListener({

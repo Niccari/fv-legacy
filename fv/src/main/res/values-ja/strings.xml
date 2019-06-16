@@ -6,7 +6,6 @@
     <string name="graph_setting_framerate">FPS</string>
     <string name="graph_setting_povframe">残像</string>
 
-    <string name="gss_graph">グラフ</string>
     <string name="gss_complexity">複雑さ</string>
     <string name="gss_rotate">回転速度</string>
     <string name="gss_mutation">変異度</string>

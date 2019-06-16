@@ -178,7 +178,6 @@ class DGDataLoad : DGDataInfo() {
                             if (tag == TAG_GRAPH_DRAW) {
                                 var kind = ""
                                 var thickness = -1.0f
-                                var antialias = false
                                 var colorEach = false
                                 var history = -1
                                 var corder = -1
@@ -189,8 +188,6 @@ class DGDataLoad : DGDataInfo() {
                                         kind = parser.getAttributeValue(i)
                                     if (attr == ATTR_GRAPH_DRAW_THICKNESS)
                                         thickness = java.lang.Float.valueOf(parser.getAttributeValue(i))
-                                    if (attr == ATTR_GRAPH_DRAW_ANTIALIAS)
-                                        antialias = java.lang.Boolean.valueOf(parser.getAttributeValue(i))
                                     if (attr == ATTR_GRAPH_DRAW_COLOREACH)
                                         colorEach = java.lang.Boolean.valueOf(parser.getAttributeValue(i))
                                     if (attr == ATTR_GRAPH_DRAW_HISTORY)
@@ -200,7 +197,7 @@ class DGDataLoad : DGDataInfo() {
                                     if (attr == ATTR_GRAPH_DRAW_BRUSH)
                                         brush = Integer.valueOf(parser.getAttributeValue(i))
                                 }
-                                gi?.setDrawSettings(kind, thickness, antialias, colorEach, history, corder, brush)
+                                gi?.setDrawSettings(kind, thickness, colorEach, history, corder, brush)
                             }
                         }
                     }

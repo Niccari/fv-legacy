@@ -194,17 +194,15 @@ class DGDataWrite constructor(private val root_dir: String, private val version:
             attrValue[0] = if (gi.draw_kind == Graph.DRAW_ALL) VALUE_GRAPH_DRAW_KIND_ALL else VALUE_GRAPH_DRAW_KIND_EACH
             attrName[1] = ATTR_GRAPH_DRAW_THICKNESS
             attrValue[1] = java.lang.Float.toString(gi.mLineThickness)
-            attrName[2] = ATTR_GRAPH_DRAW_ANTIALIAS
-            attrValue[2] = java.lang.Boolean.toString(gi.mIsAntiAlias)
-            attrName[3] = ATTR_GRAPH_DRAW_COLOREACH
-            attrValue[3] = java.lang.Boolean.toString(gi.mIsColorEach)
-            attrName[4] = ATTR_GRAPH_DRAW_HISTORY
-            attrValue[4] = Integer.toString(gi.mEachLineHistory)
-            attrName[5] = ATTR_GRAPH_DRAW_CURORDER
-            attrValue[5] = Integer.toString(gi.mCurrentDrawOrder)
-            attrName[6] = ATTR_GRAPH_DRAW_BRUSH
-            attrValue[6] = Integer.toString(gi.mBrushType)
-            attrNum = 7
+            attrName[2] = ATTR_GRAPH_DRAW_COLOREACH
+            attrValue[2] = java.lang.Boolean.toString(gi.mIsColorEach)
+            attrName[3] = ATTR_GRAPH_DRAW_HISTORY
+            attrValue[3] = Integer.toString(gi.mEachLineHistory)
+            attrName[4] = ATTR_GRAPH_DRAW_CURORDER
+            attrValue[4] = Integer.toString(gi.mCurrentDrawOrder)
+            attrName[5] = ATTR_GRAPH_DRAW_BRUSH
+            attrValue[5] = Integer.toString(gi.mBrushType)
+            attrNum = 6
 
             item[STAT_NORMAL, TAG_GRAPH_DRAW, attrName, attrValue] = attrNum
             mItemList.add(item)
