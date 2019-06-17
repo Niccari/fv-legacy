@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit
 /** メイン画面(グラフ描画)*/
 class MainActivity : Activity() {
     private var isGuiActivated = false
-    private var mXMLWriter: DGDataWrite? = null
 
     // GUI関連
     private lateinit var mPopupWindow: PopupWindow
@@ -196,14 +195,6 @@ class MainActivity : Activity() {
         // グラフ削除アイコンは普段見えない
         mGraphDeleteIcon.visibility = ImageView.INVISIBLE
         mGraphDeleteIcon.setBackgroundResource(R.drawable.delete)
-
-        // XML出力関連
-        try {
-            val pInfo = applicationContext.packageManager.getPackageInfo(packageName, 0)
-            mXMLWriter = DGDataWrite(STR_APP_ROOT_DIR, pInfo.versionName)
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
 
         this.onResume()
     }
@@ -378,11 +369,11 @@ class MainActivity : Activity() {
                     startActivityForResult(intent, INTENT_OPEN_GRAPH)
                 }
                 if (key.matches("save_graph".toRegex())) {
-                    val date = DGCommon.currentDateString
+//                    val date = DGCommon.currentDateString
 
-                    val isSucceed = mXMLWriter?.writeXml(date)
-                    if (isSucceed != null && isSucceed)
-                        captureView(date, false)
+                    val isSucceed = DGDataWrite.save()
+//                    if (isSucceed != null && isSucceed)
+//                        captureView(date, false)
                 }
                 if (key.matches("capture".toRegex())) {
                     if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
