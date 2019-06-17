@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.*
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
