@@ -369,18 +369,16 @@ class MainActivity : Activity() {
                     startActivityForResult(intent, INTENT_OPEN_GRAPH)
                 }
                 if (key.matches("save_graph".toRegex())) {
-//                    val date = DGCommon.currentDateString
-
-                    val isSucceed = DGDataWrite.save()
-//                    if (isSucceed != null && isSucceed)
-//                        captureView(date, false)
+                    captureView("save_graph")?.let{
+                        DGDataWrite.save(it)
+                    }
                 }
                 if (key.matches("capture".toRegex())) {
                     if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(activity, Array(1) { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1)
                     } else {
-                        captureView("", true)
+                        captureView("capture")
                     }
                 }
             }
@@ -423,7 +421,7 @@ class MainActivity : Activity() {
         when (requestCode) {
             1 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    captureView("", true)
+                    captureView("capture")
                 }
             }
         }
@@ -484,64 +482,60 @@ class MainActivity : Activity() {
 
     // 現画面のスクリーンキャプチャをとる。
     // ファイル名は現時刻を基に決定する。
-    private fun captureView(filename: String, isGraphThumbnail: Boolean): Int {
+    private fun captureView(mode: String): File? {
         stop()
 
-        // 再描画
-        main_dv.draw(object : DrawView.DrawListener {
-            override fun onDraw(canvas: Canvas) {
-                if (dgc.povFrame <= 0) {
+        // 残像0のときのみ、再描画
+        if (dgc.povFrame <= 0) {
+            main_dv.draw(object : DrawView.DrawListener {
+                override fun onDraw(canvas: Canvas) {
                     tmpCanvas.drawColor(Color.BLACK)
                     dgc.draw(tmpCanvas)
                 }
-            }
-        })
+            })
+        }
+        val path: String
+        val filename: String
 
-        // 保存開始
-        val mPath: String?
-        val mFile: String // 保存ファイルのディレクトリおよびファイル名
-
-        if (isGraphThumbnail) {
-            mPath = "${Environment.getExternalStorageDirectory().path}/FV/"
-            mFile = "${DGCommon.currentDateString}.png"
+        if (mode == "save_graph") {
+            path = filesDir.path
+            filename = "tmp.jpg"
         } else {
-            mPath = filesDir.path
-            mFile = "$filename.jpg"
+            path = "${Environment.getExternalStorageDirectory().path}/FV/"
+            filename = "${DGCommon.currentDateString}.png"
         }
 
         val outputStream: OutputStream
-        val dirFile = File(mPath)
-        val imageFile = File("$mPath/$mFile")
+        val dirFile = File(path)
+        val imageFile = File("$path/$filename")
 
         try {
             dirFile.mkdir()
 
             outputStream = FileOutputStream(imageFile)
 
-            if (isGraphThumbnail) {
-                bmp.compress(CompressFormat.PNG, 100, outputStream)
-            } else {
+            if (mode == "save_graph") {
                 val tmp = Bitmap.createScaledBitmap(bmp, window_size.x / 4, window_size.y / 4, false)
                 tmp.compress(CompressFormat.JPEG, 75, outputStream)
+            } else {
+                bmp.compress(CompressFormat.PNG, 100, outputStream)
             }
             outputStream.flush()
             outputStream.close()
 
         } catch (e: NullPointerException) {
             e.printStackTrace()
-            return CAPTURE_NG
+            return null
         } catch (e: IOException) {
             e.printStackTrace()
-            return CAPTURE_NG
+            return null
         } finally {
             resume()
         }
-        return CAPTURE_OK
+        return imageFile
     }
 
     companion object {
-        private const val CAPTURE_OK = 0
-        private const val CAPTURE_NG = -1
         private const val INTENT_OPEN_GRAPH = 2
 
         private lateinit var STR_APP_ROOT_DIR: String
