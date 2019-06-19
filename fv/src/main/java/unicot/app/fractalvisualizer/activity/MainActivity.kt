@@ -9,6 +9,7 @@ import android.graphics.*
 import android.graphics.Bitmap.CompressFormat
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.util.Xml
@@ -27,6 +28,7 @@ import unicot.app.fractalvisualizer.core.DGDataLoad
 import unicot.app.fractalvisualizer.core.DGDataWrite
 import unicot.app.fractalvisualizer.view.*
 import java.io.*
+import java.lang.Exception
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -211,12 +213,18 @@ class MainActivity : Activity() {
     private fun resume() {
         executor = Executors.newSingleThreadScheduledExecutor()
         executor?.scheduleAtFixedRate({
-            dgc.run()
-            main_dv.draw(object : DrawView.DrawListener {
-                override fun onDraw(canvas: Canvas) {
-                    draw(canvas)
-                }
-            })
+            try {
+                dgc.run()
+                main_dv.draw(object : DrawView.DrawListener {
+                    override fun onDraw(canvas: Canvas) {
+                        draw(canvas)
+                    }
+                })
+            }catch (e: Exception){
+                Log.e("MYTAG", "Draw thread failed!!")
+                e.printStackTrace()
+                stop()
+            }
         }, 10, (1000 / DGCore.systemData.framerate).toLong(), TimeUnit.MILLISECONDS)
     }
 
@@ -446,19 +454,16 @@ class MainActivity : Activity() {
 
         // データロード
         if(requestCode == INTENT_OPEN_GRAPH && resultCode == RESULT_OK){
-            val parser = Xml.newPullParser()
-
             try {
-                val inputStream = FileInputStream(data?.getStringExtra("xml"))
-                parser.setInput(inputStream, null)
+                val id = data?.getStringExtra("id") ?: return
 
-                // 一旦画面更新止めてから、データ読み込み
-                DGDataLoad.load(parser)
-                dgc.select()
-
-                runOnUiThread {
-                    dispose()
-                    mMisc.sync()
+                DGDataLoad.load(id){
+                    if(it){
+                        runOnUiThread {
+                            dgc.select()
+                            mMisc.sync()
+                        }
+                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
