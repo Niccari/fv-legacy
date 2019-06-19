@@ -4,7 +4,6 @@ import android.net.Uri
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -56,8 +55,9 @@ object DGDataWrite : DGDataInfo() {
     private fun saveGraphs(thumbUrl: String, date: Date){
         val db: FirebaseFirestore = FirebaseFirestore.getInstance()
         val dgraph = DGCore.graph    // グラフ
-        val baseDocName = "${date.time}"
-        val graphList = ArrayList<DocumentReference>()
+        val docName = "${date.time}"
+
+        val graphList = ArrayList<HashMap<String, Any>>()
         for(iv in dgraph.withIndex()){
             val g = iv.value
             val gi = g.info
@@ -101,21 +101,20 @@ object DGDataWrite : DGDataInfo() {
             graph[COLOR_SHIFT] = gi.cp.shiftSpeed
             graph[COLOR_TRANS] = gi.cp.getTrans()
 
-            val docRef = db.collection(COLLECTION_GRAPH).document("${baseDocName}_${iv.index}")
-            docRef.set(graph)
-
-            graphList.add(docRef)
+            graphList.add(graph)
         }
-
-        val session = HashMap<String, Any>()
+        val sessionDetail = HashMap<String, Any>()
         val sysData = DGCore.systemData
-        session[SESSION_VIEW_FPS] = sysData.framerate
-        session[SESSION_VIEW_POV] = sysData.povFrame
-        session[SESSION_VERSION] = GRAPH_VERSION
-        session[SESSION_THUMB_URL] = thumbUrl
-        session[SESSION_DATE] = Timestamp(date)
-        session[SESSION_GRAPH_LIST] = graphList.toList()
-        val docRef = db.collection(COLLECTION_SESSION).document(baseDocName)
-        docRef.set(session)
+        sessionDetail[DETAIL_VIEW_FPS]  = sysData.framerate
+        sessionDetail[DETAIL_VIEW_POV]  = sysData.povFrame
+        sessionDetail[DETAIL_VERSION]   = GRAPH_VERSION
+        sessionDetail[DETAIL_GRAPH_LIST] = graphList
+        db.collection(COLLECTION_SESSION_DETAIL).document(docName).set(sessionDetail)
+
+        val sessionInfo = HashMap<String, Any>()
+        sessionInfo[INFO_THUMB_URL] = thumbUrl
+        sessionInfo[INFO_DATE] = Timestamp(date)
+        val docRef = db.collection(COLLECTION_SESSION_INFO).document(docName)
+        docRef.set(sessionInfo)
     }
 }

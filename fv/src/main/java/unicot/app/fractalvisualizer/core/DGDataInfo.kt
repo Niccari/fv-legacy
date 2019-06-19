@@ -8,15 +8,15 @@ open class DGDataInfo {
     companion object {
         @JvmStatic protected val GRAPH_VERSION = "1"
 
-        @JvmStatic protected val COLLECTION_SESSION = "session"
-        @JvmStatic protected val SESSION_DATE       = "date"
-        @JvmStatic protected val SESSION_THUMB_URL  = "thumb_url"
-        @JvmStatic protected val SESSION_VERSION    = "version"
-        @JvmStatic protected val SESSION_VIEW_FPS   = "framerate"
-        @JvmStatic protected val SESSION_VIEW_POV   = "pov_frame"
-        @JvmStatic protected val SESSION_GRAPH_LIST = "graph_list"
+        @JvmStatic protected val COLLECTION_SESSION_INFO = "session_info"
+        @JvmStatic protected val INFO_DATE       = "date"
+        @JvmStatic protected val INFO_THUMB_URL  = "thumb_url"
 
-        @JvmStatic protected val COLLECTION_GRAPH = "graph"
+        @JvmStatic protected val COLLECTION_SESSION_DETAIL = "session_detail"
+        @JvmStatic protected val DETAIL_VERSION    = "version"
+        @JvmStatic protected val DETAIL_VIEW_FPS   = "framerate"
+        @JvmStatic protected val DETAIL_VIEW_POV   = "pov_frame"
+        @JvmStatic protected val DETAIL_GRAPH_LIST = "graph_list"
         @JvmStatic protected val GRAPH_KIND = "graph_kind"
         @JvmStatic protected val GRAPH_COMPLEXITY = "complexity"
         @JvmStatic protected val GRAPH_LEAF_BRANCH = "branch"
