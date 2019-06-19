@@ -71,6 +71,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
             5 -> mIBCurrentColor = imageButton_gsp_sea_icon
             6 -> mIBCurrentColor = imageButton_gsp_heat_icon
             7 -> mIBCurrentColor = imageButton_gsp_monochro_icon    //ColorPattern.Companion.getBW():
+            8 -> mIBCurrentColor = imageButton_gsp_pastel_icon
         }
 
         if (gi.cp.colMode == ColorPattern.SINGLE) {
