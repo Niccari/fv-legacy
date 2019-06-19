@@ -289,6 +289,18 @@
             android:scaleType="fitXY"
             android:src="@drawable/color_focus_item"
             android:tag="bw" />
+
+        <ImageButton
+            android:id="@+id/imageButton_gsp_pastel_icon"
+            android:layout_width="@dimen/gui_paint_button_size"
+            android:layout_height="@dimen/gui_paint_button_size"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/color_pastel"
+            android:contentDescription="@null"
+            android:onClick="onColorPatternClicked"
+            android:scaleType="fitXY"
+            android:src="@drawable/color_focus_item"
+            android:tag="pastel" />
     </LinearLayout>
 
     <LinearLayout
