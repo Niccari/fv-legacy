@@ -25,7 +25,7 @@ open class GraphloadActivity : Activity() {
     private val fileUrls: ArrayList<FileData> = ArrayList(0)
     private var adapter: IVAdapter? = null
 
-    protected class FileData constructor(var xmlUrl: String = "", var imgUrl: String = "", var isSelected: Boolean = false)
+    protected class FileData constructor(var id: String = "", var imgUrl: String = "")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,20 +37,20 @@ open class GraphloadActivity : Activity() {
     private fun init() {
         val db = FirebaseFirestore.getInstance()
 
-        db.collection("session").get().addOnCompleteListener {
+        db.collection("session_info").get().addOnCompleteListener {
             task ->
             if(task.isSuccessful) {
                 task.result?.map { session ->
-
+                    val id = session.id
                     val imageUrl = session["thumb_url"] as? String ?: ""
-                    fileUrls.add(FileData("", imageUrl))
+                    fileUrls.add(FileData(id, imageUrl))
                 }
 
                 adapter = IVAdapter(this, fileUrls)
                 graphload_gv?.adapter = adapter
                 graphload_gv?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
                     val intent = Intent()
-//            intent.putExtra("xml", fileUrls[position].xmlUrl + ".xml")
+            intent.putExtra("id", fileUrls[position].id)
                     setResult(RESULT_OK, intent)
                     finish()
                 }
@@ -103,13 +103,6 @@ open class GraphloadActivity : Activity() {
                      .centerCrop()
                      .transition(DrawableTransitionOptions.withCrossFade())
                      .into(it) }
-            if (data.isSelected) {
-                holder.select?.visibility = View.VISIBLE
-                holder.image?.setColorFilter(ContextCompat.getColor( context, R.color.lighten))
-            } else {
-                holder.select?.visibility = View.INVISIBLE
-                holder.image?.clearColorFilter()
-            }
             return view!!
         }
     }

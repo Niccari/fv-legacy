@@ -15,16 +15,7 @@ import java.io.FileInputStream
 import java.util.*
 import kotlin.collections.HashMap
 
-/**
- * xmlファイルに環境設定値およびグラフ情報を書き出すクラス<br></br>
- * 【主な機能】<br></br>
- * - グラフ情報の書き出し<br></br>
- * <br></br>
- */
 object DGDataWrite : DGDataInfo() {
-    // ////////////////////////////////////////////////////////////
-    // テキストを追加する
-    // データをXML用にシリアライズ(逆順に入れる)
     fun save(file: File) {
         val date = Date()
         val storage = FirebaseStorage.getInstance()
