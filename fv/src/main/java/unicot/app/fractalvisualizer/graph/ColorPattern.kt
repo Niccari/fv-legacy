@@ -78,6 +78,7 @@ class ColorPattern {
                 DEEPSEA -> return STR_DEEPSEA
                 HEAT -> return STR_HEAT
                 BW -> return STR_BW
+                PASTEL -> return STR_PASTEL
                 else -> return STR_RAINBOW
             }
         }
@@ -139,6 +140,8 @@ class ColorPattern {
             mColorTransientPattern = HEAT
         else if (c_str.matches(STR_BW.toRegex()))
             mColorTransientPattern = BW
+        else if (c_str.matches(STR_PASTEL.toRegex()))
+            mColorTransientPattern = PASTEL
         else
             return
 
@@ -189,6 +192,12 @@ class ColorPattern {
                 cr = COLOR_MIN
                 cg = COLOR_MIN
                 cb = COLOR_MIN
+            }
+            PASTEL -> {
+                trans = COLOR_TRANS_IDX_MAGENTA_TO_YELLOW
+                cr = COLOR_MAX
+                cg = COLOR_PASTEL
+                cb = COLOR_PASTEL
             }
             else -> {
                 Log.e(TAG, "That color pattern is invalid : at ColorPattern")
@@ -260,6 +269,17 @@ class ColorPattern {
             }
             BW -> if (this.transPattern(trans)) {
                 trans = if (trans == COLOR_TRANS_IDX_WHITE) COLOR_TRANS_IDX_BLACK else COLOR_TRANS_IDX_WHITE
+            }
+            PASTEL -> if (this.transPattern(trans)) {
+                if (shiftSpeed > 0) {
+                    trans++
+                    if (trans > COLOR_TRANS_IDX_YELLOW_TO_MAGENTA)
+                        trans = COLOR_TRANS_IDX_MAGENTA_TO_YELLOW
+                } else {
+                    trans--
+                    if (trans < COLOR_TRANS_IDX_MAGENTA_TO_YELLOW)
+                        trans = COLOR_TRANS_IDX_YELLOW_TO_MAGENTA
+                }
             }
             else -> {
                 Log.e(TAG, "Invalid color pattern!! Switch to single.")
@@ -494,6 +514,75 @@ class ColorPattern {
                     return true
                 }
             }
+
+            COLOR_TRANS_IDX_MAGENTA_TO_YELLOW   // For PASTEL
+            -> {
+                cr = COLOR_MAX
+                cg += shiftSpeed
+                cb = COLOR_PASTEL
+                if (cg >= COLOR_MAX) {          // Forward direction
+                    cr = COLOR_MAX
+                    cg = COLOR_MAX
+                    cb = COLOR_PASTEL
+                    return true
+                } else if (cg <= COLOR_PASTEL) {   // Backward direction
+                    cr = COLOR_MAX
+                    cg = COLOR_PASTEL
+                    cb = COLOR_PASTEL
+                    return true
+                }
+            }
+            COLOR_TRANS_IDX_YELLOW_TO_CYAN   // For PASTEL
+            -> {
+                cr -= shiftSpeed
+                cg = COLOR_MAX
+                cb += shiftSpeed
+                if (cb >= COLOR_MAX) {          // Forward direction
+                    cr = COLOR_PASTEL
+                    cg = COLOR_MAX
+                    cb = COLOR_MAX
+                    return true
+                } else if (cb <= COLOR_PASTEL) {   // Backward direction
+                    cr = COLOR_MAX
+                    cg = COLOR_MAX
+                    cb = COLOR_PASTEL
+                    return true
+                }
+            }
+            COLOR_TRANS_IDX_CYAN_TO_YELLOW   // For PASTEL
+            -> {
+                cr += shiftSpeed
+                cg = COLOR_MAX
+                cb -= shiftSpeed
+                if (cr >= COLOR_MAX) {          // Forward direction
+                    cr = COLOR_MAX
+                    cg = COLOR_MAX
+                    cb = COLOR_PASTEL
+                    return true
+                } else if (cr <= COLOR_PASTEL) {   // Backward direction
+                    cr = COLOR_PASTEL
+                    cg = COLOR_MAX
+                    cb = COLOR_MAX
+                    return true
+                }
+            }
+            COLOR_TRANS_IDX_YELLOW_TO_MAGENTA   // For PASTEL
+            -> {
+                cr = COLOR_MAX
+                cg -= shiftSpeed
+                cb = COLOR_PASTEL
+                if (cg <= COLOR_PASTEL) {          // Forward direction
+                    cr = COLOR_MAX
+                    cg = COLOR_PASTEL
+                    cb = COLOR_PASTEL
+                    return true
+                } else if (cg >= COLOR_MAX) {   // Backward direction
+                    cr = COLOR_MAX
+                    cg = COLOR_MAX
+                    cb = COLOR_PASTEL
+                    return true
+                }
+            }
             else -> return false
         }
         return false
@@ -509,6 +598,7 @@ class ColorPattern {
         val DEEPSEA = 5
         val HEAT = 6
         val BW = 7
+        val PASTEL = 8
 
         private val STR_SINGLE = "SINGLE"
         private val STR_RAINBOW = "RAINBOW"
@@ -519,8 +609,10 @@ class ColorPattern {
         private val STR_DEEPSEA = "DEEPSEA"
         private val STR_HEAT = "HEAT"
         private val STR_BW = "BW"
+        private val STR_PASTEL = "PASTEL"
 
         val COLOR_MIN = 0
+        val COLOR_PASTEL = (255*0.6).toInt()
         val COLOR_MAX = 255
 
         private val COLOR_PATTERN_IDX_MIN = -1
@@ -546,6 +638,11 @@ class ColorPattern {
         private val COLOR_TRANS_IDX_BLACK_TO_BLUE = 15
         private val COLOR_TRANS_IDX_BLUE_TO_RED_H = 16
         private val COLOR_TRANS_IDX_RED_TO_YELLOW_H = 17
+
+        private val COLOR_TRANS_IDX_MAGENTA_TO_YELLOW = 18
+        private val COLOR_TRANS_IDX_YELLOW_TO_CYAN = 19
+        private val COLOR_TRANS_IDX_CYAN_TO_YELLOW = 20
+        private val COLOR_TRANS_IDX_YELLOW_TO_MAGENTA = 21
 
         private val COLOR_PATTERN_RGB_TRANS = 3
 
