@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -170,7 +169,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
         if (!dgc.isGraphSelected)
             return  // グラフ選択してなければ非実行
 
-        val alpha = gui_paint_sb_draw_color_alpha.progressToValue.toInt()
+        val alpha = gui_paint_sb_draw_color_alpha.value.toInt()
         val red = 0xFF and gui_paint_colors_sb_red.getProgress()
         val green = 0xFF and gui_paint_colors_sb_green.getProgress()
         val blue = 0xFF and gui_paint_colors_sb_blue.getProgress()
