@@ -3,4 +3,15 @@
         <attr name="buttonBarStyle" format="reference" />
         <attr name="buttonBarButtonStyle" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="SeekBarWithLabel">
+        <attr name="val_min" format="float"/>
+        <attr name="val_max" format="float"/>
+        <attr name="val_step" format="float"/>
+        <attr name="val_default" format="float"/>
+        <attr name="title" format="string"/>
+        <attr name="units" format="string"/>
+
+        <attr name="is_int" format="boolean"/>
+    </declare-styleable>
 </resources>

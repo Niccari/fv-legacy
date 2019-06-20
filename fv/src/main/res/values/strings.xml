@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FractalVisualizer</string>
-    <string name="fps">fps</string>
 
     <string name="graph_setting_framerate">Spd.</string>
+    <string name="graph_setting_framerate_fps">fps</string>
     <string name="graph_setting_povframe">Aft.img.</string>
 
     <string name="gss_complexity">Complexity:</string>
