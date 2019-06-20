@@ -287,7 +287,8 @@
     <LinearLayout
         android:id="@+id/gui_paint_colors_ll_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp">
 
         <SeekBar
             android:id="@+id/gui_paint_colors_sb_red"
@@ -319,11 +320,13 @@
         android:id="@+id/gui_paint_sb_draw_color_shift"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
         app:is_int="true"
         app:is_seek_invoke="true"
         app:title="@string/gsp_shift"
         app:val_default="1"
-        app:val_min="-30"
         app:val_max="30"
-        android:visibility="gone"/>
+        app:val_min="-30" />
 </LinearLayout>

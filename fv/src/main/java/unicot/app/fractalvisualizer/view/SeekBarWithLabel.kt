@@ -16,26 +16,20 @@ class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(
     private var valMax: Float
     private var valStep: Float
     private var valDefault: Float
-    private var max: Int = 0
     private var isInt: Boolean
     private var isSeekInvoke: Boolean
     private var isValueVisible: Boolean
 
-    val progressToValue: Float
-        get() = valMin + (valMax - valMin)*sbwl_sb.progress/max
+    val value: Float
+        get() = valMin + (valMax - valMin)*sbwl_sb.progress/sbwl_sb.max
 
 
     fun setValue(value: Float){
         sbwl_sb.progress = getProgress(value)
     }
 
-    fun getProgress(value: Float): Int{
-        return ((value - valMin + valStep/2)/(valMax - valMin)*max).toInt()
-    }
-
-    private fun renewRange(){
-        max = ((valMax - valMin)/valStep).toInt()
-        sbwl_sb.max = max
+    private fun getProgress(value: Float): Int{
+        return ((value - valMin + valStep/2)/(valMax - valMin)*sbwl_sb.max).toInt()
     }
 
     init{
@@ -68,7 +62,7 @@ class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(
         }
 
         val view = View.inflate(context, R.layout.seekbar_with_label, this)
-        renewRange()
+        sbwl_sb.max = ((valMax - valMin)/valStep).toInt()
         if(titleStr.isNotEmpty()) {
             sbwl_tv_title.text = titleStr
             view.sbwl_tv_title.setOnClickListener {
@@ -88,8 +82,8 @@ class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(
 
         view.sbwl_sb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                listener?.invoke(progressToValue)
-                val valueStr = if(isInt) progressToValue.toInt().toString() else progressToValue.toString()
+                listener?.invoke(value)
+                val valueStr = if(isInt) value.toInt().toString() else value.toString()
                 view.sbwl_tv_number.text = valueStr
             }
 
@@ -97,12 +91,12 @@ class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if(isSeekInvoke)
-                    listener?.invoke(progressToValue)
-                val valueStr = if(isInt) progressToValue.toInt().toString() else progressToValue.toString()
+                    listener?.invoke(value)
+                val valueStr = if(isInt) value.toInt().toString() else value.toString()
                 view.sbwl_tv_number.text = valueStr
             }
         })
         sbwl_sb.progress = getProgress(valDefault)
-        view.sbwl_tv_number.text = if(isInt) progressToValue.toInt().toString() else progressToValue.toString()
+        view.sbwl_tv_number.text = if(isInt) value.toInt().toString() else value.toString()
     }
 }
