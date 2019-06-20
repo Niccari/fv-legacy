@@ -38,18 +38,19 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
         val g_selected = DGCore.selectedGraph[0]
         val gi = g_selected.info
 
-        checkBox_gsp_draw_each.setChecked(gi.draw_kind == Graph.DRAW_IN_ORDER)
-        if (checkBox_gsp_draw_each.isChecked()) {
-            seekBar_gsp_draw_each_length.setVisibility(View.VISIBLE)
+        checkBox_gsp_draw_each.isChecked = gi.draw_kind == Graph.DRAW_IN_ORDER
+
+        if (checkBox_gsp_draw_each.isChecked) {
+            gui_paint_sb_draw_each_length.visibility = View.VISIBLE
         } else {
-            seekBar_gsp_draw_each_length.setVisibility(View.INVISIBLE)
+            gui_paint_sb_draw_each_length.visibility = View.INVISIBLE
         }
         checkBox_gsp_color_each.setChecked(gi.mIsColorEach)
 
-        seekBar_gsp_thickness.setProgress((gi.mLineThickness - 1).toInt())
-        gui_paint_shift_sb_value.setProgress(gi.cp.shiftSpeed + 30)
+        gui_paint_sb_thickness.setValue(gi.mLineThickness)
+        gui_paint_sb_draw_color_shift.setValue(gi.cp.shiftSpeed.toFloat())
 
-        seekBar_gsp_color_alpha.setProgress(gi.cp.alpha)
+        gui_paint_sb_draw_color_alpha.setValue(gi.cp.alpha.toFloat())
         if (gi.cp.colMode == ColorPattern.SINGLE) {
             val cr = gi.cp.red
             val cg = gi.cp.green
@@ -76,10 +77,10 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
 
         if (gi.cp.colMode == ColorPattern.SINGLE) {
             gui_paint_colors_ll_root.visibility = View.VISIBLE
-            gui_paint_shift_ll_root.visibility = View.GONE
+            gui_paint_sb_draw_color_shift.visibility = View.GONE
         } else {
             gui_paint_colors_ll_root.visibility = View.GONE
-            gui_paint_shift_ll_root.visibility = View.VISIBLE
+            gui_paint_sb_draw_color_shift.visibility = View.VISIBLE
         }
         mIBCurrentColor?.setImageResource(R.drawable.color_activated_focus_item)
         mIBCurrentBrush?.setImageResource(R.drawable.color_focus_item)
@@ -94,64 +95,48 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
 
     private fun setEvent(){
         // 以下、描画設定関連
-        checkBox_gsp_draw_each.setOnCheckedChangeListener({
+        checkBox_gsp_draw_each.setOnCheckedChangeListener {
             box, checked ->
             if (checked) {
                 dgc.operate(DGCore.OP_DRAW_EACH, 1)
-                seekBar_gsp_draw_each_length.setVisibility(View.VISIBLE)
+                gui_paint_sb_draw_each_length.visibility = View.VISIBLE
             } else {
                 dgc.operate(DGCore.OP_DRAW_EACH, 0)
-                seekBar_gsp_draw_each_length.setVisibility(View.INVISIBLE)
+                gui_paint_sb_draw_each_length.visibility = View.INVISIBLE
             }
-        })
+        }
 
-        checkBox_gsp_color_each.setOnCheckedChangeListener({
+        checkBox_gsp_color_each.setOnCheckedChangeListener {
             box, checked ->
             dgc.operate(DGCore.OP_COLOREACH, checked)
-        })
+        }
 
-        seekBar_gsp_thickness.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(sb: SeekBar) {}
+        gui_paint_sb_thickness.listener = {
+            dgc.operate(DGCore.OP_THICKNESS, it.toInt())
+        }
+        gui_paint_sb_draw_each_length.listener = {
+            dgc.operate(DGCore.OP_DRAW_EACH_PERCENT, it)
+        }
+        gui_paint_sb_draw_color_shift.listener = {
+            dgc.operate(DGCore.OP_COLOR_SHIFT, it.toInt())
 
-            // トラッキング中に呼び出されます
-            override fun onProgressChanged(sb: SeekBar, progress: Int, fromTouch: Boolean) {
-                val `val` = seekBar_gsp_thickness.getProgress() + 1
-                dgc.operate(DGCore.OP_THICKNESS, `val`)
-            }
-
-            override fun onStopTrackingTouch(sb: SeekBar) {}
-        })
-
-        seekBar_gsp_draw_each_length.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(sb: SeekBar) {}
-            override fun onProgressChanged(sb: SeekBar, progress: Int, fromTouch: Boolean) {
-                dgc.operate(DGCore.OP_DRAW_EACH_PERCENT, progress.toFloat())
-            }
-            override fun onStopTrackingTouch(sb: SeekBar) {}
-        })
-        gui_paint_shift_sb_value.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(sb: SeekBar) {}
-            override fun onProgressChanged(sb: SeekBar, progress: Int, fromTouch: Boolean) {
-                dgc.operate(DGCore.OP_COLOR_SHIFT, progress - 30)
-            }
-            override fun onStopTrackingTouch(sb: SeekBar) {}
-        })
+        }
 
         val colorChangeListener = object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(sb: SeekBar) {}
 
             override fun onProgressChanged(sb: SeekBar, progress: Int, fromTouch: Boolean) {
-                if (sb === seekBar_gsp_color_alpha) {
-                    changeAlphaColor()
-                } else {
-                    changeSingleColorButtonColor()
-                }
+                changeSingleColorButtonColor()
             }
 
             override fun onStopTrackingTouch(sb: SeekBar) {}
         }
 
-        seekBar_gsp_color_alpha.setOnSeekBarChangeListener(colorChangeListener)
+        gui_paint_sb_draw_color_alpha.listener = {
+            if (dgc.isGraphSelected)
+                dgc.operate(DGCore.OP_SET_ALPHA, it.toInt())
+        }
+
         gui_paint_colors_sb_red.setOnSeekBarChangeListener(colorChangeListener)
         gui_paint_colors_sb_green.setOnSeekBarChangeListener(colorChangeListener)
         gui_paint_colors_sb_blue.setOnSeekBarChangeListener(colorChangeListener)
@@ -159,10 +144,10 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
 
     fun onColorPatternClicked(v: View){
         if (v.tag.toString().matches(STR_SINGLE_COLOR.toRegex())) {
-            gui_paint_shift_ll_root.visibility = View.GONE
+            gui_paint_sb_draw_color_shift.visibility = View.GONE
             gui_paint_colors_ll_root.visibility = View.VISIBLE
         }else {
-            gui_paint_shift_ll_root.visibility = View.VISIBLE
+            gui_paint_sb_draw_color_shift.visibility = View.VISIBLE
             gui_paint_colors_ll_root.visibility = View.GONE
         }
 
@@ -181,20 +166,11 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
         dgc.operate(DGCore.OP_BRUSHTYPE, mIBCurrentBrush?.tag.toString())
     }
 
-    private fun changeAlphaColor() {
-        if (!dgc.isGraphSelected)
-            return  // グラフ選択してなければ非実行
-
-        val alpha = 0xFF and seekBar_gsp_color_alpha.getProgress()
-
-        dgc.operate(DGCore.OP_SET_ALPHA, alpha)
-    }
-
     private fun changeSingleColorButtonColor() {
         if (!dgc.isGraphSelected)
             return  // グラフ選択してなければ非実行
 
-        val alpha = 0xFF and seekBar_gsp_color_alpha.getProgress()
+        val alpha = gui_paint_sb_draw_color_alpha.progressToValue.toInt()
         val red = 0xFF and gui_paint_colors_sb_red.getProgress()
         val green = 0xFF and gui_paint_colors_sb_green.getProgress()
         val blue = 0xFF and gui_paint_colors_sb_blue.getProgress()

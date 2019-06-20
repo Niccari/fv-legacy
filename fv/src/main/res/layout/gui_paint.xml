@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/gui_paint_ll_root"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
@@ -13,14 +14,15 @@
     <LinearLayout
         android:id="@+id/checkBox_gsp_draw_brush"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/textView_gsp_brush"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/gsp_line"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"
             android:textColor="#FFFFFFFF" />
 
         <ImageButton
@@ -73,27 +75,19 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/checkBox_gsp_draw_thickness"
+    <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+        android:id="@+id/gui_paint_sb_thickness"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/textView_gsp_thickness"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:text="@string/gsp_thickness"
-            android:textColor="#FFFFFFFF" />
-
-        <SeekBar
-            android:id="@+id/seekBar_gsp_thickness"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:max="29" />
-    </LinearLayout>
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        app:is_int="true"
+        app:is_seek_invoke="true"
+        app:title="@string/gsp_thickness"
+        app:val_default="1.0"
+        app:val_max="30.0"
+        app:val_min="1.0" />
 
     <LinearLayout
         android:id="@+id/checkBox_gsp_draw_eachs"
@@ -105,7 +99,7 @@
             android:id="@+id/textView_gsp_each"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="10dp"
             android:text="@string/gsp_each"
 
             android:textColor="#FFFFFFFF" />
@@ -116,37 +110,24 @@
             android:layout_height="wrap_content"
             android:checked="true" />
 
-        <SeekBar
-            android:id="@+id/seekBar_gsp_draw_each_length"
+        <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+            android:id="@+id/gui_paint_sb_draw_each_length"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp" />
-
+            app:is_int="true"
+            app:is_seek_invoke="true"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout_gsp_draw_color"
+
+    <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+        android:id="@+id/gui_paint_sb_draw_color_alpha"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/textView_gsp_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/gsp_color"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#FFFFFFFF" />
-
-        <SeekBar
-            android:id="@+id/seekBar_gsp_color_alpha"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="2dp"
-            android:max="255" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        app:title="@string/gsp_color"
+        app:val_default="255"
+        app:val_max="255"
+        app:is_int="true"
+        app:is_seek_invoke="true" />
 
     <LinearLayout
         android:id="@+id/linearLayout_gsp_color_each"
@@ -157,7 +138,7 @@
             android:id="@+id/TextView01"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="10dp"
             android:text="@string/gsp_color_each"
 
             android:textColor="#FFFFFFFF" />
@@ -334,31 +315,15 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/gui_paint_shift_ll_root"
+    <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+        android:id="@+id/gui_paint_sb_draw_color_shift"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/gui_paint_shift_tv_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:text="@string/gsp_shift"
-            android:textColor="#FFFFFFFF" />
-
-        <SeekBar
-            android:id="@+id/gui_paint_shift_sb_value"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:max="60"
-            android:progress="31" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        app:is_int="true"
+        app:is_seek_invoke="true"
+        app:title="@string/gsp_shift"
+        app:val_default="1"
+        app:val_min="-30"
+        app:val_max="30"
+        android:visibility="gone"/>
 </LinearLayout>

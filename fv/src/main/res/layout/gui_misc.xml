@@ -55,6 +55,7 @@
         app:title="@string/graph_setting_framerate"
         app:units="@string/graph_setting_framerate_fps"
         app:is_int="true"
+        app:is_value_visible="true"
         android:padding="5dp">
 
     </unicot.app.fractalvisualizer.view.SeekBarWithLabel>
@@ -65,9 +66,9 @@
         android:layout_height="wrap_content"
         app:val_default="0.0"
         app:val_max="128.0"
-        app:val_min="0.0"
         app:title="@string/graph_setting_povframe"
         app:is_int="true"
+        app:is_value_visible="true"
         android:padding="5dp">
 
     </unicot.app.fractalvisualizer.view.SeekBarWithLabel>

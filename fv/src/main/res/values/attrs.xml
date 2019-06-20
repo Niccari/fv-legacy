@@ -13,5 +13,7 @@
         <attr name="units" format="string"/>
 
         <attr name="is_int" format="boolean"/>
+        <attr name="is_seek_invoke" format="boolean"/>
+        <attr name="is_value_visible" format="boolean"/>
     </declare-styleable>
 </resources>
