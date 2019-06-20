@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.SeekBar
 import kotlinx.android.synthetic.main.gui_misc.view.*
 import unicot.app.fractalvisualizer.R
 import unicot.app.fractalvisualizer.core.DGCore
@@ -22,37 +21,14 @@ class MiscView(context: Context, attrs: AttributeSet? = null) : LinearLayout(con
     }
 
     fun setEvent(listener: OnEventListener){
-        val framerate0 = DGCore.systemData.framerate
-        seekBar_fps.setProgress(framerate0 - 1)
-        seekBar_fps.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(mMiscFPSSeekBar: SeekBar) {}
-            override fun onProgressChanged(mMiscFPSSeekBar: SeekBar, progress: Int, fromTouch: Boolean) {
-                textView_fps.setText((progress + 1).toString())
-            }
-
-            override fun onStopTrackingTouch(sb: SeekBar) {
-                textView_fps.setText((sb.progress + 1).toString())
-
-                DGCore.systemData.framerate = (sb.progress + 1)
-                listener.invoke("fps")
-            }
-        })
-        textView_fps.setText(framerate0.toString())
-
-        val pov_frame0 = DGCore.systemData.povFrame and 0xFF
-        textView_povframe_value.setText(pov_frame0.toString())
-        seekBar_povframe.setProgress(pov_frame0)
-        seekBar_povframe.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(mMiscFPSSeekBar: SeekBar) {}
-            override fun onProgressChanged(mMiscFPSSeekBar: SeekBar, progress: Int, fromTouch: Boolean) {
-                textView_povframe_value.setText(progress.toString())
-                DGCore.systemData.povFrame = (progress and 0xFF)
-                listener.invoke("pov_frame")
-            }
-
-            override fun onStopTrackingTouch(sb: SeekBar) {}
-        })
-
+        gui_misc_sb_fps.listener = {
+            DGCore.systemData.framerate = it.toInt()
+            listener.invoke("fps")
+        }
+        gui_misc_sb_pov.listener = {
+            DGCore.systemData.povFrame = it.toInt()
+            listener.invoke("pov_frame")
+        }
         imageButton_graphLoad.setOnClickListener{
             listener.invoke("load_graph")
         }
@@ -67,12 +43,7 @@ class MiscView(context: Context, attrs: AttributeSet? = null) : LinearLayout(con
     }
 
     fun sync(){
-        val fps = DGCore.systemData.framerate
-        seekBar_fps.setProgress(fps-1)
-        textView_fps.setText(fps.toString())
-
-        val pov_frame = DGCore.systemData.povFrame
-        seekBar_povframe.setProgress(pov_frame)
-        textView_povframe_value.setText(pov_frame.toString())
+        gui_misc_sb_fps.setValue(DGCore.systemData.framerate.toFloat())
+        gui_misc_sb_pov.setValue(DGCore.systemData.povFrame.toFloat())
     }
 }
