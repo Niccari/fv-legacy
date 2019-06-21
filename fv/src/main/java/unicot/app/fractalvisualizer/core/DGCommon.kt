@@ -6,6 +6,7 @@ import unicot.app.fractalvisualizer.R
 import unicot.app.fractalvisualizer.graph.*
 import unicot.app.fractalvisualizer.graph.Random
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * グラフ処理に関する共通処理を取り扱うクラス<br></br>
@@ -34,27 +35,27 @@ object DGCommon {
     const val SIERPINSKI_CARPET = 16
     const val TRIFOLD_CIS = 17
     const val TRIFOLD_TRANS = 18
-
-    // 各グラフの識別文字列
-    private const val STR_NPOINT = "NPOINT"
-    private const val STR_STARMINE = "STARMINE"
-    private const val STR_NSTAR = "NSTAR"
-    private const val STR_RANDOMSHAPE = "RANDOMSHAPE"
-    private const val STR_RANDOMSHAPE2 = "RANDOMSHAPE2"
-    private const val STR_BINARYTREE = "BINARYTREE"
-    private const val STR_DRAGONCURVE = "DRAGONCURVE"
-    private const val STR_FOLDTRIANGLE = "FOLDTRIANGLE"
-    private const val STR_CCURVE = "CCURVE"
-    private const val STR_KOCHCURVE = "KOCHCURVE"
-    private const val STR_KOCHTRIANGLE_INNER = "KOCHINNER"
-    private const val STR_KOCHTRIANGLE_OUTER = "KOCHOUTER"
-    private const val STR_ROSECURVE = "ROSECURVE"
-    private const val STR_HILBERT = "HILBERT"
-    private const val STR_LEAF = "LEAF"
-    private const val STR_SIERPINSKI_GASKET = "SIERPINSKI_GASKET"
-    private const val STR_SIERPINSKI_CARPET = "SIERPINSKI_CARPET"
-    private const val STR_TRIFOLD_CIS = "TRIFOLD_CIS"
-    private const val STR_TRIFOLD_TRANS = "TRIFOLD_TRANS"
+    val kind = mapOf(
+            "NPOINT" to NPOINT,
+            "STARMINE" to STARMINE,
+            "NSTAR" to NSTAR,
+            "RANDOMSHAPE" to RANDOMSHAPE,
+            "RANDOMSHAPE2" to RANDOMSHAPE2,
+            "BINARYTREE" to BINARYTREE,
+            "DRAGONCURVE" to DRAGONCURVE,
+            "FOLDTRIANGLE" to FOLDTRIANGLE,
+            "CCURVE" to CCURVE,
+            "KOCHCURVE" to KOCHCURVE,
+            "KOCHTRIANGLE_INNER" to KOCHTRIANGLE_INNER,
+            "KOCHTRIANGLE_OUTER" to KOCHTRIANGLE_OUTER,
+            "ROSECURVE" to ROSECURVE,
+            "HILBERT" to HILBERT,
+            "LEAF" to LEAF,
+            "SIERPINSKI_GASKET" to SIERPINSKI_GASKET,
+            "SIERPINSKI_CARPET" to SIERPINSKI_CARPET,
+            "TRIFOLD_CIS" to TRIFOLD_CIS,
+            "TRIFOLD_TRANS" to TRIFOLD_TRANS
+    )
 
     /**
      * 現時刻を返す
@@ -154,94 +155,17 @@ object DGCommon {
     }
 
     /**
-     * グラフ種別取得\n グラフの名前から種類番号を返す
-     *
-     * @param kind_str
-     * グラフ名称
-     * @return グラフ種別
+     * グラフ番号取得
      */
     fun getKind(kind_str: String): Int {
-        if (kind_str.matches("".toRegex()))
-            return NPOINT
-
-        val k_str = kind_str.toUpperCase(Locale.ENGLISH) // 大・小文字問わない
-
-        return if (k_str.matches(STR_NPOINT.toRegex()))
-            NPOINT
-        else if (k_str.matches(STR_STARMINE.toRegex()))
-            STARMINE
-        else if (k_str.matches(STR_NSTAR.toRegex()))
-            NSTAR
-        else if (k_str.matches(STR_RANDOMSHAPE.toRegex()))
-            RANDOMSHAPE
-        else if (k_str.matches(STR_RANDOMSHAPE2.toRegex()))
-            RANDOMSHAPE2
-        else if (k_str.matches(STR_BINARYTREE.toRegex()))
-            BINARYTREE
-        else if (k_str.matches(STR_DRAGONCURVE.toRegex()))
-            DRAGONCURVE
-        else if (k_str.matches(STR_FOLDTRIANGLE.toRegex()))
-            FOLDTRIANGLE
-        else if (k_str.matches(STR_CCURVE.toRegex()))
-            CCURVE
-        else if (k_str.matches(STR_KOCHCURVE.toRegex()))
-            KOCHCURVE
-        else if (k_str.matches(STR_KOCHTRIANGLE_INNER.toRegex()))
-            KOCHTRIANGLE_INNER
-        else if (k_str.matches(STR_KOCHTRIANGLE_OUTER.toRegex()))
-            KOCHTRIANGLE_OUTER
-        else if (k_str.matches(STR_ROSECURVE.toRegex()))
-            ROSECURVE
-        else if (k_str.matches(STR_HILBERT.toRegex()))
-            HILBERT
-        else if (k_str.matches(STR_LEAF.toRegex()))
-            LEAF
-        else if (k_str.matches(STR_SIERPINSKI_GASKET.toRegex()))
-            SIERPINSKI_GASKET
-        else if (k_str.matches(STR_SIERPINSKI_CARPET.toRegex()))
-            SIERPINSKI_CARPET
-        else if (k_str.matches(STR_TRIFOLD_CIS.toRegex()))
-            TRIFOLD_CIS
-        else if (k_str.matches(STR_TRIFOLD_TRANS.toRegex()))
-            TRIFOLD_TRANS
-        else
-            -1
+        return kind[kind_str.toUpperCase()] ?: NPOINT
     }
 
     /**
      * グラフ名称取得
-     *
-     * @param kind
-     * グラフ種別
-     * @return グラフ名称
      */
-    fun getGraphKindString(kind: Int): String {
-        // グラフの名前から種類番号を返す
-        when (kind) {
-            NPOINT -> return STR_NPOINT
-            STARMINE -> return STR_STARMINE
-            NSTAR -> return STR_NSTAR
-            RANDOMSHAPE -> return STR_RANDOMSHAPE
-            RANDOMSHAPE2 -> return STR_RANDOMSHAPE2
-
-            BINARYTREE -> return STR_BINARYTREE
-            DRAGONCURVE -> return STR_DRAGONCURVE
-            FOLDTRIANGLE -> return STR_FOLDTRIANGLE
-            CCURVE -> return STR_CCURVE
-
-            KOCHCURVE -> return STR_KOCHCURVE
-            KOCHTRIANGLE_INNER -> return STR_KOCHTRIANGLE_INNER
-            KOCHTRIANGLE_OUTER -> return STR_KOCHTRIANGLE_OUTER
-
-            ROSECURVE -> return STR_ROSECURVE
-            HILBERT -> return STR_HILBERT
-            LEAF -> return STR_LEAF
-            SIERPINSKI_GASKET -> return STR_SIERPINSKI_GASKET
-            SIERPINSKI_CARPET -> return STR_SIERPINSKI_CARPET
-            TRIFOLD_CIS -> return STR_TRIFOLD_CIS
-            TRIFOLD_TRANS -> return STR_TRIFOLD_TRANS
-            else -> return ""
-        }
+    fun getGraphKindString(value: Int): String {
+        return this.kind.filterValues { it == value }.keys.firstOrNull() ?: ""
     }
 
     /**

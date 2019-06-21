@@ -104,7 +104,7 @@
         android:contentDescription="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/fore_focus"
-        android:tag="KOCHOUTER" />
+        android:tag="KOCHTRIANGLE_OUTER" />
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_dragonCurve_rev"
@@ -137,7 +137,7 @@
         android:contentDescription="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/fore_focus"
-        android:tag="KOCHINNER" />
+        android:tag="KOCHTRIANGLE_INNER" />
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_sierpenskiCarpet"
