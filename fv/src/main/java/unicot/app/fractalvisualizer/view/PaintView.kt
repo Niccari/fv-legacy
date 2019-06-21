@@ -97,27 +97,27 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
         checkBox_gsp_draw_each.setOnCheckedChangeListener {
             box, checked ->
             if (checked) {
-                dgc.operate(DGCore.OP_DRAW_EACH, 1)
+                dgc.changeDrawSetting(DGCore.OP_DRAW_EACH, 1)
                 gui_paint_sb_draw_each_length.visibility = View.VISIBLE
             } else {
-                dgc.operate(DGCore.OP_DRAW_EACH, 0)
+                dgc.changeDrawSetting(DGCore.OP_DRAW_EACH, 0)
                 gui_paint_sb_draw_each_length.visibility = View.INVISIBLE
             }
         }
 
         checkBox_gsp_color_each.setOnCheckedChangeListener {
             box, checked ->
-            dgc.operate(DGCore.OP_COLOREACH, checked)
+            dgc.changeDrawSetting(DGCore.OP_COLOREACH, checked)
         }
 
         gui_paint_sb_thickness.listener = {
-            dgc.operate(DGCore.OP_THICKNESS, it.toInt())
+            dgc.changeDrawSetting(DGCore.OP_THICKNESS, it.toInt())
         }
         gui_paint_sb_draw_each_length.listener = {
-            dgc.operate(DGCore.OP_DRAW_EACH_PERCENT, it)
+            dgc.changeDrawSetting(DGCore.OP_DRAW_EACH_PCT, it.toInt())
         }
         gui_paint_sb_draw_color_shift.listener = {
-            dgc.operate(DGCore.OP_COLOR_SHIFT, it.toInt())
+            dgc.changeDrawSetting(DGCore.OP_COLOR_SHIFT, it.toInt())
 
         }
 
@@ -133,7 +133,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
 
         gui_paint_sb_draw_color_alpha.listener = {
             if (dgc.isGraphSelected)
-                dgc.operate(DGCore.OP_SET_ALPHA, it.toInt())
+                dgc.changeDrawSetting(DGCore.OP_SET_ALPHA, it.toInt())
         }
 
         gui_paint_colors_sb_red.setOnSeekBarChangeListener(colorChangeListener)
@@ -154,7 +154,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
         (v as ImageButton).setImageResource(R.drawable.color_activated_focus_item)
         mIBCurrentColor = v
 
-        dgc.operate(DGCore.OP_COLORPATTERN, mIBCurrentColor?.tag.toString())
+        dgc.changeDrawSetting(DGCore.OP_COLORPATTERN, mIBCurrentColor?.tag.toString())
     }
 
     fun onBrushButtonClicked(v: View){
@@ -162,7 +162,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
         (v as ImageButton).setImageResource(R.drawable.color_activated_focus_item)
         mIBCurrentBrush = v as ImageButton
 
-        dgc.operate(DGCore.OP_BRUSHTYPE, mIBCurrentBrush?.tag.toString())
+        dgc.changeDrawSetting(DGCore.OP_BRUSHTYPE, mIBCurrentBrush?.tag.toString())
     }
 
     private fun changeSingleColorButtonColor() {
@@ -176,6 +176,6 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
 
         val mSingleColor = alpha shl 24 or (red shl 16) or (green shl 8) or blue
         imageButton_gsp_single_icon.getBackground().setColorFilter(mSingleColor, PorterDuff.Mode.SRC_IN)
-        dgc.operate(DGCore.OP_SET_COLOR, mSingleColor)
+        dgc.changeDrawSetting(DGCore.OP_SET_COLOR, mSingleColor)
     }
 }

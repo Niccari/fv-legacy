@@ -23,7 +23,7 @@ class DGCore {
 
     private val diff_pos: Point = Point(-1, -1)
     private val cog_graphs: PointF = PointF()   // 選択したグラフ郡の重心
-    private var action: Int = OP_NOP            // 操作種類(グラフの移動・回転・拡大縮小に使用, -1 : 無し / >= 0 : 操作)
+    private var action: Int = -1               // 操作種類(グラフの移動・回転・拡大縮小に使用, -1 : 無し / >= 0 : 操作)
     private val sgn: Point = Point( 1, 1)
 
     /**
@@ -54,7 +54,7 @@ class DGCore {
      * 初期化：インスタンス取得、データロードなど
      * @param size 画面サイズ(絶対座標)
      */
-    fun init(size: Point) {
+    fun setScreenSize(size: Point) {
         screenSize.set(size.x, size.y)
     }
 
@@ -171,7 +171,7 @@ class DGCore {
      * @param pt_old 操作前座標
      * @param pt_new 操作後座標
      */
-    fun operate(pt_old: Point, pt_new: Point) {
+    fun affineTransformGraphs(pt_old: Point, pt_new: Point) {
         val vct_rel: PointF
         if (pt_old.x < 0 && pt_old.y < 0) {
             diff_pos.set(-1, -1)
@@ -238,131 +238,71 @@ class DGCore {
     }
 
     /**
-     * 現在生成している全てのグラフを削除する
-     * @param kind 処理コード(グラフ消去)
+     * 現在選択している全てのグラフを削除する
      */
-    fun operate(kind: Int) {
-        when (kind) {
-            OP_GRAPH_DELETE -> {
-                val len = selectedGraph.size
-                for (i in 0 until len) {
-                    graph.remove(selectedGraph[0])
-                    selectedGraph.remove(selectedGraph[0])
-                    mSelectedGraphIndex.removeAt(0)
-                    mSelectedGraphDistance.remove(mSelectedGraphDistance[0])
+    fun deleteSelectedGraphs() {
+        selectedGraph.map{ graph.remove(it) }
+        mSelectedGraphIndex.clear()
+        mSelectedGraphDistance.clear()
+        selectedGraph.clear()
+        this.isGraphSelected = false
+    }
 
-                }
-                if (selectedGraph.size == 0) {
-                    this.isGraphSelected = false
-                }
-            }
+    /**
+     * グラフ形状を変更する
+     * @param kind 処理コード
+     * @param value 更新値
+     */
+    fun transformGraph(kind: Int, value: Float) {
+        if(selectedGraph.size != 1) return
+        val graph = selectedGraph.firstOrNull() ?: return
+
+        when (kind) {
+            OP_COMPLEXITY       -> graph.setComplexity(value.toInt())
+            OP_GRAPH_ROTATE     -> graph.setRotate(value)
+            OP_MUTATION_SIZE    -> graph.setMutationSize(value)
+            OP_MUTATION_ANGLE   -> graph.setMutationAngle(value)
+            OP_RANDOMIZER_SIZE  -> graph.setRandomizerSize(value)
+            OP_RANDOMIZER_ANGLE -> graph.setRandomizerAngle(value)
+
+            OP_LEAF_BRANCH  -> (graph as Leaf).setBranch(value.toInt())
+            OP_SGASKET_SKEW -> (graph as SGasket).skewAngle = value
+        }
+    }
+    /**
+     * 描画設定を更新する
+     * @param kind 処理コード
+     * @param value 更新値
+     */
+    fun changeDrawSetting(kind: Int, value: Int) {
+        when (kind) {
+            OP_THICKNESS     -> selectedGraph.map{ it.setThickness(value) }
+            OP_DRAW_EACH     -> selectedGraph.map{ it.setDrawEach(value) }
+            OP_COLOR_SHIFT   -> selectedGraph.map{ it.info.cp.shiftSpeed = value }
+            OP_SET_COLOR     -> selectedGraph.map{ it.info.cp.color = value }
+            OP_SET_ALPHA     -> selectedGraph.map{ it.info.cp.alpha = value }
+            OP_DRAW_EACH_PCT -> selectedGraph.map{ it.setDrawEachLength(value.toFloat()) }
         }
     }
 
     /**
-     * グラフ形状操作系(回転・Mutation・Randomizer)の処理を実施
-     * @param kind 処理コード(グラフ操作系))
-     * @param value グラフ形状の更新値
+     * 描画設定を更新する
+     * @param kind 処理コード
      */
-    fun operate(kind: Int, value: Float) {
+    fun changeDrawSetting(kind: Int, arg: Boolean) {
         when (kind) {
-            OP_GRAPH_ROTATE -> if (selectedGraph.size == 1)
-                selectedGraph[0].setRotate(value)
-            OP_MUTATION_SIZE  // mutation - 大きさを設定
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setMutationSize(value)
-            OP_MUTATION_ANGLE // mutation - 角度を設定
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setMutationAngle(value)
-            OP_RANDOMIZER_SIZE // randomizer - 大きさを設定
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setRandomizerSize(value)
-            OP_RANDOMIZER_ANGLE  // randomizer - 角度を設定
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setRandomizerAngle(value)
-            OP_DRAW_EACH_PERCENT  // 線分個別描画時の長さを設定(％値)
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setDrawEachLength(value)
-
-            OP_SGASKET_SKEW  //
-            -> for (i in selectedGraph.indices) {
-                val graph = selectedGraph[i] as SGasket
-                graph.skewAngle = value
-            }
+            OP_COLOREACH -> selectedGraph.map{ it.setColorRange(arg) }
         }
     }
 
     /**
-     * グラフ変更：
-     * - complexity変更(単選択時のみ)\n
-     * - 描画設定<色設定></色設定>、線の太さなど>
-     * @param kind 処理コード(グラフ操作系))
-     * @param value グラフ形状の更新値
+     * 描画設定を更新する
+     * @param value 処理コード
      */
-    fun operate(kind: Int, value: Int) {
+    fun changeDrawSetting(kind: Int, value: String) {
         when (kind) {
-            OP_GRAPH_CHANGE    // グラフ変更(DEPRECATED)
-            -> {
-            }
-            OP_COMPLEXITY    // complexity変更
-            -> if (selectedGraph.size == 1)
-                selectedGraph[0].setComplexity(value)
-            OP_THICKNESS    // 線の太さ
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setThickness(value)
-
-            OP_DRAW_EACH    // 描画方法の変化[全体/個別]
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setDrawEach(value)
-            OP_COLOR_SHIFT // 色の遷移速度
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].info.cp
-                        .shiftSpeed = value
-            OP_SET_COLOR  // 色を設定
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].info.cp.color = value
-            OP_SET_ALPHA  // 色を設定
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].info.cp.alpha = value
-            OP_DRAW_EACH_ABS  // 線分個別描画時の長さを設定(絶対値)
-            -> for (i in selectedGraph.indices) {
-                selectedGraph[i].setDrawEachLength(value.toFloat())
-            }
-            OP_LEAF_BRANCH  //
-            -> for (i in selectedGraph.indices) {
-                val graph = selectedGraph[i] as Leaf
-                graph.setBranch(value)
-            }
-        }
-    }
-
-    /**
-     * グラフ変更：
-     * - 描画設定<色変化></色変化>[全体/個別]・アンチエイリアス>
-     * @param kind 処理コード(グラフ操作系))
-     */
-    fun operate(kind: Int, arg: Boolean) {
-        when (kind) {
-            OP_COLOREACH    // 色変化[全体/個別]
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setColorRange(arg)
-        }
-    }
-
-    /**
-     * グラフ変更：
-     * - 描画設定<色パターン></色パターン>・ブラシパターン設定>
-     * @param kind 処理コード(グラフ操作系))
-     * @param value グラフ形状の更新値
-     */
-    fun operate(kind: Int, value: String) {
-        when (kind) {
-            OP_COLORPATTERN    // 色パターン設定
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].info.cp.setColMode(value)
-            OP_BRUSHTYPE    // ブラシパターン設定
-            -> for (i in selectedGraph.indices)
-                selectedGraph[i].setBrushType(value)
+            OP_COLORPATTERN -> selectedGraph.map{ it.info.cp.setColMode(value) }
+            OP_BRUSHTYPE    -> selectedGraph.map{ it.setBrushType(value) }
         }
     }
 
@@ -413,8 +353,6 @@ class DGCore {
          */
         val DIST_THRESH_GRAPH_SELECT_SCALING = 0.40f
 
-        // 定数群(operate用)
-        // グラフの移動・拡大縮小・回転
         /**
          * 制御番号：グラフの平行移動
          */
@@ -428,8 +366,6 @@ class DGCore {
          */
         private val OP_ROTATE = 2
 
-        // 以下、グラフ設定関連
-        // 変異率，ランダム度
         /**
          * 制御番号：変異率の大きさ
          */
@@ -456,7 +392,6 @@ class DGCore {
          */
         val OP_SGASKET_SKEW = 18
 
-        // グラフの描画設定
         /**
          * 制御番号：ペンの太さ(グラフ描画設定)
          */
@@ -480,11 +415,7 @@ class DGCore {
         /**
          * 制御番号：グラフの個別描画線分数(パーセント表示)(グラフ描画設定)
          */
-        val OP_DRAW_EACH_PERCENT = 26
-        /**
-         * 制御番号：グラフの個別描画線分数(絶対値)(グラフ描画設定)
-         */
-        private val OP_DRAW_EACH_ABS = 27
+        val OP_DRAW_EACH_PCT = 26
         /**
          * 制御番号：色の遷移速度変更(グラフ描画設定)
          */
@@ -498,27 +429,13 @@ class DGCore {
          */
         val OP_SET_ALPHA = 31
 
-        // グラフ種類の変更・複雑度の変更(グラフ単体用)
-        /**
-         * 制御番号：グラフ変更(グラフ変形)
-         */
-        private val OP_GRAPH_CHANGE = 40
         /**
          * 制御番号：複雑さの変更(グラフ変形)
          */
         val OP_COMPLEXITY = 41
         /**
-         * 制御番号：グラフ消去(グラフ変形)
-         */
-        val OP_GRAPH_DELETE = 42
-        /**
          * 制御番号：グラフの自転速度の変更(グラフ変形)
          */
         val OP_GRAPH_ROTATE = 44
-
-        /**
-         * 制御番号：何もしない
-         */
-        private val OP_NOP = -1
     }
 }
