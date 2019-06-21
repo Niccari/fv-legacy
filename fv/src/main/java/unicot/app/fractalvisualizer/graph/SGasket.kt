@@ -9,21 +9,13 @@ import unicot.app.fractalvisualizer.core.DGCommon
  * シェルピンスキーの三角形
  */
 class SGasket : Graph() {
-    private var mSkewAngle: Float = 0.toFloat()
-
-    var skewAngle: Float
-        get() = mSkewAngle
-        set(s) {
-            if (SKEW_MIN <= s && SKEW_MAX >= s) {
-                mSkewAngle = s
-            }
-        }
+    var skewAngle: Float = 0.0f
 
     init {
         complexityMin = 1
         complexityMax = 5
 
-        mSkewAngle = SKEW_INIT
+        skewAngle = 0.0f
 
         info.graph_kind = DGCommon.SIERPINSKI_GASKET
     }
@@ -107,7 +99,7 @@ class SGasket : Graph() {
         var x_tmp: Float
         var y_tmp: Float
         for (n in point.indices) {
-            x_tmp = (point[n].x + point[n].y * Math.tan(Math.toRadians(mSkewAngle.toDouble()))).toFloat()
+            x_tmp = (point[n].x + point[n].y * Math.tan(Math.toRadians(skewAngle.toDouble()))).toFloat()
             y_tmp = point[n].y
 
             point[n].x = x_tmp
@@ -116,11 +108,5 @@ class SGasket : Graph() {
 
         rotateRelativePoint()
         translateRelativePoint()
-    }
-
-    companion object {
-        val SKEW_MIN = -85.0f
-        val SKEW_MAX = 85.0f
-        private val SKEW_INIT = 0.0f
     }
 }

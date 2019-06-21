@@ -86,30 +86,30 @@ class GraphInfo {
      */
     init {
         /* グラフ系 */
-        pos = PointF(GRAPH_POS_X_INIT, GRAPH_POS_Y_INIT)
-        size = DimensionF(GRAPH_SIZE_WIDTH_INIT, GRAPH_SIZE_HEIGHT_INIT)
+        pos = PointF(0.0f, 0.0f)
+        size = DimensionF(0.5f, 0.5f)
 
-        angle = GRAPH_ANGLE_INIT
-        rot_speed = GRAPH_ROT_SPEED_INIT
+        angle = 0.0f
+        rot_speed = 0.0f
 
-        mutation = GraphDisplacement(GRAPH_MUTATION_SCALE_INIT, GRAPH_MUTATION_ANGLE_INIT)
-        randomize = GraphDisplacement(GRAPH_RANDOMIZE_SCALE_INIT, GRAPH_RANDOMIZE_ANGLE_INIT)
+        mutation = GraphDisplacement(1.0f, 1.0f)
+        randomize = GraphDisplacement(0.0f, 0.0f)
 
         cp = ColorPattern()
 
-        complexity = COMPLEXITY_INIT
+        complexity = 3
 
-        is_recursive = GRAPH_IS_RECURSIVE_INIT
+        is_recursive = false
 
         /* Draw系*/
-        mCurrentDrawOrder = GRAPH_DRAW_CUR_ORDER_INIT
+        mCurrentDrawOrder = 0
 
-        draw_kind = GRAPH_DRAW_KIND_INIT
+        draw_kind = DRAW_ALL
 
-        mLineThickness = GRAPH_DRAW_THICKNESS_INIT.toFloat()
-        mEachLineHistory = GRAPH_DRAW_HISTORY_INIT
-        mIsColorEach = GRAPH_DRAW_IS_COLOREACH_INIT
-        mBrushType = GRAPH_DRAW_BRUSHTYPE_INIT
+        mLineThickness = 3.0f
+        mEachLineHistory = 10
+        mIsColorEach = false
+        mBrushType = BRUSHTYPE_LINE
     }
 
     /**
@@ -177,38 +177,5 @@ class GraphInfo {
          * グラフサイズの中間値(相対座標)
          */
         val GRAPH_SIZE_MID = (GRAPH_SIZE_MAX + GRAPH_SIZE_MIN) / 2
-
-        val GRAPH_ROTATE_MIN = -10.0f
-        val GRAPH_ROTATE_MAX =  10.0f
-        /*
-         * 初期設定：グラフの複雑さ
-         */
-        val COMPLEXITY_INIT = 3
-
-        // 初期設定：グラフ
-        private val GRAPH_POS_X_INIT = 0.0f
-        private val GRAPH_POS_Y_INIT = 0.0f
-
-        private val GRAPH_SIZE_WIDTH_INIT = 0.5f
-        private val GRAPH_SIZE_HEIGHT_INIT = 0.5f
-
-        private val GRAPH_ANGLE_INIT = 0.0f
-        private val GRAPH_ROT_SPEED_INIT = 0.0f
-
-        private val GRAPH_MUTATION_SCALE_INIT = 1.0f
-        private val GRAPH_MUTATION_ANGLE_INIT = 1.0f
-
-        private val GRAPH_RANDOMIZE_SCALE_INIT = 0.0f
-        private val GRAPH_RANDOMIZE_ANGLE_INIT = 0.0f
-
-        private val GRAPH_IS_RECURSIVE_INIT = false
-
-        // 初期設定：描画
-        private val GRAPH_DRAW_CUR_ORDER_INIT = 0
-        private val GRAPH_DRAW_KIND_INIT = DRAW_ALL
-        private val GRAPH_DRAW_THICKNESS_INIT = 3
-        private val GRAPH_DRAW_HISTORY_INIT = 10
-        private val GRAPH_DRAW_IS_COLOREACH_INIT = false
-        private val GRAPH_DRAW_BRUSHTYPE_INIT = BRUSHTYPE_LINE
     }
 }
