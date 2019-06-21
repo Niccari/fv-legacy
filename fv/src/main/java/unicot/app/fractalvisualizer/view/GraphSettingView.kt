@@ -4,15 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.SeekBar
 import kotlinx.android.synthetic.main.gui_shape.view.*
 import unicot.app.fractalvisualizer.R
 import unicot.app.fractalvisualizer.core.DGCommon
 import unicot.app.fractalvisualizer.core.DGCore
-import unicot.app.fractalvisualizer.graph.GraphInfo
 import unicot.app.fractalvisualizer.graph.Leaf
 import unicot.app.fractalvisualizer.graph.SGasket
-import unicot.app.fractalvisualizer.model.GraphDisplacement
 
 /**
  * グラフ変形
@@ -66,16 +63,16 @@ class GraphSettingView(context: Context, attrs: AttributeSet? = null) : LinearLa
     }
 
     private fun setEvent(){
-        gui_graph_sb_complexity.listener = { dgc.operate(DGCore.OP_COMPLEXITY, it.toInt()) }
-        gui_graph_sb_rorate.listener     = { dgc.operate(DGCore.OP_GRAPH_ROTATE, it) }
-        gui_graph_sb_mut_size.listener   = { dgc.operate(DGCore.OP_MUTATION_SIZE, it) }
-        gui_graph_sb_mut_angle.listener  = { dgc.operate(DGCore.OP_MUTATION_ANGLE, it) }
-        gui_graph_sb_rand_size.listener  = { dgc.operate(DGCore.OP_RANDOMIZER_SIZE, it) }
-        gui_graph_sb_rand_angle.listener = { dgc.operate(DGCore.OP_RANDOMIZER_ANGLE, it) }
+        gui_graph_sb_complexity.listener = { dgc.transformGraph(DGCore.OP_COMPLEXITY, it) }
+        gui_graph_sb_rorate.listener     = { dgc.transformGraph(DGCore.OP_GRAPH_ROTATE, it) }
+        gui_graph_sb_mut_size.listener   = { dgc.transformGraph(DGCore.OP_MUTATION_SIZE, it) }
+        gui_graph_sb_mut_angle.listener  = { dgc.transformGraph(DGCore.OP_MUTATION_ANGLE, it) }
+        gui_graph_sb_rand_size.listener  = { dgc.transformGraph(DGCore.OP_RANDOMIZER_SIZE, it) }
+        gui_graph_sb_rand_angle.listener = { dgc.transformGraph(DGCore.OP_RANDOMIZER_ANGLE, it) }
 
-        gui_graph_sb_rand_size.listener  = { dgc.operate(DGCore.OP_RANDOMIZER_SIZE, it) }
-        gui_graph_sb_rand_angle.listener = { dgc.operate(DGCore.OP_RANDOMIZER_ANGLE, it) }
-        gui_graph_sb_leaf_branch.listener = { dgc.operate(DGCore.OP_LEAF_BRANCH, it.toInt()) }
-        gui_graph_sb_sgasket_skew.listener = { dgc.operate(DGCore.OP_SGASKET_SKEW, it) }
+        gui_graph_sb_rand_size.listener    = { dgc.transformGraph(DGCore.OP_RANDOMIZER_SIZE, it) }
+        gui_graph_sb_rand_angle.listener   = { dgc.transformGraph(DGCore.OP_RANDOMIZER_ANGLE, it) }
+        gui_graph_sb_leaf_branch.listener  = { dgc.transformGraph(DGCore.OP_LEAF_BRANCH, it) }
+        gui_graph_sb_sgasket_skew.listener = { dgc.transformGraph(DGCore.OP_SGASKET_SKEW, it) }
     }
 }

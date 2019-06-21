@@ -12,7 +12,6 @@ import android.os.Environment
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import android.util.Xml
 import android.view.*
 import android.view.View.MeasureSpec
 import android.view.ViewGroup.LayoutParams
@@ -129,7 +128,7 @@ class MainActivity : Activity() {
         STR_APP_ROOT_DIR = filesDir.path
 
         // 処理を開始
-        dgc.init(window_size)
+        dgc.setScreenSize(window_size)
 
         is_touching = false
         val ibListener = View.OnClickListener { v ->
@@ -168,7 +167,7 @@ class MainActivity : Activity() {
         mGraphDeleteIcon = ImageButton(this)
         mGraphDeleteIcon.setOnClickListener {
             stop()
-            dgc.operate(DGCore.OP_GRAPH_DELETE)
+            dgc.deleteSelectedGraphs()
             changeGuiButtonStatus()
 
             if (dgc.selectedGraphNum == 0) {
@@ -261,14 +260,14 @@ class MainActivity : Activity() {
 
             } else if (event.action == MotionEvent.ACTION_UP) {
                 is_touching = false
-                dgc.operate(Point(-1, -1), touch_pt) // 移動値をリセット
+                dgc.affineTransformGraphs(Point(-1, -1), touch_pt) // 移動値をリセット
 
                 if (!dgc.isGraphSelected)
                     dgc.select(touched_pt, touch_pt)
 
             } else if (event.action == MotionEvent.ACTION_MOVE) {
                 if (dgc.isGraphSelected)
-                    dgc.operate(touched_pt, touch_pt) // 選択したグラフについて移動・回転・拡大縮小のいずれかを行う
+                    dgc.affineTransformGraphs(touched_pt, touch_pt) // 選択したグラフについて移動・回転・拡大縮小のいずれかを行う
             }
         }
         /* グラフの選択状況に応じてGUIボタンを表示 */
