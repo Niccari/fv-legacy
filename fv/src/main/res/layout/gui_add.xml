@@ -1,251 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LinearLayout_addGraph"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
-    android:layout_marginTop="2dp"
-    android:background="@android:color/transparent"
-    android:orientation="vertical" >
+    tools:columnCount="5"
+    tools:parentTag="android.widget.GridLayout">
 
-    <LinearLayout
-        android:id="@+id/LinearLayout_ag_row1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp" >
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_starmine"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/starmine"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="STARMINE" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_nStar"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/nstar"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="NSTAR" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_nPoint"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/npoint"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="NPOINT" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_starmine"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/starmine"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="STARMINE" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_nStar"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/nstar"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="NSTAR" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_nPoint"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/npoint"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="NPOINT" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_random1"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/random_stat"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="RANDOMSHAPE" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_random1"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/random_stat"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="RANDOMSHAPE" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_random2"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/random_every"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="RANDOMSHAPE2" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_random2"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/random_every"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="RANDOMSHAPE2" />
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_cCurve"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/ccurve"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="CCURVE" />
 
-    <LinearLayout
-        android:id="@+id/LinearLayout_ag_row2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp" >
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_dragonCurve"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/dragoncurve"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="DRAGONCURVE" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_dragonCurve"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/dragoncurve"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="DRAGONCURVE" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_koch"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/kochcurve"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="KOCHCURVE" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_dragonCurve_rev"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/dragoncurve_backward"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="FOLDTRIANGLE" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_kochOuter"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/kochcurve_outer"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="KOCHOUTER" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_cCurve"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/ccurve"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="CCURVE" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_dragonCurve_rev"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/dragoncurve_backward"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="FOLDTRIANGLE" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_koch"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/kochcurve"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="KOCHCURVE" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_sierpenskiGasket"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/gasket_tri"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="SIERPINSKI_GASKET" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_kochOuter"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/kochcurve_outer"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="KOCHOUTER" />
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_kochInner"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/kochcurve_inner"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="KOCHINNER" />
 
-    <LinearLayout
-        android:id="@+id/LinearLayout_ag_row3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp" >
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_sierpenskiCarpet"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/gasket_carpet"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="SIERPINSKI_CARPET" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_kochInner"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/kochcurve_inner"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="KOCHINNER" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_rose"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/rosecurve"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="ROSECURVE" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_rose"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/rosecurve"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="ROSECURVE" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_tree"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/leaf"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="LEAF" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_sierpenskiGasket"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/gasket_tri"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="SIERPINSKI_GASKET" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_binaryTree"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/binarytree"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="BINARYTREE" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_tree"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/leaf"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="LEAF" />
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_hilbert"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/hilbert"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fore_focus"
+        android:tag="HILBERT" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_sierpenskiCarpet"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/gasket_carpet"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="SIERPINSKI_CARPET" />
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_trifold_trans"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/hilbert"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/trifold_lr"
+        android:tag="TRIFOLD_TRANS" />
 
-    <LinearLayout
-        android:id="@+id/LinearLayout_ag_row4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp" >
+    <ImageButton
+        android:id="@+id/imageButton_graphIcon_trifold_cis"
+        android:layout_width="@dimen/gui_graph_add_icon_size"
+        android:layout_height="@dimen/gui_graph_add_icon_size"
+        android:layout_margin="@dimen/gui_add_space_padding"
+        android:background="@drawable/hilbert"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/trifold_ll"
+        android:tag="TRIFOLD_CIS" />
 
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_binaryTree"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/binarytree"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="BINARYTREE" />
-
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_hilbert"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/hilbert"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fore_focus"
-            android:tag="HILBERT" />
-
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_trifold_cis"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/hilbert"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/trifold_ll"
-            android:tag="TRIFOLD_CIS" />
-
-        <ImageButton
-            android:id="@+id/imageButton_graphIcon_trifold_trans"
-            android:layout_width="@dimen/gui_graph_add_icon_size"
-            android:layout_height="@dimen/gui_graph_add_icon_size"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/hilbert"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/trifold_lr"
-            android:tag="TRIFOLD_TRANS" />
-    </LinearLayout>
-
-</LinearLayout>
+</merge>
