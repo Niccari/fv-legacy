@@ -11,16 +11,14 @@ import android.graphics.Bitmap.CompressFormat
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.format.DateFormat
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import android.view.*
 import android.view.View.MeasureSpec
 import android.view.ViewGroup.LayoutParams
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupWindow
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.main.*
 import org.xmlpull.v1.XmlPullParserException
 import unicot.app.fractalvisualizer.R
@@ -29,9 +27,10 @@ import unicot.app.fractalvisualizer.core.DGCore
 import unicot.app.fractalvisualizer.core.DGDataLoad
 import unicot.app.fractalvisualizer.core.DGDataWrite
 import unicot.app.fractalvisualizer.view.*
-import java.io.*
-import java.lang.Exception
-import java.util.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -234,7 +233,6 @@ class MainActivity : Activity() {
                     }
                 })
             }catch (e: Exception){
-                Log.e("MYTAG", "Draw thread failed!!")
                 e.printStackTrace()
                 stop()
             }
@@ -538,7 +536,7 @@ class MainActivity : Activity() {
             } else {
                 bmp.compress(CompressFormat.PNG, 100, outputStream)
                 val contentValues = ContentValues()
-                contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
                 contentValues.put("_data", imageFile.path)
                 contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
             }
