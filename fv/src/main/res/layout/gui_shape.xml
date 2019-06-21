@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/gui_shape_ll_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,7 +10,7 @@
     android:paddingBottom="3dp"
     android:paddingLeft="3dp"
     android:paddingRight="2dp"
-    android:paddingTop="3dp" >
+    android:paddingTop="3dp">
 
     <ImageView
         android:id="@+id/imageView_gss_now_graph_icon"
@@ -22,45 +23,31 @@
         android:scaleType="fitXY"
         android:src="@drawable/fv_icon" />
 
-    <LinearLayout
+    <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+        android:id="@+id/gui_graph_sb_complexity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        app:is_int="true"
+        app:is_seek_invoke="true"
+        app:is_value_visible="true"
+        app:title="@string/gss_complexity"
+        app:val_default="3"
+        app:val_max="7"
+        app:val_min="1" />
 
-        <TextView
-            android:id="@+id/textView_gss_complexity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/gss_complexity"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#FFFFFFFF" />
-
-        <SeekBar
-            android:id="@+id/seekBar_gss_complexity_setting"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.27"/>
-    </LinearLayout>
-
-    <LinearLayout
+    <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+        android:id="@+id/gui_graph_sb_rorate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/textView_gss_rotate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/gss_rotate"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#FFFFFFFF" />
-
-        <SeekBar
-            android:id="@+id/seekBar_gss_rotate_setting"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.27"
-            android:progress="50"
-            android:max="100"/>
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        app:is_seek_invoke="true"
+        app:is_value_visible="true"
+        app:title="@string/gss_rotate"
+        app:val_step="0.2"
+        app:val_default="0.0"
+        app:val_max="10.0"
+        app:val_min="-10.0" />
 
     <LinearLayout
         android:id="@+id/gui_shape_recursive_ll_root"
@@ -81,49 +68,31 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout_gss_mutation_size"
+        <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+            android:id="@+id/gui_graph_sb_mut_size"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:is_seek_invoke="true"
+            app:is_value_visible="true"
+            app:title="@string/gss_size"
+            app:val_step="0.02"
+            app:val_default="1.0"
+            app:val_max="1.1"
+            app:val_min="-1.1" />
 
-            <TextView
-                android:id="@+id/TextView_gss_mutation_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gss_size"
-
-                android:layout_marginRight="10dp"
-                android:textColor="@android:color/white" />
-
-            <SeekBar
-                android:id="@+id/seekBar_gss_mutation_size"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:max="150"
-                android:progress="125" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout_gss_mutation_angle"
+        <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+            android:id="@+id/gui_graph_sb_mut_angle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/TextView_gss_mutation_angle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gss_angle"
-
-                android:textColor="@android:color/white" />
-
-            <SeekBar
-                android:id="@+id/seekBar_gss_mutation_angle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="80"
-                android:progress="60" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:is_seek_invoke="true"
+            app:is_value_visible="true"
+            app:title="@string/gss_angle"
+            app:val_step="0.05"
+            app:val_default="1.0"
+            app:val_max="2.0"
+            app:val_min="-2.0" />
 
         <TextView
             android:id="@+id/textView_gss_randomizer"
@@ -133,104 +102,59 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout_gss_randomizer_size"
+
+        <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+            android:id="@+id/gui_graph_sb_rand_size"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:is_seek_invoke="true"
+            app:is_value_visible="true"
+            app:title="@string/gss_size"
+            app:val_step="0.02"
+            app:val_default="0.0"
+            app:val_max="1.1"
+            app:val_min="-1.1" />
 
-            <TextView
-                android:id="@+id/TextView_gss_randomizer_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gss_size"
-
-                android:layout_marginRight="10dp"
-                android:textColor="@android:color/white" />
-
-            <SeekBar
-                android:id="@+id/seekBar_gss_randomizer_size"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:max="150"
-                android:progress="75" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout_gss_randomizer_angle"
+        <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+            android:id="@+id/gui_graph_sb_rand_angle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/TextView_gss_randomizer_angle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gss_angle"
-
-                android:textColor="@android:color/white" />
-
-            <SeekBar
-                android:id="@+id/seekBar_gss_randomizer_angle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="80"
-                android:progress="40" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:is_seek_invoke="true"
+            app:is_value_visible="true"
+            app:title="@string/gss_angle"
+            app:val_step="0.05"
+            app:val_default="0.0"
+            app:val_max="2.0"
+            app:val_min="-2.0" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/gui_shape_leaf_ll_root"
+    <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+        android:id="@+id/gui_graph_sb_leaf_branch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="0dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="0dp"
-        android:visibility="gone">
+        app:is_int="true"
+        app:is_seek_invoke="true"
+        app:is_value_visible="true"
+        app:title="@string/gss_leaf_branch"
+        app:val_default="2"
+        app:val_max="4"
+        app:val_min="1"
+        android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/TextView_gss_leaf_branch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="18dp"
-            android:text="@string/gss_leaf_branch"
-            android:textColor="@android:color/white" />
-
-        <SeekBar
-            android:id="@+id/seekBar_gss_leaf_branch"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:max="5"
-            android:progress="0" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/gui_shape_sgasket_ll_root"
+    <unicot.app.fractalvisualizer.view.SeekBarWithLabel
+        android:id="@+id/gui_graph_sb_sgasket_skew"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="0dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="0dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/TextView_gss_sgasket_skew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="18dp"
-            android:text="@string/gss_sgasket_skew"
-            android:textColor="@android:color/white" />
-
-        <SeekBar
-            android:id="@+id/seekBar_gss_sgasket_skew"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:max="34"
-            android:progress="0" />
-    </LinearLayout>
-
+        android:layout_height="wrap_content"
+        app:is_int="true"
+        app:is_seek_invoke="true"
+        app:is_value_visible="true"
+        app:title="@string/gss_sgasket_skew"
+        app:val_default="0"
+        app:val_step="5.0"
+        app:val_max="85.0"
+        app:val_min="-85.0"
+        android:visibility="gone"/>
 </LinearLayout>

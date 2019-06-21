@@ -12,10 +12,10 @@ import kotlin.math.absoluteValue
 
 class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(context, attrs) {
     var listener: ((Float) -> Unit)? = null
-    private var valMin: Float
-    private var valMax: Float
-    private var valStep: Float
-    private var valDefault: Float
+    private var valMin: Float = 0.0f
+    private var valMax: Float = 100.0f
+    private var valStep: Float = 1.0f
+    private var valDefault: Float = 50.0f
     private var isInt: Boolean
     private var isSeekInvoke: Boolean
     private var isValueVisible: Boolean
@@ -32,19 +32,42 @@ class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(
         return ((value - valMin + valStep/2)/(valMax - valMin)*sbwl_sb.max).toInt()
     }
 
+    fun renewRange(valMin0: Float? = null, valMax0: Float? = null,
+                   valStep0: Float? = null, valDefault0: Float? = null){
+        val listener = this.listener
+        this.listener = null
+        valMin0?.let{ valMin = it }
+        valMax0?.let{ valMax = it }
+        valStep0?.let{ valStep = it }
+        valDefault0?.let{ valDefault = it }
+
+        if(valMin > valMax || (valMin - valMax).absoluteValue < valStep){
+            throw IllegalArgumentException()
+        }
+        if(valDefault < valMin || valDefault > valMax){
+            throw IllegalArgumentException()
+        }
+        sbwl_sb.max = ((valMax - valMin)/valStep).toInt()
+        this.listener = listener
+    }
+
     init{
         val customParams = context.theme.obtainStyledAttributes(
                 attrs,
                 R.styleable.SeekBarWithLabel,
                 0, 0)
 
+        val valMin0: Float
+        val valMax0: Float
+        val valStep0: Float
+        val valDefault0: Float
         val titleStr: String
         val unitStr: String
         try {
-            valMin = customParams.getFloat(R.styleable.SeekBarWithLabel_val_min, 0.0f)
-            valMax = customParams.getFloat(R.styleable.SeekBarWithLabel_val_max, 100.0f)
-            valDefault = customParams.getFloat(R.styleable.SeekBarWithLabel_val_default, 50.0f)
-            valStep = customParams.getFloat(R.styleable.SeekBarWithLabel_val_step, 1.0f)
+            valMin0 = customParams.getFloat(R.styleable.SeekBarWithLabel_val_min, 0.0f)
+            valMax0 = customParams.getFloat(R.styleable.SeekBarWithLabel_val_max, 100.0f)
+            valDefault0 = customParams.getFloat(R.styleable.SeekBarWithLabel_val_default, 50.0f)
+            valStep0 = customParams.getFloat(R.styleable.SeekBarWithLabel_val_step, 1.0f)
 
             titleStr = customParams.getString(R.styleable.SeekBarWithLabel_title) ?: ""
             unitStr = customParams.getString(R.styleable.SeekBarWithLabel_units) ?: ""
@@ -54,15 +77,9 @@ class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(
         } finally {
             customParams.recycle()
         }
-        if(valMin > valMax || (valMin - valMax).absoluteValue < valStep){
-            throw IllegalArgumentException()
-        }
-        if(valDefault < valMin || valDefault > valMax){
-            throw IllegalArgumentException()
-        }
 
         val view = View.inflate(context, R.layout.seekbar_with_label, this)
-        sbwl_sb.max = ((valMax - valMin)/valStep).toInt()
+        renewRange(valMin0, valMax0, valStep0, valDefault0)
         if(titleStr.isNotEmpty()) {
             sbwl_tv_title.text = titleStr
             view.sbwl_tv_title.setOnClickListener {
@@ -83,7 +100,7 @@ class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(
         view.sbwl_sb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 listener?.invoke(value)
-                val valueStr = if(isInt) value.toInt().toString() else value.toString()
+                val valueStr = if(isInt) value.toInt().toString() else String.format("%.2f", value)
                 view.sbwl_tv_number.text = valueStr
             }
 
@@ -92,11 +109,11 @@ class SeekBarWithLabel(context: Context, attrs: AttributeSet): ConstraintLayout(
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if(isSeekInvoke)
                     listener?.invoke(value)
-                val valueStr = if(isInt) value.toInt().toString() else value.toString()
+                val valueStr = if(isInt) value.toInt().toString() else String.format("%.2f", value)
                 view.sbwl_tv_number.text = valueStr
             }
         })
         sbwl_sb.progress = getProgress(valDefault)
-        view.sbwl_tv_number.text = if(isInt) value.toInt().toString() else value.toString()
+        view.sbwl_tv_number.text = if(isInt) value.toInt().toString() else String.format("%.2f", value)
     }
 }
