@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.ImageButton
-import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.gui_add.view.*
 import unicot.app.fractalvisualizer.R
 
 /**
