@@ -36,6 +36,18 @@ import java.util.concurrent.TimeUnit
 class MainActivity : Activity() {
     private var isGuiActivated = false
 
+    private val intentOpenGraph = 2
+
+    private val dgc: DGCore = DGCore()
+    private val windowSize: Point = Point()
+    private val touchPoint: Point = Point()
+    private val touchPointBefore: Point = Point()
+    private val fillPaint: Paint = Paint()
+    private lateinit var bmp: Bitmap // スクリーンキャプチャ用bitmap
+    private lateinit var tmpCanvas: Canvas
+
+    private var isTouching: Boolean = false
+
     // GUI関連
     private lateinit var mPopupWindow: PopupWindow
     private lateinit var mIconWindow: PopupWindow
@@ -64,8 +76,8 @@ class MainActivity : Activity() {
         } else {
             tmpCanvas.drawColor(Color.argb((255 - dgc.povFrame) / dgc.povFrame, 0, 0, 0), PorterDuff.Mode.DST_OUT)
             dgc.draw(tmpCanvas)
-            fill_paint.setARGB(0xFF, 0xFF, 0xFF, 0xFF)
-            c.drawBitmap(bmp, 0f, 0f, fill_paint)
+            fillPaint.setARGB(0xFF, 0xFF, 0xFF, 0xFF)
+            c.drawBitmap(bmp, 0f, 0f, fillPaint)
         }
 
         // 以下、オーバーレイ表示
@@ -73,34 +85,34 @@ class MainActivity : Activity() {
         if (dgc.isGraphSelected) {
             val pt = DGCommon.getAbsCntPoint(dgc.selectedCOG)
             // 拡大縮小
-            fill_paint.style = Paint.Style.FILL
-            fill_paint.setARGB(0x88, 0xaa, 0xaa, 0xaa)
+            fillPaint.style = Paint.Style.FILL
+            fillPaint.setARGB(0x88, 0xaa, 0xaa, 0xaa)
             val w = PointF()
             val rect = RectF()
 
-            w.set(DGCore.DIST_THRESH_GRAPH_SELECT_SCALING * window_size.x / 2, DGCore.DIST_THRESH_GRAPH_SELECT_SCALING * window_size.y / 2)
+            w.set(DGCore.DIST_THRESH_GRAPH_SELECT_SCALING * windowSize.x / 2, DGCore.DIST_THRESH_GRAPH_SELECT_SCALING * windowSize.y / 2)
             rect.set(pt.x - w.x, pt.y - w.y, pt.x + w.x, pt.y + w.y)
-            c.drawOval(rect, fill_paint)
+            c.drawOval(rect, fillPaint)
 
             // 回転
-            fill_paint.style = Paint.Style.FILL
-            fill_paint.setARGB(0x88, 0xaa, 0xaa, 0x22)
-            w.set(DGCore.DIST_THRESH_GRAPH_SELECT_ROTATE * window_size.x / 2, DGCore.DIST_THRESH_GRAPH_SELECT_ROTATE * window_size.y / 2)
+            fillPaint.style = Paint.Style.FILL
+            fillPaint.setARGB(0x88, 0xaa, 0xaa, 0x22)
+            w.set(DGCore.DIST_THRESH_GRAPH_SELECT_ROTATE * windowSize.x / 2, DGCore.DIST_THRESH_GRAPH_SELECT_ROTATE * windowSize.y / 2)
             rect.set(pt.x - w.x, pt.y - w.y, pt.x + w.x, pt.y + w.y)
-            c.drawOval(rect, fill_paint)
+            c.drawOval(rect, fillPaint)
 
             // 移動
-            fill_paint.setARGB(0x88, 0xaa, 0x22, 0x22)
-            w.set(DGCore.DIST_THRESH_GRAPH_SELECT_TRANSLATE * window_size.x / 2, DGCore.DIST_THRESH_GRAPH_SELECT_TRANSLATE * window_size.y / 2)
+            fillPaint.setARGB(0x88, 0xaa, 0x22, 0x22)
+            w.set(DGCore.DIST_THRESH_GRAPH_SELECT_TRANSLATE * windowSize.x / 2, DGCore.DIST_THRESH_GRAPH_SELECT_TRANSLATE * windowSize.y / 2)
             rect.set(pt.x - w.x, pt.y - w.y, pt.x + w.x, pt.y + w.y)
-            c.drawOval(rect, fill_paint)
+            c.drawOval(rect, fillPaint)
         }
         // 選択領域の描画
-        if (is_touching && !dgc.isGraphSelected) {
-            fill_paint.style = Paint.Style.FILL
-            fill_paint.setARGB(0xaa, 0xaa, 0xaa, 0xaa)
+        if (isTouching && !dgc.isGraphSelected) {
+            fillPaint.style = Paint.Style.FILL
+            fillPaint.setARGB(0xaa, 0xaa, 0xaa, 0xaa)
 
-            c.drawRect(touch_pt.x.toFloat(), touch_pt.y.toFloat(), touched_pt.x.toFloat(), touched_pt.y.toFloat(), fill_paint)
+            c.drawRect(touchPoint.x.toFloat(), touchPoint.y.toFloat(), touchPointBefore.x.toFloat(), touchPointBefore.y.toFloat(), fillPaint)
         }
     }
 
@@ -118,19 +130,17 @@ class MainActivity : Activity() {
 
         // 画面サイズの取得
         val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        wm.defaultDisplay.getSize(window_size)
+        wm.defaultDisplay.getSize(windowSize)
 
         // スクリーンキャプチャ関連
-        bmp = Bitmap.createBitmap(window_size.x, window_size.y, Bitmap.Config.ARGB_8888)
+        bmp = Bitmap.createBitmap(windowSize.x, windowSize.y, Bitmap.Config.ARGB_8888)
 
         tmpCanvas = Canvas(bmp)
 
-        STR_APP_ROOT_DIR = filesDir.path
-
         // 処理を開始
-        dgc.setScreenSize(window_size)
+        dgc.setScreenSize(windowSize)
 
-        is_touching = false
+        isTouching = false
         val ibListener = View.OnClickListener { v ->
             if (!isGuiActivated) {
                 var widthParam = LayoutParams.WRAP_CONTENT
@@ -184,7 +194,7 @@ class MainActivity : Activity() {
         mIVGraphOverrayIcon.visibility = ImageView.INVISIBLE // アイコンは普段見えない
 
         // グラフ消去ボタン(浮動)
-        mDeleteWindow = PopupWindow(mGraphDeleteIcon, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        mDeleteWindow = PopupWindow(mGraphDeleteIcon, 180, 180)
         mDeleteWindow.isTouchable = true
 
         // Activity完全起動後に実行
@@ -245,29 +255,29 @@ class MainActivity : Activity() {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        touch_pt.x = event.x.toInt()
-        touch_pt.y = event.y.toInt()
+        touchPoint.x = event.x.toInt()
+        touchPoint.y = event.y.toInt()
 
         if (!isGuiActivated) { // GUIは表示されていないか？
             if (event.action == MotionEvent.ACTION_DOWN) {
 
                 // タッチ開始、グラフの移動・拡大縮小・回転を始める
-                touched_pt.x = touch_pt.x
-                touched_pt.y = touch_pt.y
-                is_touching = true
+                touchPointBefore.x = touchPoint.x
+                touchPointBefore.y = touchPoint.y
+                isTouching = true
 
-                dgc.collision(touch_pt) // 指の位置に応じて、選択したグラフの処理方法を決定
+                dgc.collision(touchPoint) // 指の位置に応じて、選択したグラフの処理方法を決定
 
             } else if (event.action == MotionEvent.ACTION_UP) {
-                is_touching = false
-                dgc.affineTransformGraphs(Point(-1, -1), touch_pt) // 移動値をリセット
+                isTouching = false
+                dgc.affineTransformGraphs(Point(-1, -1), touchPoint) // 移動値をリセット
 
                 if (!dgc.isGraphSelected)
-                    dgc.select(touched_pt, touch_pt)
+                    dgc.select(touchPointBefore, touchPoint)
 
             } else if (event.action == MotionEvent.ACTION_MOVE) {
                 if (dgc.isGraphSelected)
-                    dgc.affineTransformGraphs(touched_pt, touch_pt) // 選択したグラフについて移動・回転・拡大縮小のいずれかを行う
+                    dgc.affineTransformGraphs(touchPointBefore, touchPoint) // 選択したグラフについて移動・回転・拡大縮小のいずれかを行う
             }
         }
         /* グラフの選択状況に応じてGUIボタンを表示 */
@@ -373,7 +383,7 @@ class MainActivity : Activity() {
 
                     val intent = Intent()
                     intent.setClassName(packageName, "$packageName.activity.GraphloadActivity")
-                    startActivityForResult(intent, INTENT_OPEN_GRAPH)
+                    startActivityForResult(intent, intentOpenGraph)
                 }
                 if (key.matches("save_graph".toRegex())) {
                     captureView("save_graph")?.let{
@@ -452,7 +462,7 @@ class MainActivity : Activity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         // データロード
-        if(requestCode == INTENT_OPEN_GRAPH && resultCode == RESULT_OK){
+        if(requestCode == intentOpenGraph && resultCode == RESULT_OK){
             try {
                 val id = data?.getStringExtra("id") ?: return
 
@@ -519,7 +529,7 @@ class MainActivity : Activity() {
             outputStream = FileOutputStream(imageFile)
 
             if (mode == "save_graph") {
-                val tmp = Bitmap.createScaledBitmap(bmp, window_size.x / 4, window_size.y / 4, false)
+                val tmp = Bitmap.createScaledBitmap(bmp, windowSize.x / 4, windowSize.y / 4, false)
                 tmp.compress(CompressFormat.JPEG, 75, outputStream)
             } else {
                 bmp.compress(CompressFormat.PNG, 100, outputStream)
@@ -537,20 +547,5 @@ class MainActivity : Activity() {
             resume()
         }
         return imageFile
-    }
-
-    companion object {
-        private const val INTENT_OPEN_GRAPH = 2
-
-        private lateinit var STR_APP_ROOT_DIR: String
-        private val dgc: DGCore = DGCore()
-        private val window_size: Point = Point()
-        private val touch_pt: Point = Point()
-        private val touched_pt: Point = Point()
-        private val fill_paint: Paint = Paint()
-        private lateinit var bmp: Bitmap // スクリーンキャプチャ用bitmap
-        private lateinit var tmpCanvas: Canvas
-
-        private var is_touching: Boolean = false
     }
 }
