@@ -2,6 +2,7 @@ package unicot.app.fractalvisualizer.core
 
 import android.graphics.Point
 import android.graphics.PointF
+import android.text.format.DateFormat
 import unicot.app.fractalvisualizer.R
 import unicot.app.fractalvisualizer.graph.*
 import unicot.app.fractalvisualizer.graph.Random
@@ -58,24 +59,10 @@ object DGCommon {
     )
 
     /**
-     * 現時刻を返す
-     *
-     * @return 現時刻(YYYY-MM-DD-HH-MM-SS)
+     * 現時刻
      */
-    // 今の時刻を取得
     val currentDateString: String
-        get() {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
-            val second = calendar.get(Calendar.SECOND)
-
-            return year.toString() + "-" + (month + 1) + "-" + day + "-" + hour + "-" + minute + "-" + second
-        }
-
+        get() = DateFormat.format("yyyyMMdd-HHmmss", Date()).toString()
 
     /**
      * 新しいグラフを作成する。\n is_old_copyが真ならば、事前に作成したグラフの特性を引き継ぐ。
