@@ -5,4 +5,5 @@
     <dimen name="gui_paint_button_size">40dp</dimen>
     <dimen name="gui_shape_button_size">50dp</dimen>
     <dimen name="main_button_size">60dp</dimen>
+    <dimen name="gui_add_space_padding">2dp</dimen>
 </resources>
