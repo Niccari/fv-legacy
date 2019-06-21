@@ -2,6 +2,7 @@ package unicot.app.fractalvisualizer.activity
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,6 +10,8 @@ import android.graphics.*
 import android.graphics.Bitmap.CompressFormat
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.text.format.DateFormat
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,6 +31,7 @@ import unicot.app.fractalvisualizer.core.DGDataWrite
 import unicot.app.fractalvisualizer.view.*
 import java.io.*
 import java.lang.Exception
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -515,7 +519,7 @@ class MainActivity : Activity() {
             path = filesDir.path
             filename = "tmp.jpg"
         } else {
-            path = "${Environment.getExternalStorageDirectory().path}/FV/"
+            path = "${Environment.getExternalStorageDirectory().path}/FV"
             filename = "${DGCommon.currentDateString}.png"
         }
 
@@ -533,6 +537,10 @@ class MainActivity : Activity() {
                 tmp.compress(CompressFormat.JPEG, 75, outputStream)
             } else {
                 bmp.compress(CompressFormat.PNG, 100, outputStream)
+                val contentValues = ContentValues()
+                contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                contentValues.put("_data", imageFile.path)
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
             }
             outputStream.flush()
             outputStream.close()
