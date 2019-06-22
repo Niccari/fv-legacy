@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -15,4 +16,16 @@
         android:verticalSpacing="5dp"
         tools:context=".activity.MainActivity" />
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/graphload_pb"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#aa222222"
+        android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/graphload_gv"
+        app:layout_constraintEnd_toEndOf="@+id/graphload_gv"
+        app:layout_constraintStart_toStartOf="@+id/graphload_gv"
+        app:layout_constraintTop_toTopOf="@+id/graphload_gv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
