@@ -155,11 +155,11 @@ class DGCore {
         val pt_rel = DGCommon.getRelCntPoint(pt)
         val dist = Math.sqrt(((cog_graphs.x - pt_rel.x) * (cog_graphs.x - pt_rel.x) + (cog_graphs.y - pt_rel.y) * (cog_graphs.y - pt_rel.y)).toDouble()).toFloat()
         if (dist < DIST_THRESH_GRAPH_SELECT_TRANSLATE) {
-            action = DGCore.OP_TRANSLATE
+            action = OP_TRANSLATE
         } else if (dist < DIST_THRESH_GRAPH_SELECT_ROTATE) {
-            action = DGCore.OP_ROTATE
+            action = OP_ROTATE
         } else if (dist < DIST_THRESH_GRAPH_SELECT_SCALING) {
-            action = DGCore.OP_SCALING
+            action = OP_SCALING
         } else {
             action = -1
             isGraphSelected = false

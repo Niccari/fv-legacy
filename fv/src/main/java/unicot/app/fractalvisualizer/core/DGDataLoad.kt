@@ -1,7 +1,6 @@
 package unicot.app.fractalvisualizer.core
 
 import com.google.firebase.firestore.FirebaseFirestore
-import unicot.app.fractalvisualizer.graph.ColorPattern
 import java.lang.Exception
 
 /**
