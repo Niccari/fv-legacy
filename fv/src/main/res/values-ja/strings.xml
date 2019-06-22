@@ -28,4 +28,8 @@
     <string name="action_select">選択</string>
     <string name="action_delete">消去</string>
     <string name="action_cancel">キャンセル</string>
+
+    <string name="hud_graph_deleted">グラフを削除しました</string>
+    <string name="hud_graph_saved">グラフを保存しました</string>
+    <string name="hud_error_connection">通信状態の問題で完了できませんでした</string>
 </resources>

@@ -16,7 +16,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 object DGDataWrite : DGDataInfo() {
-    fun save(file: File) {
+    fun save(file: File, listener: ((Boolean) -> Unit)) {
         val date = Date()
         val storage = FirebaseStorage.getInstance()
         val ref = storage.reference.child("/thumb/${date.time}.jpg")
@@ -26,6 +26,7 @@ object DGDataWrite : DGDataInfo() {
             uploadTask.continueWithTask(
                     Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                         if (!task.isSuccessful) {
+                            listener.invoke(false)
                             task.exception?.let { exc ->
                                 throw exc
                             }
@@ -35,7 +36,7 @@ object DGDataWrite : DGDataInfo() {
                 if (task.isSuccessful) {
                     val downloadUri = task.result ?: return@addOnCompleteListener
 
-                    saveGraphs(downloadUri.toString(), date)
+                    saveGraphs(downloadUri.toString(), date, listener)
                 }
             }
         }finally {
@@ -43,7 +44,7 @@ object DGDataWrite : DGDataInfo() {
         }
     }
 
-    private fun saveGraphs(thumbUrl: String, date: Date){
+    private fun saveGraphs(thumbUrl: String, date: Date, listener: ((Boolean) -> Unit)){
         val db: FirebaseFirestore = FirebaseFirestore.getInstance()
         val dgraph = DGCore.graph    // グラフ
         val docName = "${date.time}"
@@ -100,12 +101,19 @@ object DGDataWrite : DGDataInfo() {
         sessionDetail[DETAIL_VIEW_POV]  = sysData.povFrame
         sessionDetail[DETAIL_VERSION]   = GRAPH_VERSION
         sessionDetail[DETAIL_GRAPH_LIST] = graphList
-        db.collection(COLLECTION_SESSION_DETAIL).document(docName).set(sessionDetail)
-
-        val sessionInfo = HashMap<String, Any>()
-        sessionInfo[INFO_THUMB_URL] = thumbUrl
-        sessionInfo[INFO_DATE] = Timestamp(date)
-        val docRef = db.collection(COLLECTION_SESSION_INFO).document(docName)
-        docRef.set(sessionInfo)
+        db.collection(COLLECTION_SESSION_DETAIL).document(docName).set(sessionDetail).addOnCompleteListener {
+            taskDetail ->
+            if(!taskDetail.isSuccessful){
+                listener.invoke(false)
+            }else {
+                val sessionInfo = HashMap<String, Any>()
+                sessionInfo[INFO_THUMB_URL] = thumbUrl
+                sessionInfo[INFO_DATE] = Timestamp(date)
+                val docRef = db.collection(COLLECTION_SESSION_INFO).document(docName)
+                docRef.set(sessionInfo).addOnCompleteListener { taskInfo ->
+                    listener.invoke(taskInfo.isSuccessful)
+                }
+            }
+        }
     }
 }

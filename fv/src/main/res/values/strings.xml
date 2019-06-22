@@ -28,4 +28,8 @@
     <string name="action_select">Select</string>
     <string name="action_delete">Delete</string>
     <string name="action_cancel">Cancel</string>
+
+    <string name="hud_graph_deleted">Deleted graph(s).</string>
+    <string name="hud_graph_saved">Saved graph(s).</string>
+    <string name="hud_error_connection">Procedure failed due to connection problem.</string>
 </resources>
