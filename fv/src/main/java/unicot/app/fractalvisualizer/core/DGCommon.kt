@@ -7,7 +7,6 @@ import unicot.app.fractalvisualizer.R
 import unicot.app.fractalvisualizer.graph.*
 import unicot.app.fractalvisualizer.graph.Random
 import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * グラフ処理に関する共通処理を取り扱うクラス<br></br>

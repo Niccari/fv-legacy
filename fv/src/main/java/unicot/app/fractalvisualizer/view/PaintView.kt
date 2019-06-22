@@ -160,7 +160,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
     fun onBrushButtonClicked(v: View){
         mIBCurrentBrush?.setImageResource(R.drawable.color_focus_item)
         (v as ImageButton).setImageResource(R.drawable.color_activated_focus_item)
-        mIBCurrentBrush = v as ImageButton
+        mIBCurrentBrush = v
 
         dgc.changeDrawSetting(DGCore.OP_BRUSHTYPE, mIBCurrentBrush?.tag.toString())
     }
