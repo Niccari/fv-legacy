@@ -12,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -33,6 +34,7 @@ open class GraphloadActivity : Activity() {
     protected class FileData constructor(var id: String = "", var imgUrl: String = "", var isSelected: Boolean = false)
 
     private var isSelecting = false
+    private var isDeleting = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,7 @@ open class GraphloadActivity : Activity() {
     private fun fetch() {
         val db = FirebaseFirestore.getInstance()
 
+        fileUrls.clear()
         db.collection("session_info").get().addOnCompleteListener {
             task ->
             if(task.isSuccessful) {
@@ -52,9 +55,11 @@ open class GraphloadActivity : Activity() {
                     val imageUrl = session["thumb_url"] as? String ?: ""
                     fileUrls.add(FileData(id, imageUrl))
                 }
-
+                adapter?.notifyDataSetInvalidated()
                 initView()
             }else{
+                if(!isFinishing)
+                    Toast.makeText(this@GraphloadActivity, R.string.hud_graph_saved, Toast.LENGTH_SHORT).show()
                 setResult(RESULT_CANCELED)
                 finish()
             }
@@ -65,6 +70,7 @@ open class GraphloadActivity : Activity() {
         adapter = IVAdapter(this, fileUrls)
         graphload_gv?.adapter = adapter
         graphload_gv?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
+            if (isDeleting) return@OnItemClickListener
             if (isSelecting) {
                 fileUrls[position].isSelected = !fileUrls[position].isSelected
                 adapter?.notifyDataSetInvalidated()
@@ -76,7 +82,7 @@ open class GraphloadActivity : Activity() {
             }
         }
         graphload_gv?.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, _, _, _ ->
-            if (!isSelecting) {
+            if (!isSelecting && !isDeleting) {
                 changeSelectState()
             }
             false
@@ -118,18 +124,29 @@ open class GraphloadActivity : Activity() {
                     batch.delete(db.collection("session_info").document(it))
                     batch.delete(db.collection("session_detail").document(it))
                 }
+                isDeleting = true
                 batch.commit().addOnCompleteListener{
-                    if(it.isSuccessful){
-                        fileUrls.clear()
-                        adapter?.notifyDataSetInvalidated()
+                    task ->
+                    if(task.isSuccessful){
+                        if(!isFinishing)
+                            Toast.makeText(this, R.string.hud_graph_deleted, Toast.LENGTH_SHORT).show()
                         fetch()
+                    }else{
+                        if(!isFinishing)
+                            Toast.makeText(this, R.string.hud_error_connection, Toast.LENGTH_SHORT).show()
                     }
+                    isDeleting = false
                 }
 
                 Thread(Runnable{
                     delList.map{
                         val store = FirebaseStorage.getInstance()
-                        store.reference.child("/thumb/$it.jpg").delete()
+                        store.reference.child("/thumb/$it.jpg").delete().addOnCompleteListener {
+                            task ->
+                            if(!task.isSuccessful && !isFinishing){
+                                Toast.makeText(this, R.string.hud_error_connection, Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 }).run()
             }

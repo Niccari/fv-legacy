@@ -17,6 +17,7 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupWindow
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.main.*
@@ -389,7 +390,15 @@ class MainActivity : Activity() {
                 }
                 if (key.matches("save_graph".toRegex())) {
                     captureView("save_graph")?.let{
-                        DGDataWrite.save(it)
+                        DGDataWrite.save(it){
+                            result ->
+                            if(isFinishing) return@save
+                            if(result){
+                                Toast.makeText(this@MainActivity, R.string.hud_graph_saved, Toast.LENGTH_SHORT).show()
+                            }else{
+                                Toast.makeText(this@MainActivity, R.string.hud_error_connection, Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 }
                 if (key.matches("capture".toRegex())) {
