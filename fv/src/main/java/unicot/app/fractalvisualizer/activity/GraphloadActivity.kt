@@ -4,14 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.WriteBatch
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.graphload.*
 import kotlinx.android.synthetic.main.graphload_gv.view.*
 import unicot.app.fractalvisualizer.R
@@ -24,16 +30,18 @@ open class GraphloadActivity : Activity() {
     private val fileUrls: ArrayList<FileData> = ArrayList(0)
     private var adapter: IVAdapter? = null
 
-    protected class FileData constructor(var id: String = "", var imgUrl: String = "")
+    protected class FileData constructor(var id: String = "", var imgUrl: String = "", var isSelected: Boolean = false)
+
+    private var isSelecting = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.graphload)
 
-        init()
+        fetch()
     }
 
-    private fun init() {
+    private fun fetch() {
         val db = FirebaseFirestore.getInstance()
 
         db.collection("session_info").get().addOnCompleteListener {
@@ -45,19 +53,88 @@ open class GraphloadActivity : Activity() {
                     fileUrls.add(FileData(id, imageUrl))
                 }
 
-                adapter = IVAdapter(this, fileUrls)
-                graphload_gv?.adapter = adapter
-                graphload_gv?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
-                    val intent = Intent()
-            intent.putExtra("id", fileUrls[position].id)
-                    setResult(RESULT_OK, intent)
-                    finish()
-                }
+                initView()
             }else{
                 setResult(RESULT_CANCELED)
                 finish()
             }
         }
+    }
+
+    private fun initView(){
+        adapter = IVAdapter(this, fileUrls)
+        graphload_gv?.adapter = adapter
+        graphload_gv?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
+            if (isSelecting) {
+                fileUrls[position].isSelected = !fileUrls[position].isSelected
+                adapter?.notifyDataSetInvalidated()
+            } else {
+                val intent = Intent()
+                intent.putExtra("id", fileUrls[position].id)
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        }
+        graphload_gv?.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, _, _, _ ->
+            if (!isSelecting) {
+                changeSelectState()
+            }
+            false
+        }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        if (!isSelecting) {
+            menuInflater.inflate(R.menu.graphload_normal, menu)
+        } else {
+            menuInflater.inflate(R.menu.graphload_selecting, menu)
+        }
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun changeSelectState(){
+        isSelecting = !isSelecting
+        fileUrls.map { it.isSelected = false }
+        title = if (isSelecting) {
+            getString(R.string.action_select)
+        }else{
+            getString(R.string.select_graph_title)
+        }
+        invalidateOptionsMenu()
+        adapter?.notifyDataSetInvalidated()
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_select, R.id.action_cancel -> {
+                changeSelectState()
+            }
+            R.id.action_delete -> {
+                val delList = fileUrls.filter { it.isSelected }.map{ it.id }
+
+                val db = FirebaseFirestore.getInstance()
+                val batch: WriteBatch = db.batch()
+                delList.map{
+                    batch.delete(db.collection("session_info").document(it))
+                    batch.delete(db.collection("session_detail").document(it))
+                }
+                batch.commit().addOnCompleteListener{
+                    if(it.isSuccessful){
+                        fileUrls.clear()
+                        adapter?.notifyDataSetInvalidated()
+                        fetch()
+                    }
+                }
+
+                Thread(Runnable{
+                    delList.map{
+                        val store = FirebaseStorage.getInstance()
+                        store.reference.child("/thumb/$it.jpg").delete()
+                    }
+                }).run()
+            }
+        }
+        return true
     }
 
     private class ViewHolder {
@@ -102,6 +179,13 @@ open class GraphloadActivity : Activity() {
                      .centerCrop()
                      .transition(DrawableTransitionOptions.withCrossFade())
                      .into(it) }
+            if (data.isSelected) {
+                holder.select?.visibility = View.VISIBLE
+                holder.image?.setColorFilter(ContextCompat.getColor( context, R.color.lighten))
+            } else {
+                holder.select?.visibility = View.INVISIBLE
+                holder.image?.clearColorFilter()
+            }
             return view!!
         }
     }

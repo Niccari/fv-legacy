@@ -23,6 +23,7 @@
         android:contentDescription="@null"
         android:src="@drawable/select_icon"
         app:layout_constraintStart_toStartOf="@+id/graphload_iv_image"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
