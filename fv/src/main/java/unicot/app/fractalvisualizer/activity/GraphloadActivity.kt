@@ -31,7 +31,8 @@ open class GraphloadActivity : Activity() {
     private val fileUrls: ArrayList<FileData> = ArrayList(0)
     private var adapter: IVAdapter? = null
 
-    protected class FileData constructor(var id: String = "", var imgUrl: String = "", var isSelected: Boolean = false)
+    protected class FileData constructor(var id: String = "", var isLocked: Boolean = false,
+                                         var imgUrl: String = "", var isSelected: Boolean = false)
 
     private var isSelecting = false
     private var isDeleting = false
@@ -54,9 +55,11 @@ open class GraphloadActivity : Activity() {
             if(task.isSuccessful) {
                 task.result?.map { session ->
                     val id = session.id
+                    val isLocked = session["is_locked"] as? Boolean ?: true
                     val imageUrl = session["thumb_url"] as? String ?: ""
-                    fileUrls.add(FileData(id, imageUrl))
+                    fileUrls.add(FileData(id, isLocked, imageUrl))
                 }
+                fileUrls.sortByDescending { it.id }
                 adapter?.notifyDataSetInvalidated()
                 initView()
             }else{
@@ -74,8 +77,10 @@ open class GraphloadActivity : Activity() {
         graphload_gv?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
             if (isDeleting) return@OnItemClickListener
             if (isSelecting) {
-                fileUrls[position].isSelected = !fileUrls[position].isSelected
-                adapter?.notifyDataSetInvalidated()
+                if(!fileUrls[position].isLocked){
+                    fileUrls[position].isSelected = !fileUrls[position].isSelected
+                    adapter?.notifyDataSetInvalidated()
+                }
             } else {
                 val intent = Intent()
                 intent.putExtra("id", fileUrls[position].id)
@@ -119,7 +124,10 @@ open class GraphloadActivity : Activity() {
             }
             R.id.action_delete -> {
                 val delList = fileUrls.filter { it.isSelected }.map{ it.id }
-
+                if(delList.isEmpty()){
+                    changeSelectState()
+                    return false
+                }
                 val db = FirebaseFirestore.getInstance()
                 val batch: WriteBatch = db.batch()
                 delList.map{
@@ -160,6 +168,7 @@ open class GraphloadActivity : Activity() {
     private class ViewHolder {
         internal var image: ImageView? = null
         internal var select: ImageView? = null
+        internal var lock: ImageView? = null
     }
 
     private inner class IVAdapter constructor(val context: Context,val dataList: List<FileData>) : BaseAdapter() {
@@ -182,8 +191,9 @@ open class GraphloadActivity : Activity() {
                 holder = ViewHolder()
                 view = View.inflate(context, R.layout.graphload_gv, null)
 
-                holder.image = view.graphload_iv_image
+                holder.image  = view.graphload_iv_image
                 holder.select = view.graphload_iv_select
+                holder.lock   = view.graphload_iv_lock
 
                 view.tag = holder
             }else{
@@ -205,6 +215,11 @@ open class GraphloadActivity : Activity() {
             } else {
                 holder.select?.visibility = View.INVISIBLE
                 holder.image?.clearColorFilter()
+            }
+            if (data.isLocked){
+                holder.lock?.visibility = View.VISIBLE
+            }else{
+                holder.lock?.visibility = View.INVISIBLE
             }
             return view!!
         }
