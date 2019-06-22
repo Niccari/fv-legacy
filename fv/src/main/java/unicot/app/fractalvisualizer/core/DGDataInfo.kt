@@ -10,6 +10,7 @@ open class DGDataInfo {
 
         @JvmStatic protected val COLLECTION_SESSION_INFO = "session_info"
         @JvmStatic protected val INFO_DATE       = "date"
+        @JvmStatic protected val INFO_IS_LOCKED  = "is_locked"
         @JvmStatic protected val INFO_THUMB_URL  = "thumb_url"
 
         @JvmStatic protected val COLLECTION_SESSION_DETAIL = "session_detail"

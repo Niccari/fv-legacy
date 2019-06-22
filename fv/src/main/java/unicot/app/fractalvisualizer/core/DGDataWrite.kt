@@ -108,6 +108,7 @@ object DGDataWrite : DGDataInfo() {
             }else {
                 val sessionInfo = HashMap<String, Any>()
                 sessionInfo[INFO_THUMB_URL] = thumbUrl
+                sessionInfo[INFO_IS_LOCKED] = false
                 sessionInfo[INFO_DATE] = Timestamp(date)
                 val docRef = db.collection(COLLECTION_SESSION_INFO).document(docName)
                 docRef.set(sessionInfo).addOnCompleteListener { taskInfo ->
