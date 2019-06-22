@@ -49,6 +49,8 @@ open class GraphloadActivity : Activity() {
         fileUrls.clear()
         db.collection("session_info").get().addOnCompleteListener {
             task ->
+            if(isFinishing) return@addOnCompleteListener
+            graphload_pb.visibility = View.INVISIBLE
             if(task.isSuccessful) {
                 task.result?.map { session ->
                     val id = session.id
@@ -125,6 +127,7 @@ open class GraphloadActivity : Activity() {
                     batch.delete(db.collection("session_detail").document(it))
                 }
                 isDeleting = true
+                graphload_pb.visibility = View.VISIBLE
                 batch.commit().addOnCompleteListener{
                     task ->
                     if(task.isSuccessful){
