@@ -10,6 +10,7 @@ import android.graphics.*
 import android.graphics.Bitmap.CompressFormat
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.view.*
 import android.view.View.MeasureSpec
@@ -181,12 +182,15 @@ class MainActivity : Activity() {
         mGraphDeleteIcon = ImageButton(this)
         mGraphDeleteIcon.setOnClickListener {
             stop()
-            dgc.deleteSelectedGraphs()
-            changeGuiButtonStatus()
+            // グラフの計算、描画中の可能性があるので2/60sほど待機
+            Handler().postDelayed({
+                dgc.deleteSelectedGraphs()
+                changeGuiButtonStatus()
 
-            if (dgc.selectedGraphNum == 0) {
-                mGraphDeleteIcon.visibility = ImageView.INVISIBLE
-            }
+                if (dgc.selectedGraphNum == 0) {
+                    mGraphDeleteIcon.visibility = ImageView.INVISIBLE
+                }
+            }, 30)
             resume()
         }
 
@@ -225,6 +229,7 @@ class MainActivity : Activity() {
 
     private fun resume() {
         var execCount = 0
+        var retryCount = 0
         executor = Executors.newSingleThreadScheduledExecutor()
         executor?.scheduleAtFixedRate({
             try {
@@ -238,9 +243,20 @@ class MainActivity : Activity() {
                         draw(canvas)
                     }
                 })
+                retryCount = 0
             }catch (e: Exception){
                 e.printStackTrace()
-                stop()
+                if (retryCount < 3){
+                    resume()
+                }else{
+                    if(!isFinishing){
+                        runOnUiThread {
+                            Toast.makeText(this, R.string.hud_error_thread, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    stop()
+                    retryCount = 0
+                }
             }
             execCount++
         }, 10, (1000 / 60).toLong(), TimeUnit.MILLISECONDS)
@@ -521,7 +537,7 @@ class MainActivity : Activity() {
     private fun captureView(mode: String): File? {
         stop()
 
-        // 残像0のときのみ、再描画
+        // 残像0のときのみ、スクリーンショット用のキャンバスに再描画
         if (dgc.povFrame <= 0) {
             main_dv.draw(object : DrawView.DrawListener {
                 override fun onDraw(canvas: Canvas) {
