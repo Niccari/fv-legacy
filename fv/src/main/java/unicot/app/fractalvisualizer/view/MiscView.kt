@@ -34,13 +34,15 @@ class MiscView(context: Context, attrs: AttributeSet? = null) : LinearLayout(con
         imageButton_graphLoad.setOnClickListener{
             listener.invoke("load_graph")
         }
-
         imageButton_graphSave.setOnClickListener{
             listener.invoke("save_graph")
         }
 
         imageButton_camera.setOnClickListener{
             listener.invoke("capture")
+        }
+        imageButton_preference.setOnClickListener{
+            listener.invoke("preference")
         }
     }
 
