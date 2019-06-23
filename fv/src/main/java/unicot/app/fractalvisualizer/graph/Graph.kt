@@ -374,14 +374,15 @@ internal constructor() {
         translateRelativePoint() // 拡大・移動
     }
 
-    fun draw(canvas: Canvas?) {
-        if (canvas == null)
-            return  // canvasがnullなら描画不能
-
-        // カラーテーブルを更新
+    fun renewColorTable(){
         System.arraycopy(mPenColors, 0, mPenColors, 1, COLOR_MAX - 1)
         mPenColors[0] = this.info.cp.doPattern()
         pen.color = mPenColors[0]
+    }
+
+    fun draw(canvas: Canvas?) {
+        if (canvas == null)
+            return  // canvasがnullなら描画不能
 
         val len = orderPoints.size // 線分の数だけ描画(DRAW_ALL時)
 

@@ -224,10 +224,15 @@ class MainActivity : Activity() {
     }
 
     private fun resume() {
+        var execCount = 0
         executor = Executors.newSingleThreadScheduledExecutor()
         executor?.scheduleAtFixedRate({
             try {
-                dgc.run()
+                val isGraphChange = (execCount >= 60/DGCore.systemData.framerate)
+                if(isGraphChange){
+                    dgc.run()
+                    execCount = 0
+                }
                 main_dv.draw(object : DrawView.DrawListener {
                     override fun onDraw(canvas: Canvas) {
                         draw(canvas)
@@ -237,7 +242,8 @@ class MainActivity : Activity() {
                 e.printStackTrace()
                 stop()
             }
-        }, 10, (1000 / DGCore.systemData.framerate).toLong(), TimeUnit.MILLISECONDS)
+            execCount++
+        }, 10, (1000 / 60).toLong(), TimeUnit.MILLISECONDS)
     }
 
     public override fun onDestroy() {
@@ -377,9 +383,11 @@ class MainActivity : Activity() {
         mMisc = MiscView(this, null)
         mMisc.setEvent(object : MiscView.OnEventListener {
             override operator fun invoke(key: String) {
-                if (key.matches("fps".toRegex())) {
-                    stop()
-                    resume()
+                if (key.matches("pov_frame".toRegex())) {
+                    if(DGCore.systemData.povFrame == 0){
+                        // 前回ロードしたときのグラフの残像が残っている可能性があるのでクリア
+                        tmpCanvas.drawColor(Color.BLACK)
+                    }
                 }
                 if (key.matches("load_graph".toRegex())) {
                     stop()
@@ -391,6 +399,7 @@ class MainActivity : Activity() {
                 if (key.matches("save_graph".toRegex())) {
                     captureView("save_graph")?.let{
                         main_pb.visibility = View.VISIBLE
+                        // 保存は通信を必要とするため、いつ終わるかわからない
                         DGDataWrite.save(it){
                             result ->
                             if(isFinishing) return@save

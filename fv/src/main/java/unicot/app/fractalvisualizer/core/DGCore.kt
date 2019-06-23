@@ -62,8 +62,10 @@ class DGCore {
      * グラフを更新する
      */
     fun run() {
-        for (i in graph.indices)
+        for (i in graph.indices) {
             graph[i].runningGraph()
+            graph[i].renewColorTable()
+        }
     }
 
 
