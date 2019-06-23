@@ -21,7 +21,6 @@
     <string name="gsp_each">個別</string>
     <string name="gsp_shift">遷移速度</string>
     <string name="gsp_color_each">個別</string>
-    <string name="gsp_smooth">滑らか</string>
     <string name="gsp_color">色</string>
 
     <string name="select_graph_title">グラフ読込</string>
