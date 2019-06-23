@@ -22,8 +22,10 @@ class MiscView(context: Context, attrs: AttributeSet? = null) : LinearLayout(con
 
     fun setEvent(listener: OnEventListener){
         gui_misc_sb_fps.listener = {
-            DGCore.systemData.framerate = it.toInt()
-            listener.invoke("fps")
+            if(it.toInt() < DGCore.systemData.framerateList.size) {
+                DGCore.systemData.framerate = DGCore.systemData.framerateList[it.toInt()]
+                listener.invoke("fps")
+            }
         }
         gui_misc_sb_pov.listener = {
             DGCore.systemData.povFrame = it.toInt()
