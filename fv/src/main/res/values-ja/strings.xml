@@ -30,4 +30,6 @@
     <string name="hud_graph_deleted">グラフを削除しました</string>
     <string name="hud_graph_saved">グラフを保存しました</string>
     <string name="hud_error_connection">通信状態の問題で完了できませんでした</string>
+    <string name="hud_error_thread">グラフを描画できませんでした。お手数ですが、グラフを保存の上アプリを立ち上げ直してください。</string>
+
 </resources>

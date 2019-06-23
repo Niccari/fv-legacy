@@ -30,4 +30,5 @@
     <string name="hud_graph_deleted">Deleted graph(s).</string>
     <string name="hud_graph_saved">Saved graph(s).</string>
     <string name="hud_error_connection">Procedure failed due to connection problem.</string>
+    <string name="hud_error_thread">Failed to draw graphs. please save graphs and restart this app.</string>
 </resources>
