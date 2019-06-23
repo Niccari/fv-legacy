@@ -49,13 +49,9 @@
         android:id="@+id/gui_misc_sb_fps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:val_default="60.0"
-        app:val_max="60.0"
-        app:val_min="1.0"
+        app:val_default="4.0"
+        app:val_max="4.0"
         app:title="@string/graph_setting_framerate"
-        app:units="@string/graph_setting_framerate_fps"
-        app:is_int="true"
-        app:is_value_visible="true"
         android:padding="5dp">
 
     </unicot.app.fractalvisualizer.view.SeekBarWithLabel>
