@@ -33,6 +33,16 @@
             android:label="@string/select_graph_title"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="unicot.app.fractalvisualizer.activity.PreferenceActivity"
+            android:label="@string/preference_title"
+            android:theme="@style/Theme.AppCompat"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:theme="@style/Theme.AppCompat"/>
+        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:theme="@style/Theme.AppCompat"/>
     </application>
 
 </manifest>

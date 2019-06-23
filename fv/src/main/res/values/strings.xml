@@ -31,4 +31,12 @@
     <string name="hud_graph_saved">Saved graph(s).</string>
     <string name="hud_error_connection">Procedure failed due to connection problem.</string>
     <string name="hud_error_thread">Failed to draw graphs. please save graphs and restart this app.</string>
+
+    <string name="preference_title">Preference</string>
+    <string name="preference_acknowledge_key" translatable="false">preference_acknowledge</string>
+    <string name="preference_acknowledge_title">Acknowledge</string>
+    <string name="preference_store_key" translatable="false">preference_store_key</string>
+    <string name="preference_store_title">Open Google Play Store</string>
+
+    <string name="store_url" translatable="false">https://play.google.com/store/apps/details?id=unicot.app.fractalvisualizer</string>
 </resources>

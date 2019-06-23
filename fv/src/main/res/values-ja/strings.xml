@@ -32,4 +32,7 @@
     <string name="hud_error_connection">通信状態の問題で完了できませんでした</string>
     <string name="hud_error_thread">グラフを描画できませんでした。お手数ですが、グラフを保存の上アプリを立ち上げ直してください。</string>
 
+    <string name="preference_title">設定</string>
+    <string name="preference_acknowledge_title">オープンソースライセンス</string>
+    <string name="preference_store_title">ストアを開く</string>
 </resources>

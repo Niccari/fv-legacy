@@ -426,8 +426,6 @@ class MainActivity : Activity() {
                     }
                 }
                 if (key.matches("load_graph".toRegex())) {
-                    stop()
-
                     val intent = Intent()
                     intent.setClassName(packageName, "$packageName.activity.GraphloadActivity")
                     startActivityForResult(intent, intentOpenGraph)
@@ -455,6 +453,11 @@ class MainActivity : Activity() {
                     } else {
                         captureView("capture")
                     }
+                }
+                if (key.matches("preference".toRegex())) {
+                    val intent = Intent()
+                    intent.setClassName(packageName, "$packageName.activity.PreferenceActivity")
+                    startActivityForResult(intent, intentOpenGraph)
                 }
             }
         })
