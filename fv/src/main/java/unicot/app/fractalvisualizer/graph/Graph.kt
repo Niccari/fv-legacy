@@ -94,7 +94,7 @@ internal constructor() {
 
         // グラフ設定
         this.setPosition(src.pos.x, src.pos.y)
-        this.info.size = src.size
+        this.info.size.set( src.size.width, src.size.height)
         this.info.angle = src.angle
         this.info.rot_speed = src.rot_speed
         this.info.mutation = src.mutation

@@ -56,6 +56,7 @@ class MainActivity : Activity() {
     // GUI関連
     private lateinit var mPopupWindow: PopupWindow
     private lateinit var mIconWindow: PopupWindow
+    private lateinit var mCopyWindow: PopupWindow
     private lateinit var mDeleteWindow: PopupWindow
 
     private var mGui: View? = null
@@ -66,6 +67,7 @@ class MainActivity : Activity() {
     private var mVCurrentGUI: View? = null
 
     private lateinit var mGraphDeleteIcon: ImageButton
+    private lateinit var mCopyIcon: ImageButton
     private lateinit var mIVGraphOverrayIcon: ImageView
     private var mCurrentSelectedGraphIcon = ""
     private var executor: ScheduledExecutorService? = null
@@ -180,6 +182,7 @@ class MainActivity : Activity() {
         // オーバレイ関連
         mIVGraphOverrayIcon = ImageView(this)
         mGraphDeleteIcon = ImageButton(this)
+        mCopyIcon = ImageButton(this)
         mGraphDeleteIcon.setOnClickListener {
             stop()
             // グラフの計算、描画中の可能性があるので2/60sほど待機
@@ -189,8 +192,15 @@ class MainActivity : Activity() {
 
                 if (dgc.selectedGraphNum == 0) {
                     mGraphDeleteIcon.visibility = ImageView.INVISIBLE
+                    mCopyIcon.visibility = ImageView.INVISIBLE
                 }
             }, 30)
+            resume()
+        }
+        mCopyIcon.setOnClickListener{
+            stop()
+            DGCommon.copyGraph(DGCore.selectedGraph[0].info.graph_kind, true)
+            mCopyWindow
             resume()
         }
 
@@ -204,16 +214,20 @@ class MainActivity : Activity() {
         // グラフ消去ボタン(浮動)
         mDeleteWindow = PopupWindow(mGraphDeleteIcon, 180, 180)
         mDeleteWindow.isTouchable = true
+        mCopyWindow = PopupWindow(mCopyIcon, 180, 180)
+        mCopyWindow.isTouchable = true
 
         // Activity完全起動後に実行
         mIVGraphOverrayIcon.post {
-            // mDismissTime = 0; // GUI消す時間をリセット
             mDeleteWindow.showAsDropDown(mIVGraphOverrayIcon)
+            mCopyWindow.showAsDropDown(mIVGraphOverrayIcon)
         }
 
         // グラフ削除アイコンは普段見えない
         mGraphDeleteIcon.visibility = ImageView.INVISIBLE
         mGraphDeleteIcon.setBackgroundResource(R.drawable.delete)
+        mCopyIcon.visibility = ImageView.INVISIBLE
+        mCopyIcon.setBackgroundResource(R.drawable.copy_graph)
 
         this.onResume()
     }
@@ -342,22 +356,28 @@ class MainActivity : Activity() {
                 MotionEvent.ACTION_UP -> {
                     if (!dgc.isGraphSelected) {
                         mGraphDeleteIcon.visibility = ImageView.INVISIBLE
-                    }
-                    if (dgc.isGraphSelected) {
+                        mCopyIcon.visibility = ImageView.INVISIBLE
+                    }else{
                         mGraphDeleteIcon.visibility = ImageView.VISIBLE
+                        if(dgc.selectedGraphNum == 1)
+                            mCopyIcon.visibility = ImageView.VISIBLE
                     }
                 }
                 MotionEvent.ACTION_DOWN ->
                     if (dgc.isGraphSelected) {
                         mGraphDeleteIcon.visibility = ImageView.VISIBLE
+                        if(dgc.selectedGraphNum == 1)
+                            mCopyIcon.visibility = ImageView.VISIBLE
                     }
             }
         }
         // グラフ消去ボタンの位置設定
         if (dgc.isGraphSelected) {
-            val offset = DGCommon.getAbsCntPoint(PointF(-0.8f, -0.8f))
+            val copyIconOffset = DGCommon.getAbsCntPoint(PointF(-0.8f, -1.05f))
+            val deleteIconOffset = DGCommon.getAbsCntPoint(PointF(-0.8f, -0.8f))
             val cogAbs = DGCommon.getAbsCntPoint(dgc.selectedCOG)
-            mDeleteWindow.update(cogAbs.x + offset.x, cogAbs.y + offset.y, -1, -1) // カーソルの位置にアイコンがくるよう調整
+            mDeleteWindow.update(cogAbs.x + deleteIconOffset.x, cogAbs.y + deleteIconOffset.y, -1, -1) // カーソルの位置にアイコンがくるよう調整
+            mCopyWindow.update(cogAbs.x + copyIconOffset.x, cogAbs.y + copyIconOffset.y, -1, -1)
         }
         return super.onTouchEvent(event)
     }
@@ -451,6 +471,7 @@ class MainActivity : Activity() {
 
     private fun showGUI(id: Int) {
         mGraphDeleteIcon.visibility = ImageView.INVISIBLE
+        mCopyIcon.visibility = ImageView.INVISIBLE
 
         // グラフ選択時、一番古いグラフを元に設定値を更新
         if (dgc.selectedGraphNum >= 1) {
