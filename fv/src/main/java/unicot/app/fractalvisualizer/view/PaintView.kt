@@ -17,8 +17,6 @@ import unicot.app.fractalvisualizer.graph.Graph
  * グラフ描画設定
  */
 class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs){
-    private val STR_SINGLE_COLOR = "single"
-
     private var mIBCurrentColor: ImageButton? = null
     private var mIBCurrentBrush: ImageButton? = null
 
@@ -34,29 +32,25 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
     }
 
     fun refresh(){
-        val g_selected = DGCore.selectedGraph[0]
-        val gi = g_selected.info
+        val gi = DGCore.selectedGraph[0].info
 
-        checkBox_gsp_draw_each.isChecked = gi.draw_kind == Graph.DRAW_IN_ORDER
+        checkBox_gsp_draw_each.isChecked = gi.drawKind == Graph.DRAW_IN_ORDER
 
         if (checkBox_gsp_draw_each.isChecked) {
             gui_paint_sb_draw_each_length.visibility = View.VISIBLE
         } else {
             gui_paint_sb_draw_each_length.visibility = View.INVISIBLE
         }
-        checkBox_gsp_color_each.setChecked(gi.mIsColorEach)
+        checkBox_gsp_color_each.isChecked = gi.mIsColorEach
 
         gui_paint_sb_thickness.setValue(gi.mLineThickness)
         gui_paint_sb_draw_color_shift.setValue(gi.cp.shiftSpeed.toFloat())
 
         gui_paint_sb_draw_color_alpha.setValue(gi.cp.alpha.toFloat())
         if (gi.cp.colMode == ColorPattern.SINGLE) {
-            val cr = gi.cp.red
-            val cg = gi.cp.green
-            val cb = gi.cp.blue
-            gui_paint_colors_sb_red.setProgress(cr)
-            gui_paint_colors_sb_green.setProgress(cg)
-            gui_paint_colors_sb_blue.setProgress(cb)
+            gui_paint_colors_sb_red.progress   = gi.cp.red
+            gui_paint_colors_sb_green.progress = gi.cp.green
+            gui_paint_colors_sb_blue.progress  = gi.cp.blue
         }
 
         mIBCurrentColor?.setImageResource(R.drawable.color_focus_item)
@@ -70,7 +64,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
             4 -> mIBCurrentColor = imageButton_gsp_dawn_icon
             5 -> mIBCurrentColor = imageButton_gsp_sea_icon
             6 -> mIBCurrentColor = imageButton_gsp_heat_icon
-            7 -> mIBCurrentColor = imageButton_gsp_monochro_icon    //ColorPattern.Companion.getBW():
+            7 -> mIBCurrentColor = imageButton_gsp_monochro_icon
             8 -> mIBCurrentColor = imageButton_gsp_pastel_icon
         }
 
@@ -95,7 +89,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
     private fun setEvent(){
         // 以下、描画設定関連
         checkBox_gsp_draw_each.setOnCheckedChangeListener {
-            box, checked ->
+            _, checked ->
             if (checked) {
                 dgc.changeDrawSetting(DGCore.OP_DRAW_EACH, 1)
                 gui_paint_sb_draw_each_length.visibility = View.VISIBLE
@@ -106,7 +100,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
         }
 
         checkBox_gsp_color_each.setOnCheckedChangeListener {
-            box, checked ->
+            _, checked ->
             dgc.changeDrawSetting(DGCore.OP_COLOREACH, checked)
         }
 
@@ -142,7 +136,7 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
     }
 
     fun onColorPatternClicked(v: View){
-        if (v.tag.toString().matches(STR_SINGLE_COLOR.toRegex())) {
+        if (v.tag.toString() == "single") {
             gui_paint_sb_draw_color_shift.visibility = View.GONE
             gui_paint_colors_ll_root.visibility = View.VISIBLE
         }else {
@@ -170,12 +164,12 @@ class PaintView(context: Context, attrs: AttributeSet? = null) : LinearLayout(co
             return  // グラフ選択してなければ非実行
 
         val alpha = gui_paint_sb_draw_color_alpha.value.toInt()
-        val red = 0xFF and gui_paint_colors_sb_red.getProgress()
-        val green = 0xFF and gui_paint_colors_sb_green.getProgress()
-        val blue = 0xFF and gui_paint_colors_sb_blue.getProgress()
+        val red   = 0xFF and gui_paint_colors_sb_red.progress
+        val green = 0xFF and gui_paint_colors_sb_green.progress
+        val blue  = 0xFF and gui_paint_colors_sb_blue.progress
 
         val mSingleColor = alpha shl 24 or (red shl 16) or (green shl 8) or blue
-        imageButton_gsp_single_icon.getBackground().setColorFilter(mSingleColor, PorterDuff.Mode.SRC_IN)
+        imageButton_gsp_single_icon.background.setColorFilter(mSingleColor, PorterDuff.Mode.SRC_IN)
         dgc.changeDrawSetting(DGCore.OP_SET_COLOR, mSingleColor)
     }
 }

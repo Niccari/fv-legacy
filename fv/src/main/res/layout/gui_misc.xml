@@ -49,7 +49,6 @@
             android:layout_width="@dimen/gui_misc_button_size"
             android:layout_height="@dimen/gui_misc_button_size"
             android:layout_marginStart="3dp"
-            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:padding="7dp"

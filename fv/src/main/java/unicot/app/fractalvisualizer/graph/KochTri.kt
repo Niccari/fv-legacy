@@ -2,9 +2,9 @@ package unicot.app.fractalvisualizer.graph
 
 import android.graphics.Point
 import android.graphics.PointF
-
 import unicot.app.fractalvisualizer.core.DGCommon
-import unicot.app.fractalvisualizer.core.SinInt
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * コッホ曲線を3つくっつけた曲線(雪型、三菱型の2種)
@@ -18,14 +18,14 @@ class KochTri(private val shape_kind: Int) : KochCurve() {
         complexityMin = 1
         complexityMax = 5
 
-        info.graph_kind = if (shape_kind == INNER) DGCommon.KOCHTRIANGLE_INNER else DGCommon.KOCHTRIANGLE_OUTER
-        info.is_recursive = true
+        info.graphKind = if (shape_kind == INNER) DGCommon.KOCHTRIANGLE_INNER else DGCommon.KOCHTRIANGLE_OUTER
+        info.isRecursive = true
         setRelativePoint()
     }
 
     override val pointMax: Int
         get() {
-            val pointMax = 3 * (Math.pow(2.0, (2 * (info.complexity - 1)).toDouble()).toInt() + 1)
+            val pointMax = 3 * (2.0.pow((2 * (info.complexity - 1)).toDouble()).toInt() + 1)
             nOrders = pointMax - nsub
             return pointMax
         }
@@ -48,9 +48,9 @@ class KochTri(private val shape_kind: Int) : KochCurve() {
     override fun setRelativePoint() {
         allocatePoints()
 
-        setRelRecursivePoint(1, GRAPH_KOCH_INIT_ARM_RATE, GRAPH_KOCH_INIT_THETA_RATE)
+        setRelRecursivePoint(1, length0, degree0)
 
-        val sin120 = -SinInt.SI().sin(60)
+        val sin120 = -0.8660254f
         val cos120 = -0.5f
 
         var bx: Float
@@ -60,25 +60,23 @@ class KochTri(private val shape_kind: Int) : KochCurve() {
             if (shape_kind == INNER)
             // 三菱型なら、上下すればよい。
                 pointBase[i].y = -pointBase[i].y
-            pointBase[i].y += 1.0f / Math.sqrt(3.0).toFloat()
+            pointBase[i].y += 1.0f / sqrt(3.0).toFloat()
         }
         for (i in 0 until pointMax / 3) {
             bx = pointBase[i].x
             by = pointBase[i].y
-            pointBase.add(PointF(bx * cos120 - by * sin120,
-                    bx * sin120 + by * cos120))
+            pointBase.add(PointF(bx * cos120 - by * sin120, bx * sin120 + by * cos120))
         }
         for (i in 0 until pointMax / 3) {
             bx = pointBase[i + pointMax / 3].x
             by = pointBase[i + pointMax / 3].y
-            pointBase.add(PointF(bx * cos120 - by * sin120,
-                    bx * sin120 + by * cos120))
+            pointBase.add(PointF(bx * cos120 - by * sin120, bx * sin120 + by * cos120))
         }
         isAllocated = true
     }
 
     companion object {
-        val OUTER = 0
-        val INNER = 1
+        const val OUTER = 0
+        const val INNER = 1
     }
 }

@@ -6,22 +6,19 @@ package unicot.app.fractalvisualizer.core
 class SinInt {
     init {
         for (i in 0..90)
-            sinQ[i] = Math.sin(Math.toRadians(i.toDouble())).toFloat()    //Calculate sin Curve(0 to 90 [deg])
+            sinQ[i] = kotlin.math.sin(Math.toRadians(i.toDouble())).toFloat()
     }
 
     fun sin(_theta: Int): Float {
         var theta = _theta
         while (theta < -180) theta += 360
-        while (theta > 180) theta -= 360
+        while (theta >  180) theta -= 360
 
-        return if (theta < -90) {
-            -sinQ[180 + theta]
-        } else if (theta < 0) {
-            -sinQ[-theta]
-        } else if (theta < 90) {
-            sinQ[theta]
-        } else {
-            sinQ[180 - theta]
+        return when {
+            theta < -90 -> -sinQ[180 + theta]
+            theta < 0   -> -sinQ[-theta]
+            theta < 90  ->  sinQ[theta]
+            else        ->  sinQ[180 - theta]
         }
     }
 
@@ -36,7 +33,7 @@ class SinInt {
          * 本データへのアクセス情報を返す。
          * @return 本データへのアクセス情報
          */
-        fun SI(): SinInt {
+        fun getInstance(): SinInt {
             return SinInt()
         }
     }

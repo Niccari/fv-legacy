@@ -7,6 +7,7 @@ import unicot.app.fractalvisualizer.graph.Graph
 import unicot.app.fractalvisualizer.graph.Leaf
 import unicot.app.fractalvisualizer.graph.SGasket
 import java.util.*
+import kotlin.math.sqrt
 
 /**
  * グラフの計算・描画など、グラフに関する処理を行う<br></br>
@@ -21,8 +22,8 @@ class DGCore {
     private val mSelectedGraphIndex: ArrayList<Int> = ArrayList(0)        // 選択しているグラフ番号
     private val mSelectedGraphDistance: ArrayList<PointF> = ArrayList(0)  // 選択しているグラフの重心からのベクトル
 
-    private val diff_pos: Point = Point(-1, -1)
-    private val cog_graphs: PointF = PointF()   // 選択したグラフ郡の重心
+    private val diffPos: Point = Point(-1, -1)
+    private val graphsCog: PointF = PointF()   // 選択したグラフ郡の重心
     private var action: Int = -1               // 操作種類(グラフの移動・回転・拡大縮小に使用, -1 : 無し / >= 0 : 操作)
     private val sgn: Point = Point( 1, 1)
 
@@ -48,7 +49,7 @@ class DGCore {
      * @return 選択したグラフ群の重心(相対座標)
      */
     val selectedCOG: PointF
-        get() = if (isGraphSelected) cog_graphs else PointF()
+        get() = if (isGraphSelected) graphsCog else PointF()
 
     /**
      * 初期化：インスタンス取得、データロードなど
@@ -87,29 +88,29 @@ class DGCore {
      * @return Selected_graph_indices
      */
     fun select(pt_old: Point = dummyPoint, pt_new: Point = dummyPoint): ArrayList<Int> {
-        val min_x: Float
-        val min_y: Float
-        val max_x: Float
-        val max_y: Float
+        val minX: Float
+        val minY: Float
+        val maxX: Float
+        val maxY: Float
         selectedGraph.clear()
         mSelectedGraphIndex.clear()
         mSelectedGraphDistance.clear()
 
         // x座標を整列
         if (pt_old.x < pt_new.x) {
-            min_x = pt_old.x.toFloat()
-            max_x = pt_new.x.toFloat()
+            minX = pt_old.x.toFloat()
+            maxX = pt_new.x.toFloat()
         } else {
-            min_x = pt_new.x.toFloat()
-            max_x = pt_old.x.toFloat()
+            minX = pt_new.x.toFloat()
+            maxX = pt_old.x.toFloat()
         }
         // y座標を整列
         if (pt_old.y < pt_new.y) {
-            min_y = pt_old.y.toFloat()
-            max_y = pt_new.y.toFloat()
+            minY = pt_old.y.toFloat()
+            maxY = pt_new.y.toFloat()
         } else {
-            min_y = pt_new.y.toFloat()
-            max_y = pt_old.y.toFloat()
+            minY = pt_new.y.toFloat()
+            maxY = pt_old.y.toFloat()
         }
 
         // グラフ座標系を画面座標系に変更
@@ -119,8 +120,7 @@ class DGCore {
             val pos = DGCommon.getAbsCntPoint(gi.pos)
 
             // グラフの中心が四角領域内にあるか?
-            if (min_x <= pos.x && pos.x <= max_x &&
-                    min_y <= pos.y && pos.y <= max_y) {
+            if (pos.x.toFloat() in minX..maxX && pos.y.toFloat() in minY..maxY) {
                 mSelectedGraphIndex.add(i)
                 selectedGraph.add(graph[i])
             }
@@ -129,20 +129,20 @@ class DGCore {
 
         // グラフグループの重心を計算
         if (isGraphSelected) {
-            var pos_tmp: PointF
-            cog_graphs.set(GRAPH_COG_X_DEFAULT, GRAPH_COG_Y_DEFAULT)
+            var tmpPos: PointF
+            graphsCog.set(GRAPH_COG_X_DEFAULT, GRAPH_COG_Y_DEFAULT)
 
             for (i in selectedGraph.indices) {
-                pos_tmp = selectedGraph[i].info.pos
-                cog_graphs.set(cog_graphs.x + pos_tmp.x, cog_graphs.y + pos_tmp.y)
+                tmpPos = selectedGraph[i].info.pos
+                graphsCog.set(graphsCog.x + tmpPos.x, graphsCog.y + tmpPos.y)
             }
-            cog_graphs.set(cog_graphs.x / selectedGraph.size, cog_graphs.y / selectedGraph.size)
+            graphsCog.set(graphsCog.x / selectedGraph.size, graphsCog.y / selectedGraph.size)
 
             // 以下、選択されたグラフと重心間のベクトルを計算
-            var my_pos: PointF
+            var myPos: PointF
             for (i in selectedGraph.indices) {
-                my_pos = selectedGraph[i].info.pos
-                mSelectedGraphDistance.add(PointF(my_pos.x - cog_graphs.x, my_pos.y - cog_graphs.y))
+                myPos = selectedGraph[i].info.pos
+                mSelectedGraphDistance.add(PointF(myPos.x - graphsCog.x, myPos.y - graphsCog.y))
             }
         }
 
@@ -154,17 +154,22 @@ class DGCore {
      * @param pt タップ座標(絶対座標)
      */
     fun collision(pt: Point) {
-        val pt_rel = DGCommon.getRelCntPoint(pt)
-        val dist = Math.sqrt(((cog_graphs.x - pt_rel.x) * (cog_graphs.x - pt_rel.x) + (cog_graphs.y - pt_rel.y) * (cog_graphs.y - pt_rel.y)).toDouble()).toFloat()
-        if (dist < DIST_THRESH_GRAPH_SELECT_TRANSLATE) {
-            action = OP_TRANSLATE
-        } else if (dist < DIST_THRESH_GRAPH_SELECT_ROTATE) {
-            action = OP_ROTATE
-        } else if (dist < DIST_THRESH_GRAPH_SELECT_SCALING) {
-            action = OP_SCALING
-        } else {
-            action = -1
-            isGraphSelected = false
+        val relPoint = DGCommon.getRelCntPoint(pt)
+        val dist = sqrt(((graphsCog.x - relPoint.x) * (graphsCog.x - relPoint.x) + (graphsCog.y - relPoint.y) * (graphsCog.y - relPoint.y)).toDouble()).toFloat()
+        when {
+            dist < DIST_THRESH_GRAPH_SELECT_TRANSLATE -> {
+                action = OP_TRANSLATE
+            }
+            dist < DIST_THRESH_GRAPH_SELECT_ROTATE -> {
+                action = OP_ROTATE
+            }
+            dist < DIST_THRESH_GRAPH_SELECT_SCALING -> {
+                action = OP_SCALING
+            }
+            else -> {
+                action = -1
+                isGraphSelected = false
+            }
         }
     }
 
@@ -174,67 +179,67 @@ class DGCore {
      * @param pt_new 操作後座標
      */
     fun affineTransformGraphs(pt_old: Point, pt_new: Point) {
-        val vct_rel: PointF
+        val relVector: PointF
         if (pt_old.x < 0 && pt_old.y < 0) {
-            diff_pos.set(-1, -1)
+            diffPos.set(-1, -1)
             return
         }
         when (action) {
             OP_TRANSLATE    // 移動
             -> {
-                var vct_cog: PointF
-                vct_rel = DGCommon.getRelCntPoint(pt_new)
+                var vectorCog: PointF
+                relVector = DGCommon.getRelCntPoint(pt_new)
                 for (i in selectedGraph.indices) {
-                    vct_cog = mSelectedGraphDistance[i]                        // グラフ重心 - グループ重心
+                    vectorCog = mSelectedGraphDistance[i]                        // グラフ重心 - グループ重心
 
-                    selectedGraph[i].setPosition(vct_rel.x + vct_cog.x, vct_rel.y + vct_cog.y)   // グラフを移動
+                    selectedGraph[i].setPosition(relVector.x + vectorCog.x, relVector.y + vectorCog.y)   // グラフを移動
                 }
-                cog_graphs.set(vct_rel)
+                graphsCog.set(relVector)
             }
             OP_ROTATE    // 回転
             -> {
-                if (diff_pos.x < 0 && diff_pos.y < 0) {
-                    diff_pos.set(pt_new.x, pt_new.y)
+                if (diffPos.x < 0 && diffPos.y < 0) {
+                    diffPos.set(pt_new.x, pt_new.y)
                 }
                 // 変化ベクトル
-                vct_rel = PointF((pt_new.x - diff_pos.x) / screenSize.x.toFloat(),
-                        (pt_new.y - diff_pos.y) / screenSize.y.toFloat())
+                relVector = PointF((pt_new.x - diffPos.x) / screenSize.x.toFloat(),
+                        (pt_new.y - diffPos.y) / screenSize.y.toFloat())
 
-                val diff_pos_rel = DGCommon.getRelCntPoint(diff_pos)
+                val diffRelPos = DGCommon.getRelCntPoint(diffPos)
 
                 // 重心から変化ベクトルまでのベクトル(内積計算のため、右に90度回転)
-                val r_vct = PointF(diff_pos_rel.y - cog_graphs.y, -(diff_pos_rel.x - cog_graphs.x))
-                val rad = -2f * 360.0f * (vct_rel.x * r_vct.x + vct_rel.y * r_vct.y)
+                val armVector = PointF(diffRelPos.y - graphsCog.y, -(diffRelPos.x - graphsCog.x))
+                val rad = -2f * 360.0f * (relVector.x * armVector.x + relVector.y * armVector.y)
 
                 for (i in selectedGraph.indices)
                     selectedGraph[i].info.angle += rad
 
-                diff_pos.set(pt_new.x, pt_new.y)
+                diffPos.set(pt_new.x, pt_new.y)
             }
             OP_SCALING    // 拡大
             -> {
-                if (diff_pos.x < 0 && diff_pos.y < 0) {
-                    diff_pos.set(pt_new.x, pt_new.y)
+                if (diffPos.x < 0 && diffPos.y < 0) {
+                    diffPos.set(pt_new.x, pt_new.y)
                     sgn.set(1, 1)
-                    if (cog_graphs.x > 2.0f * (pt_old.x / screenSize.x.toFloat() - 0.5f)) {
+                    if (graphsCog.x > 2.0f * (pt_old.x / screenSize.x.toFloat() - 0.5f)) {
                         sgn.x = -sgn.x
                     }
-                    if (cog_graphs.y < 2.0f * (pt_old.y / screenSize.y.toFloat() - 0.5f)) {
+                    if (graphsCog.y < 2.0f * (pt_old.y / screenSize.y.toFloat() - 0.5f)) {
                         sgn.y = -sgn.y
                     }
                 }
 
-                vct_rel = PointF(sgn.x * (pt_new.x - diff_pos.x) / screenSize.x.toFloat(),
-                        -sgn.y * (pt_new.y - diff_pos.y) / screenSize.y.toFloat())
+                relVector = PointF(sgn.x * (pt_new.x - diffPos.x) / screenSize.x.toFloat(),
+                        -sgn.y * (pt_new.y - diffPos.y) / screenSize.y.toFloat())
 
                 //            Log.d( "FV", "vct_rel:"+vct_rel.x + ", "+vct_rel.y);
                 for (i in selectedGraph.indices) {
                     val dim = selectedGraph[i].info.size
-                    val new_dx = dim.width + vct_rel.x * 2.0f
-                    val new_dy = dim.height + vct_rel.y * 2.0f
-                    dim.set(new_dx, new_dy)
+                    val newDx = dim.width  + relVector.x * 2.0f
+                    val newDy = dim.height + relVector.y * 2.0f
+                    dim.set(newDx, newDy)
                 }
-                diff_pos.set(pt_new.x, pt_new.y)
+                diffPos.set(pt_new.x, pt_new.y)
             }
         }
     }
@@ -338,106 +343,106 @@ class DGCore {
         /* *** 定数 *** */
 
         // 重心のデフォルト値
-        private val GRAPH_COG_X_DEFAULT = 0.0f
-        private val GRAPH_COG_Y_DEFAULT = 0.0f
+        private const val GRAPH_COG_X_DEFAULT = 0.0f
+        private const val GRAPH_COG_Y_DEFAULT = 0.0f
 
         private val dummyPoint = Point(-1, -1)
         /**
          * グラフ変形内容判定部 しきい値：平行移動
          */
-        val DIST_THRESH_GRAPH_SELECT_TRANSLATE = 0.12f
+        const val DIST_THRESH_GRAPH_SELECT_TRANSLATE = 0.12f
         /**
          * グラフ変形内容判定部 しきい値：回転
          */
-        val DIST_THRESH_GRAPH_SELECT_ROTATE = 0.24f
+        const val DIST_THRESH_GRAPH_SELECT_ROTATE = 0.24f
         /**
          * グラフ変形内容判定部 しきい値：拡大縮小
          */
-        val DIST_THRESH_GRAPH_SELECT_SCALING = 0.40f
+        const val DIST_THRESH_GRAPH_SELECT_SCALING = 0.40f
 
         /**
          * 制御番号：グラフの平行移動
          */
-        private val OP_TRANSLATE = 0
+        private const val OP_TRANSLATE = 0
         /**
          * 制御番号：グラフの拡大縮小
          */
-        private val OP_SCALING = 1
+        private const val OP_SCALING = 1
         /**
          * 制御番号：グラフの回転
          */
-        private val OP_ROTATE = 2
+        private const val OP_ROTATE = 2
 
         /**
          * 制御番号：変異率の大きさ
          */
-        val OP_MUTATION_SIZE = 10
+        const val OP_MUTATION_SIZE = 10
         /**
          * 制御番号：変異率の方向
          */
-        val OP_MUTATION_ANGLE = 11
+        const val OP_MUTATION_ANGLE = 11
         /**
          * 制御番号：乱雑度の大きさ
          */
-        val OP_RANDOMIZER_SIZE = 12
+        const val OP_RANDOMIZER_SIZE = 12
         /**
          * 制御番号：乱雑度の方向
          */
-        val OP_RANDOMIZER_ANGLE = 13
+        const val OP_RANDOMIZER_ANGLE = 13
 
         /**
          * 制御番号：葉型グラフの枝数
          */
-        val OP_LEAF_BRANCH = 19
+        const val OP_LEAF_BRANCH = 19
         /**
          * 制御番号：シェルピンスキーのギャスケットの水平スキュー角度
          */
-        val OP_SGASKET_SKEW = 18
+        const val OP_SGASKET_SKEW = 18
 
         /**
          * 制御番号：ペンの太さ(グラフ描画設定)
          */
-        val OP_THICKNESS = 20
+        const val OP_THICKNESS = 20
         /**
          * 制御番号：色を線分ごとに変更(グラフ描画設定)
          */
-        val OP_COLOREACH = 21
+        const val OP_COLOREACH = 21
         /**
          * 制御番号：色遷移パターンの変更(グラフ描画設定)
          */
-        val OP_COLORPATTERN = 23
+        const val OP_COLORPATTERN = 23
         /**
          * 制御番号：色の設定(グラフ描画設定)
          */
-        val OP_SET_COLOR = 24
+        const val OP_SET_COLOR = 24
         /**
          * 制御番号：グラフの個別設定のトグル(グラフ描画設定)
          */
-        val OP_DRAW_EACH = 25
+        const val OP_DRAW_EACH = 25
         /**
          * 制御番号：グラフの個別描画線分数(パーセント表示)(グラフ描画設定)
          */
-        val OP_DRAW_EACH_PCT = 26
+        const val OP_DRAW_EACH_PCT = 26
         /**
          * 制御番号：色の遷移速度変更(グラフ描画設定)
          */
-        val OP_COLOR_SHIFT = 29
+        const val OP_COLOR_SHIFT = 29
         /**
          * 制御番号：ペンの種類(グラフ描画設定)
          */
-        val OP_BRUSHTYPE = 30
+        const val OP_BRUSHTYPE = 30
         /**
          * 制御番号：ペンの透明度(グラフ描画設定)
          */
-        val OP_SET_ALPHA = 31
+        const val OP_SET_ALPHA = 31
 
         /**
          * 制御番号：複雑さの変更(グラフ変形)
          */
-        val OP_COMPLEXITY = 41
+        const val OP_COMPLEXITY = 41
         /**
          * 制御番号：グラフの自転速度の変更(グラフ変形)
          */
-        val OP_GRAPH_ROTATE = 44
+        const val OP_GRAPH_ROTATE = 44
     }
 }

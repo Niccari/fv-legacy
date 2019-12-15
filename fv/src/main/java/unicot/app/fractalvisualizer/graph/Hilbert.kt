@@ -4,6 +4,7 @@ import android.graphics.Point
 import android.graphics.PointF
 
 import unicot.app.fractalvisualizer.core.DGCommon
+import kotlin.math.pow
 
 /**
  * ヒルベルト曲線
@@ -18,12 +19,12 @@ class Hilbert : Graph() {
     init {
         complexityMin = 1
         complexityMax = 5
-        info.graph_kind = DGCommon.HILBERT
+        info.graphKind = DGCommon.HILBERT
     }
 
     override val pointMax: Int
         get() {
-            nOrders = Math.pow(4.0, info.complexity.toDouble()).toInt() - 1
+            nOrders = 4.0.pow(info.complexity.toDouble()).toInt() - 1
             return nOrders + 1
         }
 
@@ -107,7 +108,7 @@ class Hilbert : Graph() {
         hy = -GraphInfo.GRAPH_SIZE_MID / 2
 
         pidx = 0
-        dxy = (1.0f / (Math.pow(2.0, info.complexity.toDouble()) - 1)).toFloat()    // 移動量
+        dxy = (1.0f / (2.0.pow(info.complexity.toDouble()) - 1)).toFloat()    // 移動量
 
         pointBase.add(pidx++, PointF(hx, hy))
         ldr(info.complexity)

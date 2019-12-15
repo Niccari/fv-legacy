@@ -45,16 +45,16 @@ object DGDataLoad : DGDataInfo() {
                         gi.size.width = doubleToFloat(graphDetail[GRAPH_WIDTH])
                         gi.size.height = doubleToFloat(graphDetail[GRAPH_HEIGHT])
                         gi.angle = doubleToFloat(graphDetail[GRAPH_ANGLE])
-                        gi.rot_speed = doubleToFloat(graphDetail[GRAPH_ROTATE])
+                        gi.rotSpeed = doubleToFloat(graphDetail[GRAPH_ROTATE])
                         gi.mutation.angle = doubleToFloat(graphDetail[GRAPH_MUTATION_ANGLE])
                         gi.mutation.size = doubleToFloat(graphDetail[GRAPH_MUTATION_SIZE])
                         gi.randomize.angle = doubleToFloat(graphDetail[GRAPH_RANDOMIZE_ANGLE])
                         gi.randomize.size = doubleToFloat(graphDetail[GRAPH_RANDOMIZE_SIZE])
-                        if (gi.graph_kind == DGCommon.LEAF) {
+                        if (gi.graphKind == DGCommon.LEAF) {
                             (gd as unicot.app.fractalvisualizer.graph.Leaf)
                                     .setBranch(numberToInt(graphDetail[GRAPH_LEAF_BRANCH]))
                         }
-                        if (gi.graph_kind == DGCommon.SIERPINSKI_GASKET) {
+                        if (gi.graphKind == DGCommon.SIERPINSKI_GASKET) {
                             (gd as unicot.app.fractalvisualizer.graph.SGasket).skewAngle =
                                     doubleToFloat(graphDetail[GRAPH_SGASKET_SKEW] as Double)
                         }

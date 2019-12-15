@@ -199,7 +199,7 @@ class MainActivity : Activity() {
         }
         mCopyIcon.setOnClickListener{
             stop()
-            DGCommon.copyGraph(DGCore.selectedGraph[0].info.graph_kind, true)
+            DGCommon.copyGraph(DGCore.selectedGraph[0].info.graphKind, true)
             mCopyWindow
             resume()
         }
