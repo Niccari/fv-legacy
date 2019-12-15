@@ -10,7 +10,7 @@ class Rose : Graph() {
     init {
         complexityMin = 1
         complexityMax = 8
-        info.graph_kind = DGCommon.ROSECURVE
+        info.graphKind = DGCommon.ROSECURVE
     }
 
     override val pointMax: Int
@@ -23,13 +23,13 @@ class Rose : Graph() {
         var nsin: Float
         allocatePoints()
         for (i in 0 until pointMax) {
-            nsin = SinInt.SI().sin(360 * info.complexity * i / pointMax)
-            pointBase[i].set(nsin * SinInt.SI().cos(360 * i / pointMax - 180), nsin * SinInt.SI().sin(360 * i / pointMax - 180))
+            nsin = SinInt.getInstance().sin(360 * info.complexity * i / pointMax)
+            pointBase[i].set(nsin * SinInt.getInstance().cos(360 * i / pointMax - 180), nsin * SinInt.getInstance().sin(360 * i / pointMax - 180))
         }
         isAllocated = true
     }
 
     companion object {
-        private val GRAPH_ROSE_DENSITY = 30
+        private const val GRAPH_ROSE_DENSITY = 30
     }
 }

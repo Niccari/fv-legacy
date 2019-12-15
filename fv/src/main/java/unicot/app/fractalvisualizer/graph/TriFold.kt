@@ -5,6 +5,7 @@ import android.graphics.PointF
 
 import unicot.app.fractalvisualizer.core.DGCommon
 import unicot.app.fractalvisualizer.core.SinInt
+import kotlin.math.pow
 
 /**
  * 再帰曲線
@@ -19,17 +20,17 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
         this.info.complexity = complexityMin
 
         when (curve_kind) {
-            CIS -> info.graph_kind = DGCommon.TRIFOLD_CIS
-            TRANS -> info.graph_kind = DGCommon.TRIFOLD_TRANS
+            CIS -> info.graphKind = DGCommon.TRIFOLD_CIS
+            TRANS -> info.graphKind = DGCommon.TRIFOLD_TRANS
         }
-        info.is_recursive = true
+        info.isRecursive = true
         setRelativePoint()
     }
 
 
     override val pointMax: Int
         get() {
-            nOrders = Math.pow(4.0, info.complexity.toDouble()).toInt()
+            nOrders = 4.0.pow(info.complexity.toDouble()).toInt()
             return nOrders + 1
         }
 
@@ -51,61 +52,61 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
         pointBase.add(0, PointF(GraphInfo.GRAPH_POS_MIN, GraphInfo.GRAPH_POS_MID))
         pointBase.add(1, PointF(GraphInfo.GRAPH_POS_MAX, GraphInfo.GRAPH_POS_MID))
 
-        setRelRecursivePoint(1, GRAPH_FOLD_INIT_ARM_RATE, GRAPH_FOLD_INIT_THETA_RATE)
+        setRelRecursivePoint(1, 1.0f, 90.0f)
         isAllocated = true
     }
 
-    private fun setRelRecursivePoint(depth: Int, arm: Float, theta: Float) {
-        var arm = arm
-        var theta = theta
+    private fun setRelRecursivePoint(depth: Int, parentLength: Float, parentDegree: Float) {
+        var length = parentLength
+        var degree = parentDegree
         if (depth > info.complexity)
             return
 
         // 折り曲げた後の線分のベクトルを計算していく。
-        var add_point: PointF
-        arm *= info.mutation.size + info.randomize.size * Math.random().toFloat()
-        theta *= info.mutation.angle + info.randomize.angle * Math.random().toFloat()
-        val sin = SinInt.SI().sin(theta.toInt())
-        val cos = SinInt.SI().cos(theta.toInt())
+        var addPoint: PointF
+        length *= info.mutation.size + info.randomize.size * Math.random().toFloat()
+        degree *= info.mutation.angle + info.randomize.angle * Math.random().toFloat()
+        val sin = SinInt.getInstance().sin(degree.toInt())
+        val cos = SinInt.getInstance().cos(degree.toInt())
         var src: PointF
         var mid: PointF
         var dst: PointF
-        var vct_sm: PointF
-        var vct_md: PointF
+        var smVector: PointF
+        var midVector: PointF
 
-        for (i in Math.pow(4.0, (depth - 1).toDouble()).toInt() downTo 1) {
+        for (i in 4.0.pow((depth - 1).toDouble()).toInt() downTo 1) {
             src = pointBase[i]
             dst = pointBase[i - 1]
 
             mid = PointF((dst.x + src.x) / 2.0f, (dst.y + src.y) / 2.0f)
 
-            vct_sm = PointF(mid.x - src.x, mid.y - src.y)
-            vct_md = PointF(dst.x - mid.x, dst.y - mid.y)
+            smVector = PointF(mid.x - src.x, mid.y - src.y)
+            midVector = PointF(dst.x - mid.x, dst.y - mid.y)
             if (curve_kind == CIS) {
-                add_point = PointF(src.x - arm * (cos * vct_sm.x + sin * vct_sm.y), src.y - arm * (-sin * vct_sm.x + cos * vct_sm.y))
-                pointBase.add(i, add_point)
+                addPoint = PointF(src.x - length * (cos * smVector.x + sin * smVector.y), src.y - length * (-sin * smVector.x + cos * smVector.y))
+                pointBase.add(i, addPoint)
                 pointBase.add(i, mid)
 
-                add_point = PointF(dst.x + arm * (cos * vct_md.x - sin * vct_md.y), dst.y + arm * (sin * vct_md.x + cos * vct_md.y))
-                pointBase.add(i, add_point)
+                addPoint = PointF(dst.x + length * (cos * midVector.x - sin * midVector.y), dst.y + length * (sin * midVector.x + cos * midVector.y))
+                pointBase.add(i, addPoint)
             } else {
                 if (i % 2 == 0) {
-                    add_point = PointF(src.x + arm * (cos * vct_sm.x - sin * vct_sm.y), src.y + arm * (sin * vct_sm.x + cos * vct_sm.y))
-                    pointBase.add(i, add_point)
+                    addPoint = PointF(src.x + length * (cos * smVector.x - sin * smVector.y), src.y + length * (sin * smVector.x + cos * smVector.y))
+                    pointBase.add(i, addPoint)
                     pointBase.add(i, mid)
-                    add_point = PointF(dst.x - arm * (cos * vct_md.x - sin * vct_md.y), dst.y - arm * (sin * vct_md.x + cos * vct_md.y))
-                    pointBase.add(i, add_point)
+                    addPoint = PointF(dst.x - length * (cos * midVector.x - sin * midVector.y), dst.y - length * (sin * midVector.x + cos * midVector.y))
+                    pointBase.add(i, addPoint)
                 } else {
-                    add_point = PointF(src.x + arm * (cos * vct_sm.x + sin * vct_sm.y), src.y + arm * (-sin * vct_sm.x + cos * vct_sm.y))
-                    pointBase.add(i, add_point)
+                    addPoint = PointF(src.x + length * (cos * smVector.x + sin * smVector.y), src.y + length * (-sin * smVector.x + cos * smVector.y))
+                    pointBase.add(i, addPoint)
                     pointBase.add(i, mid)
-                    add_point = PointF(dst.x - arm * (cos * vct_md.x + sin * vct_md.y), dst.y - arm * (-sin * vct_md.x + cos * vct_md.y))
-                    pointBase.add(i, add_point)
+                    addPoint = PointF(dst.x - length * (cos * midVector.x + sin * midVector.y), dst.y - length * (-sin * midVector.x + cos * midVector.y))
+                    pointBase.add(i, addPoint)
                 }
 
             }
         }
-        setRelRecursivePoint(depth + 1, arm, theta)
+        setRelRecursivePoint(depth + 1, length, degree)
     }
 
     override fun calculateOrder() {
@@ -116,10 +117,7 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
     }
 
     companion object {
-        val CIS = 0
-        val TRANS = 1
-
-        private val GRAPH_FOLD_INIT_ARM_RATE = 1.0f
-        private val GRAPH_FOLD_INIT_THETA_RATE = 90.0f
+        const val CIS = 0
+        const val TRANS = 1
     }
 }

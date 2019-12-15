@@ -33,9 +33,9 @@ class GraphSettingView(context: Context, attrs: AttributeSet? = null) : LinearLa
         gui_graph_sb_complexity.renewRange(gSelected.complexityMin.toFloat(),
                                            gSelected.complexityMax.toFloat())
         gui_graph_sb_complexity.setValue(gi.complexity.toFloat())
-        gui_graph_sb_rorate.setValue(gi.rot_speed)
+        gui_graph_sb_rorate.setValue(gi.rotSpeed)
 
-        if (gi.is_recursive) {
+        if (gi.isRecursive) {
             gui_shape_recursive_ll_root.visibility = View.VISIBLE
 
             gui_graph_sb_mut_size.setValue(gi.mutation.size)
@@ -45,21 +45,21 @@ class GraphSettingView(context: Context, attrs: AttributeSet? = null) : LinearLa
         }else{
             gui_shape_recursive_ll_root.visibility = GONE
         }
-        if (gi.graph_kind == DGCommon.LEAF) {
+        if (gi.graphKind == DGCommon.LEAF) {
             gui_graph_sb_leaf_branch.visibility = View.VISIBLE
             gui_graph_sb_leaf_branch.setValue((gSelected as Leaf).getBranch().toFloat())
         }else{
             gui_graph_sb_leaf_branch.visibility = GONE
         }
 
-        if (gi.graph_kind == DGCommon.SIERPINSKI_GASKET) {
+        if (gi.graphKind == DGCommon.SIERPINSKI_GASKET) {
             gui_graph_sb_sgasket_skew.visibility = View.VISIBLE
             gui_graph_sb_sgasket_skew.setValue((gSelected as SGasket).skewAngle)
         }else{
             gui_graph_sb_sgasket_skew.visibility = View.GONE
         }
 
-        imageView_gss_now_graph_icon.setImageResource(DGCommon.getGraphIcon(gi.graph_kind))
+        imageView_gss_now_graph_icon.setImageResource(DGCommon.getGraphIcon(gi.graphKind))
     }
 
     private fun setEvent(){

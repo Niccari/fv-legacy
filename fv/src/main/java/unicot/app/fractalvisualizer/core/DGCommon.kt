@@ -35,7 +35,7 @@ object DGCommon {
     const val SIERPINSKI_CARPET = 16
     const val TRIFOLD_CIS = 17
     const val TRIFOLD_TRANS = 18
-    val kind = mapOf(
+    private val kind = mapOf(
             "NPOINT" to NPOINT,
             "STARMINE" to STARMINE,
             "NSTAR" to NSTAR,
@@ -75,8 +75,8 @@ object DGCommon {
     fun copyGraph(kind: Int, is_old_copy: Boolean): Boolean {
         val dgraph = DGCore.graph
         /* コピー実施時、最新のグラフを使う */
-        val gd_old = if (is_old_copy) DGCore.selectedGraph.last() else null
-        val gi_old = if (is_old_copy) gd_old!!.info else null
+        val oldGraph = if (is_old_copy) DGCore.selectedGraph.last() else null
+        val oldGraphInfo = if (is_old_copy) oldGraph!!.info else null
         when (kind) {
             NPOINT -> dgraph.add(NPoint())
             STARMINE -> dgraph.add(Starmine())
@@ -102,14 +102,14 @@ object DGCommon {
 
         // 新しいグラフは前のグラフの特性を受け継ぐ。
         val gd = dgraph[dgraph.size - 1]
-        if (is_old_copy && gi_old != null) {
-            gd.setInfo(gi_old, false)
-            gd.info.cp.alpha = gi_old.cp.alpha
+        if (is_old_copy && oldGraphInfo != null) {
+            gd.setInfo(oldGraphInfo, false)
+            gd.info.cp.alpha = oldGraphInfo.cp.alpha
             gd.info.angle = 0.0f // 回転角度はリセットする。
 
             when (kind) {
-                LEAF -> (gd as Leaf).setBranch((gd_old as Leaf).getBranch())
-                SIERPINSKI_GASKET -> (gd as SGasket).skewAngle = (gd_old as SGasket).skewAngle
+                LEAF -> (gd as Leaf).setBranch((oldGraph as Leaf).getBranch())
+                SIERPINSKI_GASKET -> (gd as SGasket).skewAngle = (oldGraph as SGasket).skewAngle
             }
         }
         return true
@@ -124,8 +124,8 @@ object DGCommon {
      */
     // 相対座標(-1.0 ~ 1.0) ▶ 絶対座標
     fun getAbsCntPoint(rel_pos: PointF): Point {
-        val w_area = DGCore.screenSize
-        return Point((w_area.x / 2 * (rel_pos.x + 1.0f)).toInt(), (w_area.y / 2 * (rel_pos.y + 1.0f)).toInt())
+        val windowSize = DGCore.screenSize
+        return Point((windowSize.x / 2 * (rel_pos.x + 1.0f)).toInt(), (windowSize.y / 2 * (rel_pos.y + 1.0f)).toInt())
     }
 
     /**
@@ -136,15 +136,15 @@ object DGCommon {
      * @return 相対座標(-1.0 ~ 1.0)
      */
     fun getRelCntPoint(abs_pos: Point): PointF {
-        val w_area = DGCore.screenSize
-        return PointF(2.0f * abs_pos.x / w_area.x - 1.0f, 2.0f * abs_pos.y / w_area.y - 1.0f)
+        val windowSize = DGCore.screenSize
+        return PointF(2.0f * abs_pos.x / windowSize.x - 1.0f, 2.0f * abs_pos.y / windowSize.y - 1.0f)
     }
 
     /**
      * グラフ番号取得
      */
     fun getKind(kind_str: String): Int {
-        return kind[kind_str.toUpperCase()] ?: NPOINT
+        return kind[kind_str.toUpperCase(Locale.US)] ?: NPOINT
     }
 
     /**
