@@ -24,7 +24,7 @@ class DGCore {
 
     private val diffPos: Point = Point(-1, -1)
     private val graphsCog: PointF = PointF()   // 選択したグラフ郡の重心
-    private var action: Int = -1               // 操作種類(グラフの移動・回転・拡大縮小に使用, -1 : 無し / >= 0 : 操作)
+    private var action: GraphMotion = GraphMotion.NULL           // 操作種類(グラフの移動・回転・拡大縮小に使用, -1 : 無し / >= 0 : 操作)
     private val sgn: Point = Point( 1, 1)
 
     /**
@@ -63,9 +63,9 @@ class DGCore {
      * グラフを更新する
      */
     fun run() {
-        for (i in graph.indices) {
-            graph[i].runningGraph()
-            graph[i].renewColorTable()
+        graph.map {
+            it.runningGraph()
+            it.renewColorTable()
         }
     }
 
@@ -76,9 +76,7 @@ class DGCore {
      * @param canvas drawViewクラスで確保した画面バッファ
      */
     fun draw(canvas: Canvas) {
-
-        for (i in graph.indices)
-            graph[i].draw(canvas)
+        graph.map { it.draw(canvas) }
     }
 
     /**
@@ -158,16 +156,16 @@ class DGCore {
         val dist = sqrt(((graphsCog.x - relPoint.x) * (graphsCog.x - relPoint.x) + (graphsCog.y - relPoint.y) * (graphsCog.y - relPoint.y)).toDouble()).toFloat()
         when {
             dist < DIST_THRESH_GRAPH_SELECT_TRANSLATE -> {
-                action = OP_TRANSLATE
+                action = GraphMotion.TRANSLATE
             }
             dist < DIST_THRESH_GRAPH_SELECT_ROTATE -> {
-                action = OP_ROTATE
+                action = GraphMotion.ROTATE
             }
             dist < DIST_THRESH_GRAPH_SELECT_SCALING -> {
-                action = OP_SCALING
+                action = GraphMotion.SCALING
             }
             else -> {
-                action = -1
+                action = GraphMotion.NULL
                 isGraphSelected = false
             }
         }
@@ -185,7 +183,7 @@ class DGCore {
             return
         }
         when (action) {
-            OP_TRANSLATE    // 移動
+            GraphMotion.TRANSLATE    // 移動
             -> {
                 var vectorCog: PointF
                 relVector = DGCommon.getRelCntPoint(pt_new)
@@ -196,7 +194,7 @@ class DGCore {
                 }
                 graphsCog.set(relVector)
             }
-            OP_ROTATE    // 回転
+            GraphMotion.ROTATE    // 回転
             -> {
                 if (diffPos.x < 0 && diffPos.y < 0) {
                     diffPos.set(pt_new.x, pt_new.y)
@@ -216,7 +214,7 @@ class DGCore {
 
                 diffPos.set(pt_new.x, pt_new.y)
             }
-            OP_SCALING    // 拡大
+            GraphMotion.SCALING    // 拡大
             -> {
                 if (diffPos.x < 0 && diffPos.y < 0) {
                     diffPos.set(pt_new.x, pt_new.y)
@@ -241,6 +239,7 @@ class DGCore {
                 }
                 diffPos.set(pt_new.x, pt_new.y)
             }
+            else -> {}
         }
     }
 
@@ -260,20 +259,20 @@ class DGCore {
      * @param kind 処理コード
      * @param value 更新値
      */
-    fun transformGraph(kind: Int, value: Float) {
+    fun transformGraph(kind: GraphSetting, value: Float) {
         if(selectedGraph.size != 1) return
         val graph = selectedGraph.firstOrNull() ?: return
 
         when (kind) {
-            OP_COMPLEXITY       -> graph.setComplexity(value.toInt())
-            OP_GRAPH_ROTATE     -> graph.setRotate(value)
-            OP_MUTATION_SIZE    -> graph.setMutationSize(value)
-            OP_MUTATION_ANGLE   -> graph.setMutationAngle(value)
-            OP_RANDOMIZER_SIZE  -> graph.setRandomizerSize(value)
-            OP_RANDOMIZER_ANGLE -> graph.setRandomizerAngle(value)
+            GraphSetting.COMPLEXITY       -> graph.setComplexity(value.toInt())
+            GraphSetting.ROT_SPEED        -> graph.setRotate(value)
+            GraphSetting.MUTATION_SIZE    -> graph.setMutationSize(value)
+            GraphSetting.MUTATION_ANGLE   -> graph.setMutationAngle(value)
+            GraphSetting.RANDOMIZER_SIZE  -> graph.setRandomizerSize(value)
+            GraphSetting.RANDOMIZER_ANGLE -> graph.setRandomizerAngle(value)
 
-            OP_LEAF_BRANCH  -> (graph as Leaf).setBranch(value.toInt())
-            OP_SGASKET_SKEW -> (graph as SGasket).skewAngle = value
+            GraphSetting.LEAF_BRANCH  -> (graph as Leaf).setBranch(value.toInt())
+            GraphSetting.SGASKET_SKEW -> (graph as SGasket).skewAngle = value
         }
     }
     /**
@@ -281,14 +280,15 @@ class DGCore {
      * @param kind 処理コード
      * @param value 更新値
      */
-    fun changeDrawSetting(kind: Int, value: Int) {
+    fun changeDrawSetting(kind: DrawSetting, value: Int) {
         when (kind) {
-            OP_THICKNESS     -> selectedGraph.map{ it.setThickness(value) }
-            OP_DRAW_EACH     -> selectedGraph.map{ it.setDrawEach(value) }
-            OP_COLOR_SHIFT   -> selectedGraph.map{ it.info.cp.shiftSpeed = value }
-            OP_SET_COLOR     -> selectedGraph.map{ it.info.cp.color = value }
-            OP_SET_ALPHA     -> selectedGraph.map{ it.info.cp.alpha = value }
-            OP_DRAW_EACH_PCT -> selectedGraph.map{ it.setDrawEachLength(value.toFloat()) }
+            DrawSetting.THICKNESS     -> selectedGraph.map{ it.setThickness(value) }
+            DrawSetting.DRAW_EACH     -> selectedGraph.map{ it.setDrawEach(value) }
+            DrawSetting.COLOR_SHIFT   -> selectedGraph.map{ it.info.cp.shiftSpeed = value }
+            DrawSetting.COLOR_RGB         -> selectedGraph.map{ it.info.cp.color = value }
+            DrawSetting.COLOR_ALPHA         -> selectedGraph.map{ it.info.cp.alpha = value }
+            DrawSetting.DRAW_EACH_PCT -> selectedGraph.map{ it.setDrawEachLength(value.toFloat()) }
+            else -> {}
         }
     }
 
@@ -296,9 +296,10 @@ class DGCore {
      * 描画設定を更新する
      * @param kind 処理コード
      */
-    fun changeDrawSetting(kind: Int, arg: Boolean) {
+    fun changeDrawSetting(kind: DrawSetting, arg: Boolean) {
         when (kind) {
-            OP_COLOREACH -> selectedGraph.map{ it.setColorRange(arg) }
+            DrawSetting.COLOR_EACH -> selectedGraph.map{ it.setColorRange(arg) }
+            else -> {}
         }
     }
 
@@ -306,10 +307,11 @@ class DGCore {
      * 描画設定を更新する
      * @param value 処理コード
      */
-    fun changeDrawSetting(kind: Int, value: String) {
+    fun changeDrawSetting(kind: DrawSetting, value: String) {
         when (kind) {
-            OP_COLORPATTERN -> selectedGraph.map{ it.info.cp.setColMode(value) }
-            OP_BRUSHTYPE    -> selectedGraph.map{ it.setBrushType(value) }
+            DrawSetting.COLOR_PATTERN -> selectedGraph.map{ it.info.cp.setColMode(value) }
+            DrawSetting.BRUSH_TYPE    -> selectedGraph.map{ it.setBrushType(value) }
+            else -> {}
         }
     }
 
@@ -360,89 +362,34 @@ class DGCore {
          */
         const val DIST_THRESH_GRAPH_SELECT_SCALING = 0.40f
 
-        /**
-         * 制御番号：グラフの平行移動
-         */
-        private const val OP_TRANSLATE = 0
-        /**
-         * 制御番号：グラフの拡大縮小
-         */
-        private const val OP_SCALING = 1
-        /**
-         * 制御番号：グラフの回転
-         */
-        private const val OP_ROTATE = 2
+        enum class GraphMotion{
+            TRANSLATE,
+            SCALING,
+            ROTATE,
+            NULL
+        }
 
-        /**
-         * 制御番号：変異率の大きさ
-         */
-        const val OP_MUTATION_SIZE = 10
-        /**
-         * 制御番号：変異率の方向
-         */
-        const val OP_MUTATION_ANGLE = 11
-        /**
-         * 制御番号：乱雑度の大きさ
-         */
-        const val OP_RANDOMIZER_SIZE = 12
-        /**
-         * 制御番号：乱雑度の方向
-         */
-        const val OP_RANDOMIZER_ANGLE = 13
+        enum class GraphSetting{
+            ROT_SPEED,
+            COMPLEXITY,
+            MUTATION_SIZE,
+            MUTATION_ANGLE,
+            RANDOMIZER_SIZE,
+            RANDOMIZER_ANGLE,
+            LEAF_BRANCH,
+            SGASKET_SKEW,
+        }
 
-        /**
-         * 制御番号：葉型グラフの枝数
-         */
-        const val OP_LEAF_BRANCH = 19
-        /**
-         * 制御番号：シェルピンスキーのギャスケットの水平スキュー角度
-         */
-        const val OP_SGASKET_SKEW = 18
-
-        /**
-         * 制御番号：ペンの太さ(グラフ描画設定)
-         */
-        const val OP_THICKNESS = 20
-        /**
-         * 制御番号：色を線分ごとに変更(グラフ描画設定)
-         */
-        const val OP_COLOREACH = 21
-        /**
-         * 制御番号：色遷移パターンの変更(グラフ描画設定)
-         */
-        const val OP_COLORPATTERN = 23
-        /**
-         * 制御番号：色の設定(グラフ描画設定)
-         */
-        const val OP_SET_COLOR = 24
-        /**
-         * 制御番号：グラフの個別設定のトグル(グラフ描画設定)
-         */
-        const val OP_DRAW_EACH = 25
-        /**
-         * 制御番号：グラフの個別描画線分数(パーセント表示)(グラフ描画設定)
-         */
-        const val OP_DRAW_EACH_PCT = 26
-        /**
-         * 制御番号：色の遷移速度変更(グラフ描画設定)
-         */
-        const val OP_COLOR_SHIFT = 29
-        /**
-         * 制御番号：ペンの種類(グラフ描画設定)
-         */
-        const val OP_BRUSHTYPE = 30
-        /**
-         * 制御番号：ペンの透明度(グラフ描画設定)
-         */
-        const val OP_SET_ALPHA = 31
-
-        /**
-         * 制御番号：複雑さの変更(グラフ変形)
-         */
-        const val OP_COMPLEXITY = 41
-        /**
-         * 制御番号：グラフの自転速度の変更(グラフ変形)
-         */
-        const val OP_GRAPH_ROTATE = 44
+        enum class DrawSetting{
+            THICKNESS,
+            COLOR_EACH,
+            COLOR_PATTERN,
+            COLOR_RGB,
+            COLOR_ALPHA,
+            COLOR_SHIFT,
+            DRAW_EACH,
+            DRAW_EACH_PCT,
+            BRUSH_TYPE,
+        }
     }
 }
