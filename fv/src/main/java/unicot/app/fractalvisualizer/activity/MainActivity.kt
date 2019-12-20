@@ -219,6 +219,7 @@ class MainActivity : Activity() {
 
         // Activity完全起動後に実行
         mIVGraphOverrayIcon.post {
+            if(isFinishing || isDestroyed) return@post
             mDeleteWindow.showAsDropDown(mIVGraphOverrayIcon)
             mCopyWindow.showAsDropDown(mIVGraphOverrayIcon)
         }
