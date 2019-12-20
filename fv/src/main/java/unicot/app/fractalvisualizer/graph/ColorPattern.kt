@@ -1,30 +1,28 @@
 package unicot.app.fractalvisualizer.graph
 
 import android.graphics.Color
-import android.util.Log
 import java.util.*
 
 /**
  * グラフの色情報を制御する
  */
 class ColorPattern {
+    private var mColorTransientPattern: ColorName = ColorName.RAINBOW
+    var shiftSpeed: Int = SHIFTSPEED_INIT
 
-    private var mColorTransientPattern: Int = 0
-    var shiftSpeed: Int = 0
-
-    private var ca: Int = 0
-    private var cr: Int = 0
-    private var cg: Int = 0
-    private var cb: Int = 0
-    private var trans: Int = 0
+    private var ca: Int = COLOR_MAX
+    private var cr: Int = COLOR_MAX
+    private var cg: Int = COLOR_MIN
+    private var cb: Int = COLOR_MIN
+    private var trans: Int = TRANS_INIT
 
     var color: Int
         get() = Color.argb(ca, cr, cg, cb)
         set(col) {
             alpha = Color.alpha(col)
-            red = Color.red(col)
+            red   = Color.red(col)
             green = Color.green(col)
-            blue = Color.blue(col)
+            blue  = Color.blue(col)
         }
 
     var red: Int
@@ -56,55 +54,23 @@ class ColorPattern {
             }
         }
 
-    var colMode: Int
+    val colMode: ColorName
         get() = mColorTransientPattern
-        private set(cmode) {
-            if (cmode in COLOR_PATTERN_IDX_MIN..COLOR_PATTERN_IDX_MAX) {
-                mColorTransientPattern = cmode
-            }
-
-            setPattern()
-        }
 
     val colModeInString: String
-        get() {
-            return when (mColorTransientPattern) {
-                SINGLE  -> STR_SINGLE
-                RAINBOW -> STR_RAINBOW
-                FIRE    -> STR_FIRE
-                FOREST  -> STR_FOREST
-                COOL    -> STR_COOL
-                DAWN    -> STR_DAWN
-                DEEPSEA -> STR_DEEPSEA
-                HEAT    -> STR_HEAT
-                BW      -> STR_BW
-                PASTEL  -> STR_PASTEL
-                else    -> STR_RAINBOW
-            }
-        }
-
-    init {
-        mColorTransientPattern = RAINBOW
-        ca = COLOR_MAX
-        cr = COLOR_MAX
-        cg = COLOR_MIN
-        cb = COLOR_MIN
-        trans = TRANS_INIT
-        shiftSpeed = COLOR_CHANGE_INIT
-    }
+        get() = colMode.value
 
     fun init(cp: ColorPattern, isCopy: Boolean) {
         mColorTransientPattern = cp.mColorTransientPattern
         shiftSpeed = cp.shiftSpeed
         val newColor = cp.color
         val newTrans = cp.trans
-        this.setPattern()
+        setPattern()
 
         if (isCopy) {
             this.color = newColor
             trans = newTrans
         }
-
     }
 
     fun getTrans(): Int {
@@ -118,159 +84,140 @@ class ColorPattern {
     }
 
     fun setColMode(str_cmode: String) {
-        mColorTransientPattern = when(str_cmode.toUpperCase(Locale.ENGLISH)) {
-            STR_SINGLE  -> SINGLE
-            STR_RAINBOW -> RAINBOW
-            STR_FIRE    -> FIRE
-            STR_FOREST  -> FOREST
-            STR_COOL    -> COOL
-            STR_DAWN    -> DAWN
-            STR_DEEPSEA -> DEEPSEA
-            STR_HEAT    -> HEAT
-            STR_BW      -> BW
-            STR_PASTEL  -> PASTEL
-            else -> return
-        }
-
+        mColorTransientPattern =
+                ColorName.valueOf(str_cmode.toUpperCase(Locale.ENGLISH))
         setPattern()
     }
 
     private fun setPattern() {
         when (mColorTransientPattern) {
-            SINGLE -> trans = VALUE_NULL
-            RAINBOW, FIRE -> {
+            ColorName.SINGLE -> trans = -1
+            ColorName.RAINBOW, ColorName.FIRE -> {
                 trans = COLOR_TRANS_IDX_RED_TO_YELLOW
                 cr = COLOR_MAX
                 cg = COLOR_MIN
                 cb = COLOR_MIN
             }
-            FOREST -> {
+            ColorName.FOREST -> {
                 trans = COLOR_TRANS_IDX_BLUE_TO_PURPLE
                 cr = COLOR_MIN
                 cg = COLOR_MAX
                 cb = COLOR_MIN
             }
-            COOL -> {
+            ColorName.COOL -> {
                 trans = COLOR_TRANS_IDX_RED_TO_YELLOW
                 cr = COLOR_MIN
                 cg = COLOR_MIN
                 cb = COLOR_MAX
             }
-            DAWN -> {
+            ColorName.DAWN -> {
                 trans = COLOR_TRANS_IDX_BLUE_TO_RED
                 cr = COLOR_MIN
                 cg = COLOR_MIN
                 cb = COLOR_MAX
             }
-            DEEPSEA -> {
+            ColorName.DEEPSEA -> {
                 trans = COLOR_TRANS_IDX_BLUE_TO_GREEN
                 cr = COLOR_MIN
                 cg = COLOR_MIN
                 cb = COLOR_MAX
             }
-            HEAT -> {
+            ColorName.HEAT -> {
                 trans = COLOR_TRANS_IDX_YELLOW_TO_RED
                 cr = COLOR_MAX
                 cg = COLOR_MIN
                 cb = COLOR_MAX
             }
-            BW -> {
+            ColorName.BW -> {
                 trans = COLOR_TRANS_IDX_WHITE
                 cr = COLOR_MIN
                 cg = COLOR_MIN
                 cb = COLOR_MIN
             }
-            PASTEL -> {
+            ColorName.PASTEL -> {
                 trans = COLOR_TRANS_IDX_MAGENTA_TO_YELLOW
                 cr = COLOR_MAX
                 cg = COLOR_PASTEL
                 cb = COLOR_PASTEL
             }
-            else -> {
-                Log.e(TAG, "That color pattern is invalid : at ColorPattern")
-                colMode = 0
-            }
         }
     }
 
     fun doPattern(): Int {
-        when (mColorTransientPattern) {
-            SINGLE -> {
-            }
-            RAINBOW -> if (this.transPattern(trans)) {
-                if (shiftSpeed > 0) {
-                    trans++
-                    if (trans > COLOR_TRANS_IDX_PURPLE_TO_RED)
-                        trans = COLOR_TRANS_IDX_RED_TO_YELLOW
-                } else {
-                    trans--
-                    if (trans < COLOR_TRANS_IDX_MIN)
-                        trans = COLOR_TRANS_IDX_PURPLE_TO_RED
+        if (this.transPattern(trans)){
+            when (mColorTransientPattern) {
+                ColorName.SINGLE -> {}
+                ColorName.RAINBOW -> {
+                    if (shiftSpeed > 0) {
+                        trans++
+                        if (trans > COLOR_TRANS_IDX_PURPLE_TO_RED)
+                            trans = COLOR_TRANS_IDX_RED_TO_YELLOW
+                    } else {
+                        trans--
+                        if (trans < COLOR_TRANS_IDX_MIN)
+                            trans = COLOR_TRANS_IDX_PURPLE_TO_RED
+                    }
                 }
-            }
-            FIRE, FOREST, COOL -> if (this.transPattern(trans)) {
-                if (shiftSpeed > 0) {
-                    trans += COLOR_PATTERN_RGB_TRANS
-                    if (trans > COLOR_TRANS_IDX_PURPLE_TO_RED)
-                        trans -= COLOR_TRANS_IDX_WHITE
-                } else {
-                    trans -= COLOR_PATTERN_RGB_TRANS
-                    if (trans < COLOR_TRANS_IDX_RED_TO_YELLOW)
-                        trans += COLOR_TRANS_IDX_WHITE
+                ColorName.FIRE, ColorName.FOREST, ColorName.COOL -> {
+                    if (shiftSpeed > 0) {
+                        trans += COLOR_PATTERN_RGB_TRANS
+                        if (trans > COLOR_TRANS_IDX_PURPLE_TO_RED)
+                            trans -= COLOR_TRANS_IDX_WHITE
+                    } else {
+                        trans -= COLOR_PATTERN_RGB_TRANS
+                        if (trans < COLOR_TRANS_IDX_RED_TO_YELLOW)
+                            trans += COLOR_TRANS_IDX_WHITE
+                    }
                 }
-            }
-            DAWN -> if (this.transPattern(trans)) {
-                if (shiftSpeed > 0) {
-                    trans++
-                    if (trans > COLOR_TRANS_IDX_RED_TO_BLUE)
-                        trans = COLOR_TRANS_IDX_BLUE_TO_RED
-                } else {
-                    trans--
-                    if (trans < COLOR_TRANS_IDX_BLUE_TO_RED)
-                        trans = COLOR_TRANS_IDX_RED_TO_BLUE
+                ColorName.DAWN -> {
+                    if (shiftSpeed > 0) {
+                        trans++
+                        if (trans > COLOR_TRANS_IDX_RED_TO_BLUE)
+                            trans = COLOR_TRANS_IDX_BLUE_TO_RED
+                    } else {
+                        trans--
+                        if (trans < COLOR_TRANS_IDX_BLUE_TO_RED)
+                            trans = COLOR_TRANS_IDX_RED_TO_BLUE
+                    }
                 }
-            }
-            DEEPSEA -> if (this.transPattern(trans)) {
-                if (shiftSpeed > 0) {
-                    trans++
-                    if (trans > COLOR_TRANS_IDX_GREEN_TO_BLUE)
-                        trans = COLOR_TRANS_IDX_BLUE_TO_GREEN
-                } else {
-                    trans--
-                    if (trans < COLOR_TRANS_IDX_BLUE_TO_GREEN)
-                        trans = COLOR_TRANS_IDX_GREEN_TO_BLUE
+                ColorName.DEEPSEA -> {
+                    if (shiftSpeed > 0) {
+                        trans++
+                        if (trans > COLOR_TRANS_IDX_GREEN_TO_BLUE)
+                            trans = COLOR_TRANS_IDX_BLUE_TO_GREEN
+                    } else {
+                        trans--
+                        if (trans < COLOR_TRANS_IDX_BLUE_TO_GREEN)
+                            trans = COLOR_TRANS_IDX_GREEN_TO_BLUE
+                    }
                 }
-            }
-            HEAT -> if (this.transPattern(trans)) {
-                if (shiftSpeed > 0) {
-                    trans++
+                ColorName.HEAT -> {
+                    if (shiftSpeed > 0) {
+                        trans++
 
-                    if (trans > COLOR_TRANS_IDX_RED_TO_YELLOW_H)
-                        trans = COLOR_TRANS_IDX_YELLOW_TO_RED
-                } else {
-                    trans--
+                        if (trans > COLOR_TRANS_IDX_RED_TO_YELLOW_H)
+                            trans = COLOR_TRANS_IDX_YELLOW_TO_RED
+                    } else {
+                        trans--
 
-                    if (trans < COLOR_TRANS_IDX_YELLOW_TO_RED)
-                        trans = COLOR_TRANS_IDX_RED_TO_YELLOW_H
+                        if (trans < COLOR_TRANS_IDX_YELLOW_TO_RED)
+                            trans = COLOR_TRANS_IDX_RED_TO_YELLOW_H
+                    }
                 }
-            }
-            BW -> if (this.transPattern(trans)) {
-                trans = if (trans == COLOR_TRANS_IDX_WHITE) COLOR_TRANS_IDX_BLACK else COLOR_TRANS_IDX_WHITE
-            }
-            PASTEL -> if (this.transPattern(trans)) {
-                if (shiftSpeed > 0) {
-                    trans++
-                    if (trans > COLOR_TRANS_IDX_YELLOW_TO_MAGENTA)
-                        trans = COLOR_TRANS_IDX_MAGENTA_TO_YELLOW
-                } else {
-                    trans--
-                    if (trans < COLOR_TRANS_IDX_MAGENTA_TO_YELLOW)
-                        trans = COLOR_TRANS_IDX_YELLOW_TO_MAGENTA
+                ColorName.BW -> {
+                    trans = if (trans == COLOR_TRANS_IDX_WHITE) COLOR_TRANS_IDX_BLACK else COLOR_TRANS_IDX_WHITE
                 }
-            }
-            else -> {
-                Log.e(TAG, "Invalid color pattern!! Switch to single.")
-                this.colMode = SINGLE
+                ColorName.PASTEL -> {
+                    if (shiftSpeed > 0) {
+                        trans++
+                        if (trans > COLOR_TRANS_IDX_YELLOW_TO_MAGENTA)
+                            trans = COLOR_TRANS_IDX_MAGENTA_TO_YELLOW
+                    } else {
+                        trans--
+                        if (trans < COLOR_TRANS_IDX_MAGENTA_TO_YELLOW)
+                            trans = COLOR_TRANS_IDX_YELLOW_TO_MAGENTA
+                    }
+                }
             }
         }
         return Color.argb(ca, cr, cg, cb)
@@ -575,37 +522,22 @@ class ColorPattern {
         return false
     }
 
+    enum class ColorName(val value: String){
+        SINGLE("SINGLE"),
+        RAINBOW("RAINBOW"),
+        FIRE("FIRE"),
+        FOREST("FOREST"),
+        COOL("COOL"),
+        DAWN("DAWN"),
+        DEEPSEA("DEEPSEA"),
+        HEAT("HEAT"),
+        BW("BW"),
+        PASTEL("PASTEL")
+    }
     companion object {
-        const val SINGLE  = -1
-        const val RAINBOW = 0
-        const val FIRE    = 1
-        const val FOREST  = 2
-        const val COOL    = 3
-        const val DAWN    = 4
-        const val DEEPSEA = 5
-        const val HEAT    = 6
-        const val BW      = 7
-        const val PASTEL  = 8
-
-        private const val STR_SINGLE = "SINGLE"
-        private const val STR_RAINBOW = "RAINBOW"
-        private const val STR_FIRE = "FIRE"
-        private const val STR_FOREST = "FOREST"
-        private const val STR_COOL = "COOL"
-        private const val STR_DAWN = "DAWN"
-        private const val STR_DEEPSEA = "DEEPSEA"
-        private const val STR_HEAT = "HEAT"
-        private const val STR_BW = "BW"
-        private const val STR_PASTEL = "PASTEL"
-
         const val COLOR_MIN = 0
         const val COLOR_PASTEL = (255*0.6).toInt()
         const val COLOR_MAX = 255
-
-        private const val COLOR_PATTERN_IDX_MIN = -1
-        private const val COLOR_PATTERN_IDX_MAX = 5
-        private const val COLOR_TRANS_IDX_MIN = 0
-        private const val COLOR_TRANS_IDX_MAX = 17
 
         private const val COLOR_TRANS_IDX_RED_TO_YELLOW = 0
         private const val COLOR_TRANS_IDX_YELLOW_TO_GREEN = 1
@@ -631,14 +563,13 @@ class ColorPattern {
         private const val COLOR_TRANS_IDX_CYAN_TO_YELLOW = 20
         private const val COLOR_TRANS_IDX_YELLOW_TO_MAGENTA = 21
 
+        private const val COLOR_TRANS_IDX_MIN = COLOR_TRANS_IDX_RED_TO_YELLOW
+        private const val COLOR_TRANS_IDX_MAX = COLOR_TRANS_IDX_YELLOW_TO_MAGENTA
+
         private const val COLOR_PATTERN_RGB_TRANS = 3
 
-        private const val TRANS_INIT = 0
+        private const val TRANS_INIT = COLOR_TRANS_IDX_RED_TO_YELLOW
 
-        private const val COLOR_CHANGE_INIT = 1
-
-        private const val VALUE_NULL = -1
-
-        private val TAG = ColorPattern::class.java.name
+        private const val SHIFTSPEED_INIT = 1
     }
 }
