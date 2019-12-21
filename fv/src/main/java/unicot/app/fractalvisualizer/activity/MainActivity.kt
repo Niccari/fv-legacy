@@ -217,13 +217,6 @@ class MainActivity : Activity() {
         mCopyWindow = PopupWindow(mCopyIcon, 180, 180)
         mCopyWindow.isTouchable = true
 
-        // Activity完全起動後に実行
-        mIVGraphOverrayIcon.post {
-            if(isFinishing || isDestroyed) return@post
-            mDeleteWindow.showAsDropDown(mIVGraphOverrayIcon)
-            mCopyWindow.showAsDropDown(mIVGraphOverrayIcon)
-        }
-
         // グラフ削除アイコンは普段見えない
         mGraphDeleteIcon.visibility = ImageView.INVISIBLE
         mGraphDeleteIcon.setBackgroundResource(R.drawable.delete)
@@ -235,6 +228,8 @@ class MainActivity : Activity() {
 
     public override fun onPause() {
         super.onPause()
+        mDeleteWindow.dismiss()
+        mCopyWindow.dismiss()
         stop()
     }
 
@@ -275,6 +270,10 @@ class MainActivity : Activity() {
             }
             execCount++
         }, 10, (1000 / 60).toLong(), TimeUnit.MILLISECONDS)
+        if(!mDeleteWindow.isShowing){
+            mDeleteWindow.showAsDropDown(mIVGraphOverrayIcon)
+            mCopyWindow.showAsDropDown(mIVGraphOverrayIcon)
+        }
     }
 
     public override fun onDestroy() {

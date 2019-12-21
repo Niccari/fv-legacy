@@ -97,6 +97,7 @@ open class GraphloadActivity : Activity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.clear()
         if (!isSelecting) {
             menuInflater.inflate(R.menu.graphload_normal, menu)
         } else {
@@ -114,7 +115,6 @@ open class GraphloadActivity : Activity() {
         }else{
             getString(R.string.select_graph_title)
         }
-        invalidateOptionsMenu()
         adapter?.notifyDataSetInvalidated()
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
