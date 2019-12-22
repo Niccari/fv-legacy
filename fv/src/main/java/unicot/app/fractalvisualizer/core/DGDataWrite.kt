@@ -57,7 +57,7 @@ object DGDataWrite : DGDataInfo() {
             val graph = HashMap<String, Any>()
 
             // Graph
-            graph[GRAPH_KIND] = DGCommon.getGraphKindString(gi.graphKind)
+            graph[GRAPH_KIND] = gi.graphKind.str
             graph[GRAPH_COMPLEXITY] = gi.complexity
             graph[GRAPH_X] = gi.pos.x
             graph[GRAPH_Y] = gi.pos.y
@@ -66,12 +66,13 @@ object DGDataWrite : DGDataInfo() {
             graph[GRAPH_ROTATE] = gi.rotSpeed
             graph[GRAPH_ANGLE]  = gi.angle
             when (gi.graphKind) {
-                DGCommon.LEAF -> {
+                DGCommon.GraphKind.LEAF -> {
                     graph[GRAPH_LEAF_BRANCH] = (g as Leaf).getBranch()
                 }
-                DGCommon.SIERPINSKI_GASKET -> {
+                DGCommon.GraphKind.SIERPINSKI_GASKET -> {
                     graph[GRAPH_SGASKET_SKEW] = (g as SGasket).skewAngle
                 }
+                else -> {}
             }
             if(gi.isRecursive) {
                 graph[GRAPH_MUTATION_SIZE]   = gi.mutation.size

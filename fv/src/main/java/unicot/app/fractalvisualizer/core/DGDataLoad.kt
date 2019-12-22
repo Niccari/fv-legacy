@@ -50,11 +50,11 @@ object DGDataLoad : DGDataInfo() {
                         gi.mutation.size = doubleToFloat(graphDetail[GRAPH_MUTATION_SIZE])
                         gi.randomize.angle = doubleToFloat(graphDetail[GRAPH_RANDOMIZE_ANGLE])
                         gi.randomize.size = doubleToFloat(graphDetail[GRAPH_RANDOMIZE_SIZE])
-                        if (gi.graphKind == DGCommon.LEAF) {
+                        if (gi.graphKind == DGCommon.GraphKind.LEAF) {
                             (gd as unicot.app.fractalvisualizer.graph.Leaf)
                                     .setBranch(numberToInt(graphDetail[GRAPH_LEAF_BRANCH]))
                         }
-                        if (gi.graphKind == DGCommon.SIERPINSKI_GASKET) {
+                        if (gi.graphKind == DGCommon.GraphKind.SIERPINSKI_GASKET) {
                             (gd as unicot.app.fractalvisualizer.graph.SGasket).skewAngle =
                                     doubleToFloat(graphDetail[GRAPH_SGASKET_SKEW] as Double)
                         }

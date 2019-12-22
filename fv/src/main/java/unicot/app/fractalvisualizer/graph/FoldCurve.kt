@@ -17,9 +17,9 @@ class FoldCurve(private val curve_kind: Int) : Graph() {
         complexityMax = 10
 
         when (curve_kind) {
-            DRAGON -> info.graphKind = DGCommon.DRAGONCURVE
-            TRIANGLE -> info.graphKind = DGCommon.FOLDTRIANGLE
-            CCURVE -> info.graphKind = DGCommon.CCURVE
+            DRAGON -> info.graphKind = DGCommon.GraphKind.DRAGONCURVE
+            TRIANGLE -> info.graphKind = DGCommon.GraphKind.FOLDTRIANGLE
+            CCURVE -> info.graphKind = DGCommon.GraphKind.CCURVE
         }
         info.isRecursive = true
         setRelativePoint()

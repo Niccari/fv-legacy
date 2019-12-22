@@ -8,9 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.Bitmap.CompressFormat
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
 import android.view.*
@@ -33,7 +31,6 @@ import unicot.app.fractalvisualizer.view.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -395,12 +392,13 @@ class MainActivity : Activity() {
 
         mAddGraph = GraphAddView(this, null)
         mAddGraph.setEvent(View.OnTouchListener { v, e ->
-            mIVGraphOverrayIcon.setImageResource(DGCommon.getGraphIcon(DGCommon.getKind(v?.tag.toString())))
+            val graphKind = mAddGraph.getGraphKindFromIcon(v)
+            mIVGraphOverrayIcon.setImageResource(DGCommon.getGraphIcon(graphKind))
             mIVGraphOverrayIcon.invalidate()
 
             when (e?.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    mCurrentSelectedGraphIcon = v?.tag.toString()
+                    mCurrentSelectedGraphIcon = graphKind.str
                     v?.performClick()
                 }
                 MotionEvent.ACTION_UP -> v?.performClick()

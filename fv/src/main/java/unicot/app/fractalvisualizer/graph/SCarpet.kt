@@ -13,7 +13,7 @@ class SCarpet : Graph() {
     init {
         complexityMin = 1
         complexityMax = 5
-        info.graphKind = DGCommon.SIERPINSKI_CARPET
+        info.graphKind = DGCommon.GraphKind.SIERPINSKI_CARPET
     }
 
     private fun sums(): Int {

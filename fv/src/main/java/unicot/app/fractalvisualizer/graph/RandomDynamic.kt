@@ -7,7 +7,7 @@ import unicot.app.fractalvisualizer.core.DGCommon
  */
 class RandomDynamic : Graph() {
     init {
-        info.graphKind = DGCommon.RANDOMSHAPE2
+        info.graphKind = DGCommon.GraphKind.RANDOMSHAPE2
     }
 
     public override fun setRelativePoint() {

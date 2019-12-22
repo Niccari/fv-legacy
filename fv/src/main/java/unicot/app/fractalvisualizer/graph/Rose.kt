@@ -10,7 +10,7 @@ class Rose : Graph() {
     init {
         complexityMin = 1
         complexityMax = 8
-        info.graphKind = DGCommon.ROSECURVE
+        info.graphKind = DGCommon.GraphKind.ROSECURVE
     }
 
     override val pointMax: Int

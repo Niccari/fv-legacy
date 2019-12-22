@@ -16,46 +16,27 @@ import java.util.*
  * - グラフの番号・識別文字列変換<br></br>
  */
 object DGCommon {
-    const val NPOINT = 0
-    const val STARMINE = 1
-    const val NSTAR = 2
-    const val RANDOMSHAPE = 3
-    const val RANDOMSHAPE2 = 4
-    const val BINARYTREE = 5
-    const val DRAGONCURVE = 6
-    const val FOLDTRIANGLE = 7
-    const val CCURVE = 8
-    const val KOCHCURVE = 9
-    const val KOCHTRIANGLE_INNER = 10
-    const val KOCHTRIANGLE_OUTER = 11
-    const val ROSECURVE = 12
-    const val HILBERT = 13
-    const val LEAF = 14
-    const val SIERPINSKI_GASKET = 15
-    const val SIERPINSKI_CARPET = 16
-    const val TRIFOLD_CIS = 17
-    const val TRIFOLD_TRANS = 18
-    private val kind = mapOf(
-            "NPOINT" to NPOINT,
-            "STARMINE" to STARMINE,
-            "NSTAR" to NSTAR,
-            "RANDOMSHAPE" to RANDOMSHAPE,
-            "RANDOMSHAPE2" to RANDOMSHAPE2,
-            "BINARYTREE" to BINARYTREE,
-            "DRAGONCURVE" to DRAGONCURVE,
-            "FOLDTRIANGLE" to FOLDTRIANGLE,
-            "CCURVE" to CCURVE,
-            "KOCHCURVE" to KOCHCURVE,
-            "KOCHTRIANGLE_INNER" to KOCHTRIANGLE_INNER,
-            "KOCHTRIANGLE_OUTER" to KOCHTRIANGLE_OUTER,
-            "ROSECURVE" to ROSECURVE,
-            "HILBERT" to HILBERT,
-            "LEAF" to LEAF,
-            "SIERPINSKI_GASKET" to SIERPINSKI_GASKET,
-            "SIERPINSKI_CARPET" to SIERPINSKI_CARPET,
-            "TRIFOLD_CIS" to TRIFOLD_CIS,
-            "TRIFOLD_TRANS" to TRIFOLD_TRANS
-    )
+    enum class GraphKind(val str: String){
+        NPOINT("NPOINT"),
+        STARMINE("STARMINE"),
+        NSTAR("NSTAR"),
+        RANDOMSHAPE("RANDOMSHAPE"),
+        RANDOMSHAPE2("RANDOMSHAPE2"),
+        BINARYTREE("BINARYTREE"),
+        DRAGONCURVE("DRAGONCURVE"),
+        FOLDTRIANGLE("FOLDTRIANGLE"),
+        CCURVE("CCURVE"),
+        KOCHCURVE("KOCHCURVE"),
+        KOCHTRIANGLE_INNER("KOCHTRIANGLE_INNER"),
+        KOCHTRIANGLE_OUTER("KOCHTRIANGLE_OUTER"),
+        ROSECURVE("ROSECURVE"),
+        HILBERT("HILBERT"),
+        LEAF("LEAF"),
+        SIERPINSKI_GASKET("SIERPINSKI_GASKET"),
+        SIERPINSKI_CARPET("SIERPINSKI_CARPET"),
+        TRIFOLD_CIS("TRIFOLD_CIS"),
+        TRIFOLD_TRANS("TRIFOLD_TRANS"),
+    }
 
     /**
      * 現時刻
@@ -63,6 +44,32 @@ object DGCommon {
     val currentDateString: String
         get() = DateFormat.format("yyyyMMdd-HHmmss", Date()).toString()
 
+    private fun getGraph(kind: GraphKind): Graph {
+        when (kind) {
+            GraphKind.NPOINT -> return NPoint()
+            GraphKind.STARMINE -> return Starmine()
+            GraphKind.NSTAR -> return NStar()
+            GraphKind.RANDOMSHAPE -> return Random()
+            GraphKind.RANDOMSHAPE2 -> return RandomDynamic()
+
+            GraphKind.BINARYTREE -> return BinaryTree()
+            GraphKind.DRAGONCURVE -> return FoldCurve(FoldCurve.DRAGON)
+            GraphKind.FOLDTRIANGLE -> return FoldCurve(FoldCurve.TRIANGLE)
+            GraphKind.CCURVE -> return FoldCurve(FoldCurve.CCURVE)
+
+            GraphKind.KOCHCURVE -> return KochCurve()
+            GraphKind.KOCHTRIANGLE_INNER -> return KochTri(KochTri.INNER)
+            GraphKind.KOCHTRIANGLE_OUTER -> return KochTri(KochTri.OUTER)
+
+            GraphKind.ROSECURVE -> return Rose()
+            GraphKind.HILBERT -> return Hilbert()
+            GraphKind.LEAF -> return Leaf()
+            GraphKind.SIERPINSKI_GASKET -> return SGasket()
+            GraphKind.SIERPINSKI_CARPET -> return SCarpet()
+            GraphKind.TRIFOLD_CIS -> return TriFold(TriFold.CIS)
+            GraphKind.TRIFOLD_TRANS -> return TriFold(TriFold.TRANS)
+        }
+    }
     /**
      * 新しいグラフを作成する。\n is_old_copyが真ならば、事前に作成したグラフの特性を引き継ぐ。
      *
@@ -72,34 +79,12 @@ object DGCommon {
      * グラフ複製フラグ
      * @return Success_flag(true:OK, false:NG)
      */
-    fun copyGraph(kind: Int, is_old_copy: Boolean): Boolean {
+    fun copyGraph(kind: GraphKind, is_old_copy: Boolean): Boolean {
         val dgraph = DGCore.graph
         /* コピー実施時、最新のグラフを使う */
         val oldGraph = if (is_old_copy) DGCore.selectedGraph.last() else null
         val oldGraphInfo = if (is_old_copy) oldGraph!!.info else null
-        when (kind) {
-            NPOINT -> dgraph.add(NPoint())
-            STARMINE -> dgraph.add(Starmine())
-            NSTAR -> dgraph.add(NStar())
-            RANDOMSHAPE -> dgraph.add(Random())
-            RANDOMSHAPE2 -> dgraph.add(RandomDynamic())
-            BINARYTREE -> dgraph.add(BinaryTree())
-            DRAGONCURVE -> dgraph.add(FoldCurve(FoldCurve.DRAGON))
-            FOLDTRIANGLE -> dgraph.add(FoldCurve(FoldCurve.TRIANGLE))
-            CCURVE -> dgraph.add(FoldCurve(FoldCurve.CCURVE))
-            KOCHCURVE -> dgraph.add(KochCurve())
-            KOCHTRIANGLE_INNER -> dgraph.add(KochTri(KochTri.INNER))
-            KOCHTRIANGLE_OUTER -> dgraph.add(KochTri(KochTri.OUTER))
-            ROSECURVE -> dgraph.add(Rose())
-            HILBERT -> dgraph.add(Hilbert())
-            LEAF -> dgraph.add(Leaf())
-            SIERPINSKI_GASKET -> dgraph.add(SGasket())
-            SIERPINSKI_CARPET -> dgraph.add(SCarpet())
-            TRIFOLD_CIS -> dgraph.add(TriFold(TriFold.CIS))
-            TRIFOLD_TRANS -> dgraph.add(TriFold(TriFold.TRANS))
-            else -> {}
-        }
-
+        dgraph.add(getGraph(kind))
         // 新しいグラフは前のグラフの特性を受け継ぐ。
         val gd = dgraph[dgraph.size - 1]
         if (is_old_copy && oldGraphInfo != null) {
@@ -108,8 +93,9 @@ object DGCommon {
             gd.info.angle = 0.0f // 回転角度はリセットする。
 
             when (kind) {
-                LEAF -> (gd as Leaf).setBranch((oldGraph as Leaf).getBranch())
-                SIERPINSKI_GASKET -> (gd as SGasket).skewAngle = (oldGraph as SGasket).skewAngle
+                GraphKind.LEAF -> (gd as Leaf).setBranch((oldGraph as Leaf).getBranch())
+                GraphKind.SIERPINSKI_GASKET -> (gd as SGasket).skewAngle = (oldGraph as SGasket).skewAngle
+                else -> {}
             }
         }
         return true
@@ -141,17 +127,10 @@ object DGCommon {
     }
 
     /**
-     * グラフ番号取得
+     * グラフ種別取得
      */
-    fun getKind(kind_str: String): Int {
-        return kind[kind_str.toUpperCase(Locale.US)] ?: NPOINT
-    }
-
-    /**
-     * グラフ名称取得
-     */
-    fun getGraphKindString(value: Int): String {
-        return this.kind.filterValues { it == value }.keys.firstOrNull() ?: ""
+    fun getKind(kind_str: String): GraphKind {
+        return GraphKind.valueOf(kind_str.toUpperCase(Locale.US))
     }
 
     /**
@@ -161,31 +140,30 @@ object DGCommon {
      * グラフ種別
      * @return グラフアイコンID
      */
-    fun getGraphIcon(kind: Int): Int {
+    fun getGraphIcon(kind: GraphKind): Int {
         when (kind) {
-            NPOINT -> return R.drawable.npoint
-            STARMINE -> return R.drawable.starmine
-            NSTAR -> return R.drawable.nstar
-            RANDOMSHAPE -> return R.drawable.random_stat
-            RANDOMSHAPE2 -> return R.drawable.random_every
+            GraphKind.NPOINT -> return R.drawable.npoint
+            GraphKind.STARMINE -> return R.drawable.starmine
+            GraphKind.NSTAR -> return R.drawable.nstar
+            GraphKind.RANDOMSHAPE -> return R.drawable.random_stat
+            GraphKind.RANDOMSHAPE2 -> return R.drawable.random_every
 
-            BINARYTREE -> return R.drawable.binarytree
-            DRAGONCURVE -> return R.drawable.dragoncurve
-            FOLDTRIANGLE -> return R.drawable.dragoncurve_backward
-            CCURVE -> return R.drawable.ccurve
+            GraphKind.BINARYTREE -> return R.drawable.binarytree
+            GraphKind.DRAGONCURVE -> return R.drawable.dragoncurve
+            GraphKind.FOLDTRIANGLE -> return R.drawable.dragoncurve_backward
+            GraphKind.CCURVE -> return R.drawable.ccurve
 
-            KOCHCURVE -> return R.drawable.kochcurve
-            KOCHTRIANGLE_INNER -> return R.drawable.kochcurve_inner
-            KOCHTRIANGLE_OUTER -> return R.drawable.kochcurve_outer
+            GraphKind.KOCHCURVE -> return R.drawable.kochcurve
+            GraphKind.KOCHTRIANGLE_INNER -> return R.drawable.kochcurve_inner
+            GraphKind.KOCHTRIANGLE_OUTER -> return R.drawable.kochcurve_outer
 
-            ROSECURVE -> return R.drawable.rosecurve
-            HILBERT -> return R.drawable.hilbert
-            LEAF -> return R.drawable.leaf
-            SIERPINSKI_GASKET -> return R.drawable.gasket_tri
-            SIERPINSKI_CARPET -> return R.drawable.gasket_carpet
-            TRIFOLD_CIS -> return R.drawable.trifold_ll
-            TRIFOLD_TRANS -> return R.drawable.trifold_lr
-            else -> return -1
+            GraphKind.ROSECURVE -> return R.drawable.rosecurve
+            GraphKind.HILBERT -> return R.drawable.hilbert
+            GraphKind.LEAF -> return R.drawable.leaf
+            GraphKind.SIERPINSKI_GASKET -> return R.drawable.gasket_tri
+            GraphKind.SIERPINSKI_CARPET -> return R.drawable.gasket_carpet
+            GraphKind.TRIFOLD_CIS -> return R.drawable.trifold_ll
+            GraphKind.TRIFOLD_TRANS -> return R.drawable.trifold_lr
         }
     }
 }

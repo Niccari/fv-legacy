@@ -20,8 +20,8 @@ class TriFold(private val curve_kind: Int // カーブの種類(上記DRAGONな�
         this.info.complexity = complexityMin
 
         when (curve_kind) {
-            CIS -> info.graphKind = DGCommon.TRIFOLD_CIS
-            TRANS -> info.graphKind = DGCommon.TRIFOLD_TRANS
+            CIS -> info.graphKind = DGCommon.GraphKind.TRIFOLD_CIS
+            TRANS -> info.graphKind = DGCommon.GraphKind.TRIFOLD_TRANS
         }
         info.isRecursive = true
         setRelativePoint()

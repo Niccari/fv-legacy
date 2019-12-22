@@ -8,7 +8,7 @@ import unicot.app.fractalvisualizer.core.SinInt
  */
 class Starmine : Graph() {
     init {
-        info.graphKind = DGCommon.STARMINE
+        info.graphKind = DGCommon.GraphKind.STARMINE
     }
 
     override val pointMax: Int

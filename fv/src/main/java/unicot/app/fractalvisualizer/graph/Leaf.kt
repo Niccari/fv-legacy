@@ -19,7 +19,7 @@ class Leaf : Graph() {
         complexityMax = 5
 
         branch = GRAPH_LEAF_INIT_BRANCH
-        info.graphKind = DGCommon.LEAF
+        info.graphKind = DGCommon.GraphKind.LEAF
 
         isAllocated = false
         info.isRecursive = true
