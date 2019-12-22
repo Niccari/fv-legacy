@@ -14,7 +14,7 @@ class BinaryTree : Graph() {
     init {
         complexityMin = 2
         complexityMax = 8
-        info.graphKind = DGCommon.BINARYTREE
+        info.graphKind = DGCommon.GraphKind.BINARYTREE
         info.isRecursive = true
     }
 

@@ -1,6 +1,7 @@
 package unicot.app.fractalvisualizer.graph
 
 import android.graphics.PointF
+import unicot.app.fractalvisualizer.core.DGCommon
 import unicot.app.fractalvisualizer.graph.Graph.Companion.BRUSHTYPE_LINE
 import unicot.app.fractalvisualizer.graph.Graph.Companion.DRAW_ALL
 import unicot.app.fractalvisualizer.graph.Graph.Companion.DRAW_IN_ORDER
@@ -13,7 +14,7 @@ import unicot.app.fractalvisualizer.model.GraphDisplacement
 class GraphInfo {
 
     /** グラフの種類(定数値はDGCommonクラスにて定義) */
-    var graphKind: Int = 0
+    var graphKind: DGCommon.GraphKind = DGCommon.GraphKind.NPOINT
     /** 描画方法(定数値はGraphクラスにて定義) */
     var drawKind: Int = 0
     /** 再帰曲線のグラフか？ */

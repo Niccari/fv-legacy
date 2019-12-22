@@ -46,14 +46,14 @@ class GraphSettingView(context: Context, attrs: AttributeSet? = null) : LinearLa
         }else{
             gui_shape_recursive_ll_root.visibility = GONE
         }
-        if (gi.graphKind == DGCommon.LEAF) {
+        if (gi.graphKind == DGCommon.GraphKind.LEAF) {
             gui_graph_sb_leaf_branch.visibility = View.VISIBLE
             gui_graph_sb_leaf_branch.setValue((gSelected as Leaf).getBranch().toFloat())
         }else{
             gui_graph_sb_leaf_branch.visibility = GONE
         }
 
-        if (gi.graphKind == DGCommon.SIERPINSKI_GASKET) {
+        if (gi.graphKind == DGCommon.GraphKind.SIERPINSKI_GASKET) {
             gui_graph_sb_sgasket_skew.visibility = View.VISIBLE
             gui_graph_sb_sgasket_skew.setValue((gSelected as SGasket).skewAngle)
         }else{

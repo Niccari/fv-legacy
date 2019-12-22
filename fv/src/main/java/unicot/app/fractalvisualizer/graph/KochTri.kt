@@ -18,7 +18,7 @@ class KochTri(private val shape_kind: Int) : KochCurve() {
         complexityMin = 1
         complexityMax = 5
 
-        info.graphKind = if (shape_kind == INNER) DGCommon.KOCHTRIANGLE_INNER else DGCommon.KOCHTRIANGLE_OUTER
+        info.graphKind = if (shape_kind == INNER) DGCommon.GraphKind.KOCHTRIANGLE_INNER else DGCommon.GraphKind.KOCHTRIANGLE_OUTER
         info.isRecursive = true
         setRelativePoint()
     }

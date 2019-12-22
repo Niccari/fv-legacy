@@ -19,7 +19,7 @@ class Hilbert : Graph() {
     init {
         complexityMin = 1
         complexityMax = 5
-        info.graphKind = DGCommon.HILBERT
+        info.graphKind = DGCommon.GraphKind.HILBERT
     }
 
     override val pointMax: Int

@@ -20,7 +20,7 @@ class SGasket : Graph() {
 
         skewAngle = 0.0f
 
-        info.graphKind = DGCommon.SIERPINSKI_GASKET
+        info.graphKind = DGCommon.GraphKind.SIERPINSKI_GASKET
     }
 
     override val pointMax: Int

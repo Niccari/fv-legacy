@@ -21,7 +21,7 @@ open class KochCurve : Graph() {
         complexityMin = 2
         complexityMax = 5
 
-        info.graphKind = DGCommon.KOCHCURVE
+        info.graphKind = DGCommon.GraphKind.KOCHCURVE
         info.isRecursive = true
     }
 
