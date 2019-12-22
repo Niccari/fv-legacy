@@ -5,6 +5,7 @@ import android.graphics.PointF
 
 import unicot.app.fractalvisualizer.core.DGCommon
 import unicot.app.fractalvisualizer.core.SinInt
+import kotlin.math.pow
 
 /**
  * 葉脈(あるいは木の形)
@@ -18,20 +19,18 @@ class Leaf : Graph() {
         complexityMax = 5
 
         branch = GRAPH_LEAF_INIT_BRANCH
-        info.graph_kind = DGCommon.LEAF
+        info.graphKind = DGCommon.GraphKind.LEAF
 
         isAllocated = false
-        info.is_recursive = true
+        info.isRecursive = true
     }
 
     override val pointMax: Int
         get() {
-            val nm: Int
-
-            if (branch != 1) {
-                nm = branch * (1 - Math.pow(branch.toDouble(), info.complexity.toDouble()).toInt()) / (1 - branch) + 1
+            val nm: Int = if (branch != 1) {
+                branch * (1 - branch.toDouble().pow(info.complexity.toDouble()).toInt()) / (1 - branch) + 1
             } else {
-                nm = 1 + info.complexity
+                1 + info.complexity
             }
             nOrders = nm
             return 2 * nOrders
@@ -67,43 +66,43 @@ class Leaf : Graph() {
         isAllocated = true
     }
 
-    private fun setRelRecursivePoint(base: Int, parent_index: Int, arm: Float, theta: Float) {
+    private fun setRelRecursivePoint(base: Int, parentIndex: Int, parentLength: Float, parentDegree: Float) {
         if (base > info.complexity)
             return
 
-        val next_parent = IntArray(branch)
+        val nextParent = IntArray(branch)
 
-        var child_arm: Float
-        var child_theta: Float
+        var length: Float
+        var degree: Float
         var sin: Float
         var cos: Float
 
         for (i in 0 until branch) {
             val diff = 1.0f * i.toFloat() / branch + 1.0f / (2.0f * branch)
 
-            val parent_src = pointBase[parent_index]
-            val parent_dst = pointBase[parent_index + 1]
-            val vct = PointF(parent_dst.x - parent_src.x, parent_dst.y - parent_src.y) // 親枝
-            val child_src = PointF(parent_src.x + vct.x * diff, parent_src.y + vct.y * diff)
+            val parentSrcPoint = pointBase[parentIndex]
+            val parentDstPoint = pointBase[parentIndex + 1]
+            val vct = PointF(parentDstPoint.x - parentSrcPoint.x, parentDstPoint.y - parentSrcPoint.y) // 親枝
+            val childSrcPoint = PointF(parentSrcPoint.x + vct.x * diff, parentSrcPoint.y + vct.y * diff)
 
-            child_arm = arm * 1.0f * (info.mutation.size + info.randomize.size * Math.random().toFloat())
-            child_theta = theta * (info.mutation.angle + info.randomize.angle * Math.random().toFloat())
+            length = parentLength * 1.0f * (info.mutation.size + info.randomize.size * Math.random().toFloat())
+            degree = parentDegree * (info.mutation.angle + info.randomize.angle * Math.random().toFloat())
 
-            sin = SinInt.SI().sin(child_theta.toInt())
-            cos = SinInt.SI().cos(child_theta.toInt())
+            sin = SinInt.getInstance().sin(degree.toInt())
+            cos = SinInt.getInstance().cos(degree.toInt())
             if (i % 2 == 1)
                 sin = -sin
 
-            pointBase.add(child_src)
-            next_parent[i] = pointBase.size - 1
-            pointBase.add(PointF(child_src.x + child_arm * (cos * vct.x - sin * vct.y), child_src.y + child_arm * (sin * vct.x + cos * vct.y)))
+            pointBase.add(childSrcPoint)
+            nextParent[i] = pointBase.size - 1
+            pointBase.add(PointF(childSrcPoint.x + length * (cos * vct.x - sin * vct.y), childSrcPoint.y + length * (sin * vct.x + cos * vct.y)))
         }
 
         for (i in 0 until branch) { // 各枝について、更に小枝を計算
-            child_arm = arm * 1.0f * (info.mutation.size + info.randomize.size * Math.random().toFloat())
-            child_theta = theta * (info.mutation.angle + info.randomize.angle * Math.random().toFloat())
+            length = parentLength * 1.0f * (info.mutation.size + info.randomize.size * Math.random().toFloat())
+            degree = parentDegree * (info.mutation.angle + info.randomize.angle * Math.random().toFloat())
 
-            setRelRecursivePoint(base + 1, next_parent[i], child_arm, child_theta)
+            setRelRecursivePoint(base + 1, nextParent[i], length, degree)
         }
     }
 
@@ -116,9 +115,9 @@ class Leaf : Graph() {
     }
 
     companion object {
-        private val GRAPH_LEAF_INIT_ARM_RATE = 0.8f
-        private val GRAPH_LEAF_INIT_THETA_RATE = 30.0f
+        private const val GRAPH_LEAF_INIT_ARM_RATE = 0.8f
+        private const val GRAPH_LEAF_INIT_THETA_RATE = 30.0f
 
-        private val GRAPH_LEAF_INIT_BRANCH = 3
+        private const val GRAPH_LEAF_INIT_BRANCH = 3
     }
 }
