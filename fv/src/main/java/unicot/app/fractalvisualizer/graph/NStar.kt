@@ -11,7 +11,7 @@ class NStar : Graph() {
     init {
         complexityMin = 3
         complexityMax = 12
-        info.graph_kind = DGCommon.NSTAR
+        info.graphKind = DGCommon.GraphKind.NSTAR
     }
 
     override fun calculateOrder() {

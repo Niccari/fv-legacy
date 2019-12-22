@@ -57,23 +57,24 @@ object DGDataWrite : DGDataInfo() {
             val graph = HashMap<String, Any>()
 
             // Graph
-            graph[GRAPH_KIND] = DGCommon.getGraphKindString(gi.graph_kind)
+            graph[GRAPH_KIND] = gi.graphKind.str
             graph[GRAPH_COMPLEXITY] = gi.complexity
             graph[GRAPH_X] = gi.pos.x
             graph[GRAPH_Y] = gi.pos.y
             graph[GRAPH_WIDTH]  = gi.size.width
             graph[GRAPH_HEIGHT] = gi.size.height
-            graph[GRAPH_ROTATE] = gi.rot_speed
+            graph[GRAPH_ROTATE] = gi.rotSpeed
             graph[GRAPH_ANGLE]  = gi.angle
-            when {
-                gi.graph_kind == DGCommon.LEAF -> {
+            when (gi.graphKind) {
+                DGCommon.GraphKind.LEAF -> {
                     graph[GRAPH_LEAF_BRANCH] = (g as Leaf).getBranch()
                 }
-                gi.graph_kind == DGCommon.SIERPINSKI_GASKET -> {
+                DGCommon.GraphKind.SIERPINSKI_GASKET -> {
                     graph[GRAPH_SGASKET_SKEW] = (g as SGasket).skewAngle
                 }
+                else -> {}
             }
-            if(gi.is_recursive) {
+            if(gi.isRecursive) {
                 graph[GRAPH_MUTATION_SIZE]   = gi.mutation.size
                 graph[GRAPH_MUTATION_ANGLE]  = gi.mutation.angle
                 graph[GRAPH_RANDOMIZE_SIZE]  = gi.randomize.size
@@ -81,7 +82,7 @@ object DGDataWrite : DGDataInfo() {
             }
 
             // draw
-            graph[DRAW_KIND]       = if (gi.draw_kind == Graph.DRAW_ALL) DRAW_KIND_ALL else DRAW_KIND_EACH
+            graph[DRAW_KIND]       = if (gi.drawKind == Graph.DRAW_ALL) DRAW_KIND_ALL else DRAW_KIND_EACH
             graph[DRAW_THICKNESS]  = gi.mLineThickness
             graph[DRAW_COLOR_EACH] = gi.mIsColorEach
             graph[DRAW_HISTORY]    = gi.mEachLineHistory

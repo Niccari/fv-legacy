@@ -97,6 +97,7 @@ open class GraphloadActivity : Activity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.clear()
         if (!isSelecting) {
             menuInflater.inflate(R.menu.graphload_normal, menu)
         } else {
@@ -114,7 +115,6 @@ open class GraphloadActivity : Activity() {
         }else{
             getString(R.string.select_graph_title)
         }
-        invalidateOptionsMenu()
         adapter?.notifyDataSetInvalidated()
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -139,9 +139,12 @@ open class GraphloadActivity : Activity() {
                 batch.commit().addOnCompleteListener{
                     task ->
                     if(task.isSuccessful){
-                        if(!isFinishing)
+                        if(!isFinishing) {
                             Toast.makeText(this, R.string.hud_graph_deleted, Toast.LENGTH_SHORT).show()
-                        fetch()
+                            isSelecting = false
+                            invalidateOptionsMenu()
+                            fetch()
+                        }
                     }else{
                         if(!isFinishing)
                             Toast.makeText(this, R.string.hud_error_connection, Toast.LENGTH_SHORT).show()
