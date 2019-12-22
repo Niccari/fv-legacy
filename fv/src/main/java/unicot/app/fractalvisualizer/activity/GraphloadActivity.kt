@@ -139,9 +139,12 @@ open class GraphloadActivity : Activity() {
                 batch.commit().addOnCompleteListener{
                     task ->
                     if(task.isSuccessful){
-                        if(!isFinishing)
+                        if(!isFinishing) {
                             Toast.makeText(this, R.string.hud_graph_deleted, Toast.LENGTH_SHORT).show()
-                        fetch()
+                            isSelecting = false
+                            invalidateOptionsMenu()
+                            fetch()
+                        }
                     }else{
                         if(!isFinishing)
                             Toast.makeText(this, R.string.hud_error_connection, Toast.LENGTH_SHORT).show()
