@@ -4,6 +4,7 @@ import android.graphics.Point
 import android.graphics.PointF
 
 import unicot.app.fractalvisualizer.core.DGCommon
+import kotlin.math.pow
 
 /**
  * シェルピンスキーのカーペット
@@ -12,13 +13,13 @@ class SCarpet : Graph() {
     init {
         complexityMin = 1
         complexityMax = 5
-        info.graph_kind = DGCommon.SIERPINSKI_CARPET
+        info.graphKind = DGCommon.GraphKind.SIERPINSKI_CARPET
     }
 
     private fun sums(): Int {
         var sum = 1
         for (i in 2..info.complexity) {
-            sum += Math.pow(8.0, (i - 2).toDouble()).toInt()
+            sum += 8.0.pow((i - 2).toDouble()).toInt()
         }
         sum *= 4
         return sum
@@ -69,58 +70,56 @@ class SCarpet : Graph() {
             return
         }
 
-        val x_div: FloatArray
-        val y_div: FloatArray
-        var x_child: FloatArray
-        var y_child: FloatArray
+        var childX: FloatArray
+        var childY: FloatArray
 
         // 各辺の中点を結んだ三角形の描画
-        x_div = FloatArray(2)
-        y_div = FloatArray(2)
+        val divX = FloatArray(2)
+        val divY = FloatArray(2)
 
         for (i in 1..2) {
-            x_div[i - 1] = x[0] * (3 - i) / 3.0f + x[1] * i / 3.0f
-            y_div[i - 1] = y[1] * (3 - i) / 3.0f + y[2] * i / 3.0f
+            divX[i - 1] = x[0] * (3 - i) / 3.0f + x[1] * i / 3.0f
+            divY[i - 1] = y[1] * (3 - i) / 3.0f + y[2] * i / 3.0f
         }
 
         // 一番下の階層にて、全ての点を登録する
 
         // 更に分割(全部、左下から反時計回り)
-        x_child = floatArrayOf(x[0], x_div[0], x_div[0], x[0])
-        y_child = floatArrayOf(y[0], y[0], y_div[0], y_div[0])
-        dividePoints(base + 1, x_child, y_child) // 左下
+        childX = floatArrayOf(x[0], divX[0], divX[0], x[0])
+        childY = floatArrayOf(y[0], y[0], divY[0], divY[0])
+        dividePoints(base + 1, childX, childY) // 左下
 
-        x_child = floatArrayOf(x_div[0], x_div[1], x_div[1], x_div[0])
-        y_child = floatArrayOf(y[0], y[0], y_div[0], y_div[0])
-        dividePoints(base + 1, x_child, y_child) // 下
+        childX = floatArrayOf(divX[0], divX[1], divX[1], divX[0])
+        childY = floatArrayOf(y[0], y[0], divY[0], divY[0])
+        dividePoints(base + 1, childX, childY) // 下
 
-        x_child = floatArrayOf(x_div[1], x[1], x[1], x_div[1])
-        y_child = floatArrayOf(y[0], y[0], y_div[0], y_div[0])
-        dividePoints(base + 1, x_child, y_child) // 右下
+        childX = floatArrayOf(divX[1], x[1], x[1], divX[1])
+        childY = floatArrayOf(y[0], y[0], divY[0], divY[0])
+        dividePoints(base + 1, childX, childY) // 右下
 
-        x_child = floatArrayOf(x_div[1], x[1], x[1], x_div[1])
-        y_child = floatArrayOf(y_div[0], y_div[0], y_div[1], y_div[1])
-        dividePoints(base + 1, x_child, y_child) // 右
+        childX = floatArrayOf(divX[1], x[1], x[1], divX[1])
+        childY = floatArrayOf(divY[0], divY[0], divY[1], divY[1])
+        dividePoints(base + 1, childX, childY) // 右
 
-        x_child = floatArrayOf(x_div[1], x[1], x[1], x_div[1])
-        y_child = floatArrayOf(y_div[1], y_div[1], y[3], y[3])
-        dividePoints(base + 1, x_child, y_child) // 右上
+        childX = floatArrayOf(divX[1], x[1], x[1], divX[1])
+        childY = floatArrayOf(divY[1], divY[1], y[3], y[3])
+        dividePoints(base + 1, childX, childY) // 右上
 
-        x_child = floatArrayOf(x_div[0], x_div[1], x_div[1], x_div[0])
-        y_child = floatArrayOf(y_div[1], y_div[1], y[3], y[3])
-        dividePoints(base + 1, x_child, y_child) // 上
+        childX = floatArrayOf(divX[0], divX[1], divX[1], divX[0])
+        childY = floatArrayOf(divY[1], divY[1], y[3], y[3])
+        dividePoints(base + 1, childX, childY) // 上
 
-        x_child = floatArrayOf(x[0], x_div[0], x_div[0], x[0])
-        y_child = floatArrayOf(y_div[1], y_div[1], y[3], y[3])
-        dividePoints(base + 1, x_child, y_child) // 左上
+        childX = floatArrayOf(x[0], divX[0], divX[0], x[0])
+        childY = floatArrayOf(divY[1], divY[1], y[3], y[3])
+        dividePoints(base + 1, childX, childY) // 左上
 
-        x_child = floatArrayOf(x[0], x_div[0], x_div[0], x[0])
-        y_child = floatArrayOf(y_div[0], y_div[0], y_div[1], y_div[1])
-        dividePoints(base + 1, x_child, y_child) // 左
+        childX = floatArrayOf(x[0], divX[0], divX[0], x[0])
+        childY = floatArrayOf(divY[0], divY[0], divY[1], divY[1])
+        dividePoints(base + 1, childX, childY) // 左
 
-        x_child = floatArrayOf(x_div[0], x_div[1], x_div[1], x_div[0])
-        y_child = floatArrayOf(y_div[0], y_div[0], y_div[1], y_div[1])
-        dividePoints(-1, x_child, y_child) // 真ん中(ここだけ、次のステップで再帰を終了)
+        childX = floatArrayOf(divX[0], divX[1], divX[1], divX[0])
+        childY = floatArrayOf(divY[0], divY[0], divY[1], divY[1])
+        dividePoints(-1, childX, childY) // 真ん中(ここだけ、次のステップで再帰を終了)
     }
 
     override fun calculateOrder() {

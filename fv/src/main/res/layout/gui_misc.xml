@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <ImageButton
-            android:id="@+id/imageButton_graphLoad"
+            android:id="@+id/gui_misc_ib_load"
             android:layout_width="@dimen/gui_misc_button_size"
             android:layout_height="@dimen/gui_misc_button_size"
             android:adjustViewBounds="true"
@@ -23,7 +23,7 @@
             android:src="@drawable/graph_load_focus_item" />
 
         <ImageButton
-            android:id="@+id/imageButton_graphSave"
+            android:id="@+id/gui_misc_ib_save"
             android:layout_width="@dimen/gui_misc_button_size"
             android:layout_height="@dimen/gui_misc_button_size"
             android:layout_marginStart="3dp"
@@ -34,7 +34,7 @@
             android:src="@drawable/graph_save_focus_item" />
 
         <ImageButton
-            android:id="@+id/imageButton_camera"
+            android:id="@+id/gui_misc_ib_capture"
             android:layout_width="@dimen/gui_misc_button_size"
             android:layout_height="@dimen/gui_misc_button_size"
             android:layout_marginStart="3dp"
@@ -45,11 +45,10 @@
             android:src="@drawable/camera_focus_item" />
 
         <ImageButton
-            android:id="@+id/imageButton_preference"
+            android:id="@+id/gui_misc_ib_prefecture"
             android:layout_width="@dimen/gui_misc_button_size"
             android:layout_height="@dimen/gui_misc_button_size"
             android:layout_marginStart="3dp"
-            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:padding="7dp"

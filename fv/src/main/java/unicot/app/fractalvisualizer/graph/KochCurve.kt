@@ -5,6 +5,7 @@ import android.graphics.PointF
 
 import unicot.app.fractalvisualizer.core.DGCommon
 import unicot.app.fractalvisualizer.core.SinInt
+import kotlin.math.pow
 
 /**
  * コッホ曲線
@@ -13,20 +14,20 @@ open class KochCurve : Graph() {
     protected open val nsub: Int
         get() = 1
 
-    protected val GRAPH_KOCH_INIT_ARM_RATE = 1.0f  // 複雑さ+1での腕の長さ比率
-    protected val GRAPH_KOCH_INIT_THETA_RATE = 60.0f // 複雑さ+1での角度比率
+    protected val length0 = 1.0f  // 初期長さ
+    protected val degree0 = 60.0f // 初期角度
 
     init {
         complexityMin = 2
         complexityMax = 5
 
-        info.graph_kind = DGCommon.KOCHCURVE
-        info.is_recursive = true
+        info.graphKind = DGCommon.GraphKind.KOCHCURVE
+        info.isRecursive = true
     }
 
     override val pointMax: Int
         get() {
-            nOrders = Math.pow(2.0, (2 * (info.complexity - 1)).toDouble()).toInt() + 1 - nsub
+            nOrders = 2.0.pow((2 * (info.complexity - 1)).toDouble()).toInt() + 1 - nsub
             return nOrders + nsub
         }
 
@@ -45,42 +46,42 @@ open class KochCurve : Graph() {
     public override fun setRelativePoint() {
         allocatePoints()
 
-        setRelRecursivePoint(1, GRAPH_KOCH_INIT_ARM_RATE, GRAPH_KOCH_INIT_THETA_RATE)    //Generator Line
+        setRelRecursivePoint(1, length0, degree0)    //Generator Line
         isAllocated = true
     }
 
-    protected fun setRelRecursivePoint(depth: Int, arm: Float, theta: Float) {
-        var arm = arm
-        var theta = theta
+    protected fun setRelRecursivePoint(depth: Int, parentLength: Float, parentDegree: Float) {
+        var length = parentLength
+        var degree = parentDegree
         if (depth >= info.complexity) return
 
-        var add_point: PointF
+        var addPoint: PointF
         val src = PointF()
         val dst = PointF()
         var vct: PointF
-        arm *= info.mutation.size + info.randomize.size * Math.random().toFloat()
-        theta *= info.mutation.angle + info.randomize.angle * Math.random().toFloat()
-        val sin = SinInt.SI().sin(theta.toInt())
-        val cos = SinInt.SI().cos(theta.toInt())
+        length *= info.mutation.size + info.randomize.size * Math.random().toFloat()
+        degree *= info.mutation.angle + info.randomize.angle * Math.random().toFloat()
+        val sin = SinInt.getInstance().sin(degree.toInt())
+        val cos = SinInt.getInstance().cos(degree.toInt())
 
-        for (i in 0 until Math.pow(2.0, (2 * depth).toDouble()).toInt()) {
+        for (i in 0 until 2.0.pow((2 * depth).toDouble()).toInt()) {
             if (i % 4 <= 1) {    // 分割線("_/\_"のうち、"_"の部分)
                 src.set(pointBase[i])
                 dst.set(pointBase[i + 1])
                 vct = PointF(dst.x - src.x, dst.y - src.y)
-                add_point = PointF(src.x + arm / (3 - i % 4).toFloat() * vct.x,
-                        src.y + arm / (3 - i % 4).toFloat() * vct.y)
-                pointBase.add(i + 1, add_point)
+                addPoint = PointF(src.x + length / (3 - i % 4).toFloat() * vct.x,
+                        src.y + length / (3 - i % 4).toFloat() * vct.y)
+                pointBase.add(i + 1, addPoint)
             } else if (i % 4 == 2) {    // 三角部の点("_/\_"のうち、"/\"の部分)
                 src.set(pointBase[i - 1])
                 dst.set(pointBase[i])
                 vct = PointF(dst.x - src.x, dst.y - src.y)
-                add_point = PointF(src.x + arm * (cos * vct.x - sin * vct.y),
-                        src.y + arm * (sin * vct.x + cos * vct.y))
-                pointBase.add(i, add_point)
+                addPoint = PointF(src.x + length * (cos * vct.x - sin * vct.y),
+                        src.y + length * (sin * vct.x + cos * vct.y))
+                pointBase.add(i, addPoint)
             }
         }
-        setRelRecursivePoint(depth + 1, arm, theta)
+        setRelRecursivePoint(depth + 1, length, degree)
     }
 
     override fun calculateOrder() {
