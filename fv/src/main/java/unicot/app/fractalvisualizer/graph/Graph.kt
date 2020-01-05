@@ -11,6 +11,8 @@ import java.util.Locale
 
 import unicot.app.fractalvisualizer.core.DGCore
 import unicot.app.fractalvisualizer.core.SinInt
+import kotlin.math.ln
+import kotlin.math.sqrt
 
 
 /**
@@ -90,13 +92,13 @@ internal constructor() {
      * 色情報も含め完全コピー
      */
     fun setInfo(src: GraphInfo, isFullCopy: Boolean) {
-        this.info.graph_kind = src.graph_kind
+        this.info.graphKind = src.graphKind
 
         // グラフ設定
         this.setPosition(src.pos.x, src.pos.y)
         this.info.size.set( src.size.width, src.size.height)
         this.info.angle = src.angle
-        this.info.rot_speed = src.rot_speed
+        this.info.rotSpeed = src.rotSpeed
         this.info.mutation = src.mutation
         this.info.randomize = src.randomize
 
@@ -104,7 +106,7 @@ internal constructor() {
 
         // 以下、描画設定
         this.info.cp.init(src.cp, isFullCopy)
-        this.info.setDrawSettings(src.draw_kind, src.mLineThickness, src.mIsColorEach, src.mEachLineHistory)
+        this.info.setDrawSettings(src.drawKind, src.mLineThickness, src.mIsColorEach, src.mEachLineHistory)
 
         if (isFullCopy)
             this.info.mCurrentDrawOrder = src.mCurrentDrawOrder
@@ -163,7 +165,7 @@ internal constructor() {
      * 線分の個別描画フラグ
      */
     fun setDrawEach(DK: Int) {
-        info.draw_kind = DK
+        info.drawKind = DK
     }
 
     /**
@@ -210,7 +212,7 @@ internal constructor() {
      * 角速度
      */
     fun setRotate(rot_speed: Float) {
-        info.rot_speed = rot_speed
+        info.rotSpeed = rot_speed
     }
 
     /**
@@ -274,7 +276,7 @@ internal constructor() {
         allocatePoints()
         val size = pointBase.size
         for (i in 0 until size) {
-            pointBase[i].set(SinInt.SI().cos(360 * i / size - 180), SinInt.SI().sin(360 * i / size - 180))
+            pointBase[i].set(SinInt.getInstance().cos(360 * i / size - 180), SinInt.getInstance().sin(360 * i / size - 180))
         }
         isAllocated = true
     }
@@ -325,8 +327,8 @@ internal constructor() {
      * グラフの回転
      */
     protected fun rotateRelativePoint() {
-        val sinZ = SinInt.SI().sin(info.angle.toInt())
-        val cosZ = SinInt.SI().cos(info.angle.toInt())
+        val sinZ = SinInt.getInstance().sin(info.angle.toInt())
+        val cosZ = SinInt.getInstance().cos(info.angle.toInt())
 
         var tx: Float
         var ty: Float
@@ -340,7 +342,7 @@ internal constructor() {
             mTmpPointF!!.y = ty
         }
 
-        info.angle += info.rot_speed // 角度を角速度分追加
+        info.angle += info.rotSpeed // 角度を角速度分追加
     }
 
     /**
@@ -395,7 +397,7 @@ internal constructor() {
         }
         var relSrcPtTmp: PointF
         var relDstPtTmp: PointF
-        when (info.draw_kind) {
+        when (info.drawKind) {
             DRAW_ALL // 線分を全て描画
             -> for (i in 0 until len) {
                 if (info.mIsColorEach)
@@ -451,8 +453,8 @@ internal constructor() {
     }
 
     private fun drawTriangle(canvas: Canvas, src: Point, dst: Point, pen: Paint) {
-        val ex: Double = (dst.x - src.x) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
-        val ey: Double = (dst.y - src.y) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
+        val ex: Double = (dst.x - src.x) / sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
+        val ey: Double = (dst.y - src.y) / sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
 
         // 時計順(dst, src-a, src+a)
         mDrawPath.reset()
@@ -466,8 +468,8 @@ internal constructor() {
     private fun drawCrescent(canvas: Canvas, src: Point, dst: Point, pen: Paint) {
 
         val width = DRAW_CRESCENT_WIDTH
-        val ex: Double = (dst.x - src.x) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
-        val ey: Double = (dst.y - src.y) / Math.sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
+        val ex: Double = (dst.x - src.x) / sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
+        val ey: Double = (dst.y - src.y) / sqrt(((dst.x - src.x) * (dst.x - src.x) + (dst.y - src.y) * (dst.y - src.y)).toDouble())
 
         mDrawPath.reset()
 
@@ -482,12 +484,12 @@ internal constructor() {
     }
 
     private fun drawTwinCircles(canvas: Canvas, src: Point, dst: Point, pen: Paint) {
-        val width = Math.log((info.mLineThickness + DRAW_TWIN_CIRCLE_WIDTH_OFFSET).toDouble()).toFloat()
+        val width = ln((info.mLineThickness + DRAW_TWIN_CIRCLE_WIDTH_OFFSET).toDouble()).toFloat()
 
         val dx = (dst.x - src.x).toFloat()
         val dy = (dst.y - src.y).toFloat()
 
-        val dist = Math.sqrt((dx * dx + dy * dy).toDouble()).toFloat()
+        val dist = sqrt((dx * dx + dy * dy).toDouble()).toFloat()
 
         canvas.drawCircle(src.x + dx * DRAW_TWIN_CIRCLE_SMALL_XY_SEC, src.y + dy * DRAW_TWIN_CIRCLE_SMALL_XY_SEC, width * dist * DRAW_TWIN_CIRCLE_SMALL_RADIUS, pen)
         canvas.drawCircle(src.x + dx * DRAW_TWIN_CIRCLE_LARGE_XY_SEC, src.y + dy * DRAW_TWIN_CIRCLE_LARGE_XY_SEC, width * dist * DRAW_TWIN_CIRCLE_LARGE_RADIUS, pen)

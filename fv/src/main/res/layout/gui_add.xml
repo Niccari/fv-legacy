@@ -15,8 +15,7 @@
         android:background="@drawable/starmine"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="STARMINE" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_nPoint"
@@ -26,8 +25,7 @@
         android:background="@drawable/npoint"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="NPOINT" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_nStar"
@@ -37,8 +35,7 @@
         android:background="@drawable/nstar"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="NSTAR" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_random1"
@@ -48,8 +45,7 @@
         android:background="@drawable/random_stat"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="RANDOMSHAPE" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_random2"
@@ -59,8 +55,7 @@
         android:background="@drawable/random_every"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="RANDOMSHAPE2" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_cCurve"
@@ -70,8 +65,7 @@
         android:background="@drawable/ccurve"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="CCURVE" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_dragonCurve"
@@ -81,8 +75,7 @@
         android:background="@drawable/dragoncurve"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="DRAGONCURVE" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_koch"
@@ -92,8 +85,7 @@
         android:background="@drawable/kochcurve"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="KOCHCURVE" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_kochOuter"
@@ -103,8 +95,7 @@
         android:background="@drawable/kochcurve_outer"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="KOCHTRIANGLE_OUTER" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_dragonCurve_rev"
@@ -114,8 +105,7 @@
         android:background="@drawable/dragoncurve_backward"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="FOLDTRIANGLE" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_sierpenskiGasket"
@@ -125,8 +115,7 @@
         android:background="@drawable/gasket_tri"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="SIERPINSKI_GASKET" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_kochInner"
@@ -136,8 +125,7 @@
         android:background="@drawable/kochcurve_inner"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="KOCHTRIANGLE_INNER" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_sierpenskiCarpet"
@@ -147,8 +135,7 @@
         android:background="@drawable/gasket_carpet"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="SIERPINSKI_CARPET" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_rose"
@@ -158,8 +145,7 @@
         android:background="@drawable/rosecurve"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="ROSECURVE" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_tree"
@@ -169,8 +155,7 @@
         android:background="@drawable/leaf"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="LEAF" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_binaryTree"
@@ -180,8 +165,7 @@
         android:background="@drawable/binarytree"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="BINARYTREE" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_hilbert"
@@ -191,8 +175,7 @@
         android:background="@drawable/hilbert"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/fore_focus"
-        android:tag="HILBERT" />
+        android:src="@drawable/fore_focus"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_trifold_trans"
@@ -202,8 +185,7 @@
         android:background="@drawable/hilbert"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/trifold_lr"
-        android:tag="TRIFOLD_TRANS" />
+        android:src="@drawable/trifold_lr"/>
 
     <ImageButton
         android:id="@+id/imageButton_graphIcon_trifold_cis"
@@ -213,7 +195,6 @@
         android:background="@drawable/hilbert"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/trifold_ll"
-        android:tag="TRIFOLD_CIS" />
+        android:src="@drawable/trifold_ll"/>
 
 </merge>

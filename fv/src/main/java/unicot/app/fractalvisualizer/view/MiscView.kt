@@ -12,42 +12,42 @@ import unicot.app.fractalvisualizer.core.DGCore
  * アプリ設定
  */
 class MiscView(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs){
-    interface OnEventListener{
-        fun invoke(key: String)
-    }
-
     init{
         View.inflate(context, R.layout.gui_misc, this)
     }
 
-    fun setEvent(listener: OnEventListener){
+    fun setEvent(listener: (Action) -> Unit){
         gui_misc_sb_fps.listener = {
             if(it.toInt() < DGCore.systemData.framerateList.size) {
                 DGCore.systemData.framerate = DGCore.systemData.framerateList[it.toInt()]
-                listener.invoke("fps")
+                listener.invoke(Action.FPS)
             }
         }
         gui_misc_sb_pov.listener = {
             DGCore.systemData.povFrame = it.toInt()
-            listener.invoke("pov_frame")
+            listener.invoke(Action.POV)
         }
-        imageButton_graphLoad.setOnClickListener{
-            listener.invoke("load_graph")
+        gui_misc_ib_load.setOnClickListener{
+            listener.invoke(Action.LOAD)
         }
-        imageButton_graphSave.setOnClickListener{
-            listener.invoke("save_graph")
+        gui_misc_ib_save.setOnClickListener{
+            listener.invoke(Action.SAVE)
         }
 
-        imageButton_camera.setOnClickListener{
-            listener.invoke("capture")
+        gui_misc_ib_capture.setOnClickListener{
+            listener.invoke(Action.CAPTURE)
         }
-        imageButton_preference.setOnClickListener{
-            listener.invoke("preference")
+        gui_misc_ib_prefecture.setOnClickListener{
+            listener.invoke(Action.PREFERENCE)
         }
     }
 
     fun sync(){
         gui_misc_sb_fps.setValue(DGCore.systemData.framerate.toFloat())
         gui_misc_sb_pov.setValue(DGCore.systemData.povFrame.toFloat())
+    }
+
+    enum class Action{
+        FPS, POV, LOAD, SAVE, CAPTURE, PREFERENCE
     }
 }

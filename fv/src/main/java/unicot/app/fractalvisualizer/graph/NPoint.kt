@@ -7,6 +7,6 @@ import unicot.app.fractalvisualizer.core.DGCommon
  */
 class NPoint : Graph() {
     init {
-        info.graph_kind = DGCommon.NPOINT
+        info.graphKind = DGCommon.GraphKind.NPOINT
     }
 }

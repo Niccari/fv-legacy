@@ -28,13 +28,9 @@ class DrawView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
         var c: Canvas? = null
         try {
             c = holder.lockCanvas()
-            if (c != null) {
-                listener.onDraw(c)
-            }
+            c?.let{ listener.onDraw(it) }
         }finally {
-            if(c != null){
-                holder.unlockCanvasAndPost(c)
-            }
+            c?.let{ holder.unlockCanvasAndPost(it) }
         }
     }
 }

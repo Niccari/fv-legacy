@@ -8,6 +8,7 @@ import kotlinx.android.synthetic.main.gui_shape.view.*
 import unicot.app.fractalvisualizer.R
 import unicot.app.fractalvisualizer.core.DGCommon
 import unicot.app.fractalvisualizer.core.DGCore
+import unicot.app.fractalvisualizer.core.DGCore.Companion.GraphSetting.*
 import unicot.app.fractalvisualizer.graph.Leaf
 import unicot.app.fractalvisualizer.graph.SGasket
 
@@ -33,9 +34,9 @@ class GraphSettingView(context: Context, attrs: AttributeSet? = null) : LinearLa
         gui_graph_sb_complexity.renewRange(gSelected.complexityMin.toFloat(),
                                            gSelected.complexityMax.toFloat())
         gui_graph_sb_complexity.setValue(gi.complexity.toFloat())
-        gui_graph_sb_rorate.setValue(gi.rot_speed)
+        gui_graph_sb_rorate.setValue(gi.rotSpeed)
 
-        if (gi.is_recursive) {
+        if (gi.isRecursive) {
             gui_shape_recursive_ll_root.visibility = View.VISIBLE
 
             gui_graph_sb_mut_size.setValue(gi.mutation.size)
@@ -45,34 +46,34 @@ class GraphSettingView(context: Context, attrs: AttributeSet? = null) : LinearLa
         }else{
             gui_shape_recursive_ll_root.visibility = GONE
         }
-        if (gi.graph_kind == DGCommon.LEAF) {
+        if (gi.graphKind == DGCommon.GraphKind.LEAF) {
             gui_graph_sb_leaf_branch.visibility = View.VISIBLE
             gui_graph_sb_leaf_branch.setValue((gSelected as Leaf).getBranch().toFloat())
         }else{
             gui_graph_sb_leaf_branch.visibility = GONE
         }
 
-        if (gi.graph_kind == DGCommon.SIERPINSKI_GASKET) {
+        if (gi.graphKind == DGCommon.GraphKind.SIERPINSKI_GASKET) {
             gui_graph_sb_sgasket_skew.visibility = View.VISIBLE
             gui_graph_sb_sgasket_skew.setValue((gSelected as SGasket).skewAngle)
         }else{
             gui_graph_sb_sgasket_skew.visibility = View.GONE
         }
 
-        imageView_gss_now_graph_icon.setImageResource(DGCommon.getGraphIcon(gi.graph_kind))
+        imageView_gss_now_graph_icon.setImageResource(DGCommon.getGraphIcon(gi.graphKind))
     }
 
     private fun setEvent(){
-        gui_graph_sb_complexity.listener = { dgc.transformGraph(DGCore.OP_COMPLEXITY, it) }
-        gui_graph_sb_rorate.listener     = { dgc.transformGraph(DGCore.OP_GRAPH_ROTATE, it) }
-        gui_graph_sb_mut_size.listener   = { dgc.transformGraph(DGCore.OP_MUTATION_SIZE, it) }
-        gui_graph_sb_mut_angle.listener  = { dgc.transformGraph(DGCore.OP_MUTATION_ANGLE, it) }
-        gui_graph_sb_rand_size.listener  = { dgc.transformGraph(DGCore.OP_RANDOMIZER_SIZE, it) }
-        gui_graph_sb_rand_angle.listener = { dgc.transformGraph(DGCore.OP_RANDOMIZER_ANGLE, it) }
+        gui_graph_sb_complexity.listener = { dgc.transformGraph(COMPLEXITY, it) }
+        gui_graph_sb_rorate.listener     = { dgc.transformGraph(ROT_SPEED, it) }
+        gui_graph_sb_mut_size.listener   = { dgc.transformGraph(MUTATION_SIZE, it) }
+        gui_graph_sb_mut_angle.listener  = { dgc.transformGraph(MUTATION_ANGLE, it) }
+        gui_graph_sb_rand_size.listener  = { dgc.transformGraph(RANDOMIZER_SIZE, it) }
+        gui_graph_sb_rand_angle.listener = { dgc.transformGraph(RANDOMIZER_ANGLE, it) }
 
-        gui_graph_sb_rand_size.listener    = { dgc.transformGraph(DGCore.OP_RANDOMIZER_SIZE, it) }
-        gui_graph_sb_rand_angle.listener   = { dgc.transformGraph(DGCore.OP_RANDOMIZER_ANGLE, it) }
-        gui_graph_sb_leaf_branch.listener  = { dgc.transformGraph(DGCore.OP_LEAF_BRANCH, it) }
-        gui_graph_sb_sgasket_skew.listener = { dgc.transformGraph(DGCore.OP_SGASKET_SKEW, it) }
+        gui_graph_sb_rand_size.listener    = { dgc.transformGraph(RANDOMIZER_SIZE, it) }
+        gui_graph_sb_rand_angle.listener   = { dgc.transformGraph(RANDOMIZER_ANGLE, it) }
+        gui_graph_sb_leaf_branch.listener  = { dgc.transformGraph(LEAF_BRANCH, it) }
+        gui_graph_sb_sgasket_skew.listener = { dgc.transformGraph(SGASKET_SKEW, it) }
     }
 }

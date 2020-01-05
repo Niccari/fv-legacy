@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.Bitmap.CompressFormat
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
 import android.view.*
@@ -32,7 +31,6 @@ import unicot.app.fractalvisualizer.view.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -54,7 +52,7 @@ class MainActivity : Activity() {
     private var isTouching: Boolean = false
 
     // GUI関連
-    private lateinit var mPopupWindow: PopupWindow
+    private lateinit var mGuiWindow: PopupWindow
     private lateinit var mIconWindow: PopupWindow
     private lateinit var mCopyWindow: PopupWindow
     private lateinit var mDeleteWindow: PopupWindow
@@ -162,7 +160,12 @@ class MainActivity : Activity() {
                         mVCurrentGUI = mSettingPaint
                         widthParam = LayoutParams.MATCH_PARENT
                     }
-                    R.id.main_ib_add_graph -> mVCurrentGUI = mAddGraph
+                    R.id.main_ib_add_graph -> {
+                        mVCurrentGUI = mAddGraph
+                        main_ib_misc.post{
+                            mIconWindow.showAsDropDown(main_ib_misc)
+                        }
+                    }
                     R.id.main_ib_misc -> {
                         mVCurrentGUI = mMisc
                         widthParam = LayoutParams.MATCH_PARENT
@@ -199,8 +202,7 @@ class MainActivity : Activity() {
         }
         mCopyIcon.setOnClickListener{
             stop()
-            DGCommon.copyGraph(DGCore.selectedGraph[0].info.graph_kind, true)
-            mCopyWindow
+            DGCommon.copyGraph(DGCore.selectedGraph[0].info.graphKind, true)
             resume()
         }
 
@@ -217,12 +219,6 @@ class MainActivity : Activity() {
         mCopyWindow = PopupWindow(mCopyIcon, 180, 180)
         mCopyWindow.isTouchable = true
 
-        // Activity完全起動後に実行
-        mIVGraphOverrayIcon.post {
-            mDeleteWindow.showAsDropDown(mIVGraphOverrayIcon)
-            mCopyWindow.showAsDropDown(mIVGraphOverrayIcon)
-        }
-
         // グラフ削除アイコンは普段見えない
         mGraphDeleteIcon.visibility = ImageView.INVISIBLE
         mGraphDeleteIcon.setBackgroundResource(R.drawable.delete)
@@ -234,6 +230,8 @@ class MainActivity : Activity() {
 
     public override fun onPause() {
         super.onPause()
+        mDeleteWindow.dismiss()
+        mCopyWindow.dismiss()
         stop()
     }
 
@@ -284,7 +282,7 @@ class MainActivity : Activity() {
     private fun adjustGui() {
         mGui?.let{
             it.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
-            mPopupWindow.height = it.measuredHeight
+            mGuiWindow.height = it.measuredHeight
         }
     }
 
@@ -311,8 +309,12 @@ class MainActivity : Activity() {
                 isTouching = false
                 dgc.affineTransformGraphs(Point(-1, -1), touchPoint) // 移動値をリセット
 
-                if (!dgc.isGraphSelected)
+                if (!dgc.isGraphSelected) {
                     dgc.select(touchPointBefore, touchPoint)
+
+                    mDeleteWindow.showAsDropDown(mIVGraphOverrayIcon)
+                    mCopyWindow.showAsDropDown(mIVGraphOverrayIcon)
+                }
 
             } else if (event.action == MotionEvent.ACTION_MOVE) {
                 if (dgc.isGraphSelected)
@@ -385,7 +387,7 @@ class MainActivity : Activity() {
     private fun dispose() {
         isGuiActivated = false
 
-        mPopupWindow.dismiss()
+        mGuiWindow.dismiss()
         mIconWindow.dismiss()
     }
 
@@ -394,12 +396,13 @@ class MainActivity : Activity() {
 
         mAddGraph = GraphAddView(this, null)
         mAddGraph.setEvent(View.OnTouchListener { v, e ->
-            mIVGraphOverrayIcon.setImageResource(DGCommon.getGraphIcon(DGCommon.getKind(v?.tag.toString())))
+            val graphKind = mAddGraph.getGraphKindFromIcon(v)
+            mIVGraphOverrayIcon.setImageResource(DGCommon.getGraphIcon(graphKind))
             mIVGraphOverrayIcon.invalidate()
 
             when (e?.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    mCurrentSelectedGraphIcon = v?.tag.toString()
+                    mCurrentSelectedGraphIcon = graphKind.str
                     v?.performClick()
                 }
                 MotionEvent.ACTION_UP -> v?.performClick()
@@ -417,21 +420,21 @@ class MainActivity : Activity() {
 
         val activity = this
         mMisc = MiscView(this, null)
-        mMisc.setEvent(object : MiscView.OnEventListener {
-            override operator fun invoke(key: String) {
-                if (key.matches("pov_frame".toRegex())) {
+        mMisc.setEvent { action ->
+            when(action){
+                MiscView.Action.POV -> {
                     if(DGCore.systemData.povFrame == 0){
                         // 前回ロードしたときのグラフの残像が残っている可能性があるのでクリア
                         tmpCanvas.drawColor(Color.BLACK)
                     }
                 }
-                if (key.matches("load_graph".toRegex())) {
+                MiscView.Action.LOAD -> {
                     val intent = Intent()
                     intent.setClassName(packageName, "$packageName.activity.GraphloadActivity")
                     startActivityForResult(intent, intentOpenGraph)
                 }
-                if (key.matches("save_graph".toRegex())) {
-                    captureView("save_graph")?.let{
+                MiscView.Action.SAVE -> {
+                    saveView()?.let{
                         main_pb.visibility = View.VISIBLE
                         // 保存は通信を必要とするため、いつ終わるかわからない
                         DGDataWrite.save(it){
@@ -446,21 +449,23 @@ class MainActivity : Activity() {
                         }
                     }
                 }
-                if (key.matches("capture".toRegex())) {
+                MiscView.Action.CAPTURE -> {
                     if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(activity, Array(1) { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1)
                     } else {
-                        captureView("capture")
+                        captureView()
                     }
                 }
-                if (key.matches("preference".toRegex())) {
+                MiscView.Action.PREFERENCE -> {
                     val intent = Intent()
                     intent.setClassName(packageName, "$packageName.activity.PreferenceActivity")
                     startActivityForResult(intent, intentOpenGraph)
                 }
+                MiscView.Action.FPS -> {}
             }
-        })
+        }
+
         mSettingGraph = GraphSettingView(this, null)
         mSettingGraph.setDGCore(dgc)
 
@@ -469,7 +474,7 @@ class MainActivity : Activity() {
 
         mGui?.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
 
-        mPopupWindow = PopupWindow(mGui, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        mGuiWindow = PopupWindow(mGui, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
 
     private fun showGUI(id: Int) {
@@ -484,13 +489,11 @@ class MainActivity : Activity() {
 
         adjustGui()
 
-        mPopupWindow.showAsDropDown(main_ib_misc)
-        mIconWindow.showAsDropDown(main_ib_misc)
-
-        mPopupWindow.isTouchable = true
-        mPopupWindow.isFocusable = true
-        mPopupWindow.update()
-        mPopupWindow.setOnDismissListener { dispose() }
+        mGuiWindow.showAsDropDown(main_ib_misc)
+        mGuiWindow.isTouchable = true
+        mGuiWindow.isFocusable = true
+        mGuiWindow.update()
+        mGuiWindow.setOnDismissListener { dispose() }
 
         isGuiActivated = true
     }
@@ -500,7 +503,7 @@ class MainActivity : Activity() {
         when (requestCode) {
             1 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    captureView("capture")
+                    captureView()
                 }
             }
         }
@@ -556,11 +559,8 @@ class MainActivity : Activity() {
         }, 100)
     }
 
-    // 現画面のスクリーンキャプチャをとる。
-    // ファイル名は現時刻を基に決定する。
-    private fun captureView(mode: String): File? {
+    private fun redrawForCapture(){
         stop()
-
         // 残像0のときのみ、スクリーンショット用のキャンバスに再描画
         if (dgc.povFrame <= 0) {
             main_dv.draw(object : DrawView.DrawListener {
@@ -570,48 +570,47 @@ class MainActivity : Activity() {
                 }
             })
         }
-        val path: String
-        val filename: String
+        resume()
+    }
 
-        if (mode == "save_graph") {
-            path = filesDir.path
-            filename = "tmp.jpg"
-        } else {
-            path = "${Environment.getExternalStorageDirectory().path}/FV"
-            filename = "${DGCommon.currentDateString}.png"
-        }
-
-        val outputStream: OutputStream
-        val dirFile = File(path)
-        val imageFile = File("$path/$filename")
-
+    // 現画面のスクリーンキャプチャをとる。
+    // ファイル名は現時刻を基に決定する。
+    private fun saveView(): File? {
+        redrawForCapture()
+        val imageFile = File("${cacheDir.path}/tmp.jpg")
         try {
-            dirFile.mkdir()
-
-            outputStream = FileOutputStream(imageFile)
-
-            if (mode == "save_graph") {
-                val tmp = Bitmap.createScaledBitmap(bmp, windowSize.x / 4, windowSize.y / 4, false)
-                tmp.compress(CompressFormat.JPEG, 75, outputStream)
-            } else {
-                bmp.compress(CompressFormat.PNG, 100, outputStream)
-                val contentValues = ContentValues()
-                contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-                contentValues.put("_data", imageFile.path)
-                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-            }
+            val outputStream = FileOutputStream(imageFile)
+            Bitmap.createScaledBitmap(bmp, windowSize.x / 4, windowSize.y / 4, false)
+                  .compress(CompressFormat.JPEG, 75, outputStream)
             outputStream.flush()
             outputStream.close()
-
         } catch (e: NullPointerException) {
             e.printStackTrace()
             return null
         } catch (e: IOException) {
             e.printStackTrace()
             return null
-        } finally {
-            resume()
         }
         return imageFile
+    }
+
+    private fun captureView(){
+        redrawForCapture()
+
+        try {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, "${DGCommon.currentDateString}.png")
+                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+            }
+            val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues) ?: throw IOException("uri failed")
+            val outputStream = contentResolver.openOutputStream(uri) ?: throw IOException("stream error")
+            bmp.compress(CompressFormat.PNG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 }
