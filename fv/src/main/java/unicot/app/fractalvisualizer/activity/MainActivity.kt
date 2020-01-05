@@ -52,7 +52,7 @@ class MainActivity : Activity() {
     private var isTouching: Boolean = false
 
     // GUI関連
-    private lateinit var mPopupWindow: PopupWindow
+    private lateinit var mGuiWindow: PopupWindow
     private lateinit var mIconWindow: PopupWindow
     private lateinit var mCopyWindow: PopupWindow
     private lateinit var mDeleteWindow: PopupWindow
@@ -160,7 +160,12 @@ class MainActivity : Activity() {
                         mVCurrentGUI = mSettingPaint
                         widthParam = LayoutParams.MATCH_PARENT
                     }
-                    R.id.main_ib_add_graph -> mVCurrentGUI = mAddGraph
+                    R.id.main_ib_add_graph -> {
+                        mVCurrentGUI = mAddGraph
+                        main_ib_misc.post{
+                            mIconWindow.showAsDropDown(main_ib_misc)
+                        }
+                    }
                     R.id.main_ib_misc -> {
                         mVCurrentGUI = mMisc
                         widthParam = LayoutParams.MATCH_PARENT
@@ -198,7 +203,6 @@ class MainActivity : Activity() {
         mCopyIcon.setOnClickListener{
             stop()
             DGCommon.copyGraph(DGCore.selectedGraph[0].info.graphKind, true)
-            mCopyWindow
             resume()
         }
 
@@ -268,10 +272,6 @@ class MainActivity : Activity() {
             }
             execCount++
         }, 10, (1000 / 60).toLong(), TimeUnit.MILLISECONDS)
-        if(!mDeleteWindow.isShowing){
-            mDeleteWindow.showAsDropDown(mIVGraphOverrayIcon)
-            mCopyWindow.showAsDropDown(mIVGraphOverrayIcon)
-        }
     }
 
     public override fun onDestroy() {
@@ -282,7 +282,7 @@ class MainActivity : Activity() {
     private fun adjustGui() {
         mGui?.let{
             it.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
-            mPopupWindow.height = it.measuredHeight
+            mGuiWindow.height = it.measuredHeight
         }
     }
 
@@ -309,8 +309,12 @@ class MainActivity : Activity() {
                 isTouching = false
                 dgc.affineTransformGraphs(Point(-1, -1), touchPoint) // 移動値をリセット
 
-                if (!dgc.isGraphSelected)
+                if (!dgc.isGraphSelected) {
                     dgc.select(touchPointBefore, touchPoint)
+
+                    mDeleteWindow.showAsDropDown(mIVGraphOverrayIcon)
+                    mCopyWindow.showAsDropDown(mIVGraphOverrayIcon)
+                }
 
             } else if (event.action == MotionEvent.ACTION_MOVE) {
                 if (dgc.isGraphSelected)
@@ -383,7 +387,7 @@ class MainActivity : Activity() {
     private fun dispose() {
         isGuiActivated = false
 
-        mPopupWindow.dismiss()
+        mGuiWindow.dismiss()
         mIconWindow.dismiss()
     }
 
@@ -470,7 +474,7 @@ class MainActivity : Activity() {
 
         mGui?.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
 
-        mPopupWindow = PopupWindow(mGui, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        mGuiWindow = PopupWindow(mGui, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
 
     private fun showGUI(id: Int) {
@@ -485,13 +489,11 @@ class MainActivity : Activity() {
 
         adjustGui()
 
-        mPopupWindow.showAsDropDown(main_ib_misc)
-        mIconWindow.showAsDropDown(main_ib_misc)
-
-        mPopupWindow.isTouchable = true
-        mPopupWindow.isFocusable = true
-        mPopupWindow.update()
-        mPopupWindow.setOnDismissListener { dispose() }
+        mGuiWindow.showAsDropDown(main_ib_misc)
+        mGuiWindow.isTouchable = true
+        mGuiWindow.isFocusable = true
+        mGuiWindow.update()
+        mGuiWindow.setOnDismissListener { dispose() }
 
         isGuiActivated = true
     }
